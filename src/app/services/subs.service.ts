@@ -18,7 +18,7 @@ export class SubsService {
 		private _electronService: ElectronService,
 		private http: HttpClient
 		) {
-		console.log('local_path', this.local_path);
+		// console.log('local_path', this.local_path);
 	}
 
 

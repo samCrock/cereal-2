@@ -38,6 +38,12 @@ export class TorrentService {
 		});
 	}
 
+	removeTorrent(infoHash) {
+		if (this.wt_client.get(infoHash)) {
+			this.wt_client.remove(infoHash);
+		}
+	}
+
 	getClient() {
 		return this.wt_client;
 	}

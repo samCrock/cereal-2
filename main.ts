@@ -17,7 +17,6 @@ global['path'] = path;
 
 console.log('Local path:', os.homedir());
 
-
 let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');

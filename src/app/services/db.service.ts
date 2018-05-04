@@ -131,7 +131,6 @@ export class DbService {
 
 	addTorrent(episode_torrent) {
 		return new Observable(observer => {
-
 			this.openDb().subscribe(db => {
 				db = event.target['result'];
 				// Add to Torrents store
@@ -150,6 +149,7 @@ export class DbService {
 					request.result['Seasons'][Number(season)][Number(episode) - 1].status = 'pending';
 					request.result['Seasons'][Number(season)][Number(episode) - 1].infoHash = episode_torrent['infoHash'];
 					request.result['Seasons'][Number(season)][Number(episode) - 1].dn = episode_torrent['dn'];
+					request.result['Seasons'][Number(season)][Number(episode) - 1].date = episode_torrent['date'];
 
 					let requestUpdate = objectStore.put(request.result);
 					requestUpdate.onerror = function(event) {};
@@ -169,10 +169,54 @@ export class DbService {
 				db = event.target['result'];
 				let objectStore = db['transaction'](['torrents'], 'readwrite').objectStore('torrents');
 				let request = objectStore.get(infoHash);
-				request.onerror = function(event) {};
+				request.onerror = function(event) {
+					return observer.error();
+				};
 				request.onsuccess = function(event) {
 					if (request.result) { return observer.next(request.result); } 
-					else { return observer.error(); }	
+					else { return observer.next(); }	
+				};
+			});
+		});
+	}
+
+	deleteTorrent(infoHash) {
+		return new Observable(observer => {
+			this.openDb().subscribe(db => {
+				db = event.target['result'];
+				let objectStore = db['transaction'](['torrents'], 'readwrite').objectStore('torrents');
+				let request = objectStore.delete(infoHash);
+				request.onerror = function(event) {
+					return observer.error();
+				};
+				request.onsuccess = function(event) {
+					return observer.next();	
+				};
+			});
+		});
+	}
+
+	deleteEpisode(episode_torrent) {
+		return new Observable(observer => {
+			this.openDb().subscribe(db => {
+				db = event.target['result'];
+				var s_objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
+				var s_request = s_objectStore.get(episode_torrent['dashed_title']);
+				s_request.onerror = function(event) {};
+				s_request.onsuccess = function(event) {
+					
+					let season = episode_torrent['episode_label'].substring(1, 3),
+					episode = episode_torrent['episode_label'].substring(4, 6);
+					delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].status;
+					delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].infoHash;
+					delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].dn;
+
+					let requestUpdate = s_objectStore.put(s_request.result);
+					requestUpdate.onerror = function(event) {};
+					requestUpdate.onsuccess = function(event) {
+						console.log('Episode deleted');
+						return observer.next();
+					};
 				};
 			});
 		});
@@ -191,7 +235,6 @@ export class DbService {
 					if (torrents && torrents.length > 0) {
 						torrents.forEach(t => {
 							if (t['status'] === 'pending') { pending.push(t) }
-							// pending.push(t)
 					});
 					}
 					if (request.result) { return observer.next(pending); } 

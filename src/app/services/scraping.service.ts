@@ -58,7 +58,7 @@ export class ScrapingService {
 					}
 					return observer.next(show);
 				})
-					
+
 			})
 
 		})
@@ -195,7 +195,6 @@ export class ScrapingService {
 
 	}
 
-
 	retrievePoster(dashed_title: string): Observable<any> {
 		return Observable.create(observer => {
 			return this.retrieveRemotePoster(dashed_title, observer);
@@ -243,7 +242,7 @@ export class ScrapingService {
 	// }
 
 
-	retrieveEpisode(show: string, episode: string) {
+	retrieveEpisode(show: string, episode: string, custom?: number) {
 		show = show.replace(/'/g, ' ');
 		const url = encodeURI('https://idope.se/torrent-list/' + show + ' ' +  episode);
 		console.log('Downloading episode', show, episode);
@@ -252,22 +251,55 @@ export class ScrapingService {
 			return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
 			.subscribe(response => {
 				const $ = cheerio.load(response);
-				if ($('.resultdiv')[1]) {
+				const _custom = custom ? custom : 1;
+				if ($('.resultdiv')[_custom]) {
 					let magnet = 'magnet:?xt=urn:btih:' +
-					$('.resultdiv')[1].children[3].children[11].children[0].data + '&dn=' +
-					$('.resultdiv')[1].children[3].children[13].children[0].data +
+					$('.resultdiv')[_custom].children[3].children[11].children[0].data + '&dn=' +
+					$('.resultdiv')[_custom].children[3].children[13].children[0].data +
 					$('#hidetrack')[0].attribs.value
 
 					// console.log($('.resultdiv')[1]);
 
 					return observer.next({
-						name   : $('.resultdiv')[1].children[1].children[5].children[0].children[0].data.trim(),
-						seeds  : $('.resultdiv')[1].children[3].children[7].children[3].children[0].data,
+						name   : $('.resultdiv')[_custom].children[1].children[5].children[0].children[0].data.trim(),
+						seeds  : $('.resultdiv')[_custom].children[3].children[7].children[3].children[0].data,
 						magnet : magnet
 					});
 				} else {
 					return observer.next();
 				}
+			});
+		});
+	}
+
+	retrieveTorrentsList(show: string, episode: string) {
+		show = show.replace(/'/g, ' ');
+		const url = encodeURI('https://idope.se/torrent-list/' + show + ' ' +  episode);
+
+		// console.log('url', url);
+		return Observable.create(observer => {
+			return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+			.subscribe(response => {
+				const $ = cheerio.load(response);
+				
+				for (var i = 1; i < 4; i++) {
+					
+					if ($('.resultdiv')[i]) {
+						let magnet = 'magnet:?xt=urn:btih:' +
+						$('.resultdiv')[i].children[3].children[11].children[0].data + '&dn=' +
+						$('.resultdiv')[i].children[3].children[13].children[0].data +
+						$('#hidetrack')[0].attribs.value
+
+						observer.next({
+							name   : $('.resultdiv')[i].children[1].children[5].children[0].children[0].data.trim(),
+							seeds  : $('.resultdiv')[i].children[3].children[7].children[3].children[0].data,
+							magnet : magnet
+						});
+					} else {
+						return observer.next();
+					}
+				}
+
 			});
 		});
 	}

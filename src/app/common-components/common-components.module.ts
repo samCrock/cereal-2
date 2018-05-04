@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
+import { RouterModule, Routes } from '@angular/router';
 import {
 	EpisodeComponent
 } from './index';
@@ -15,7 +15,8 @@ EpisodeComponent
 @NgModule({
 	imports: [
 	CommonModule,
-	FlexLayoutModule
+	FlexLayoutModule,
+	RouterModule
 	],
 	declarations: [
 	...COMMON_COMPONENTS

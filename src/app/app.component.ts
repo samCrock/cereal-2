@@ -28,6 +28,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private dbService: DbService
     ) {
 
+    window['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
+
     translate.setDefaultLang('en');
 
     this.alive = true;
