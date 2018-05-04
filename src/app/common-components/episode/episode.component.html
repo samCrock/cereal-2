@@ -1,0 +1,20 @@
+<div class="episode_row" *ngIf="show">
+	
+	<div class="progress" *ngIf="(getTorrentProgress(episode) | async); let progress;">
+		<div class="determinate" [ngStyle]="{ 'width': progress + '%' }"></div>
+	</div>
+	<div fxLayout="row" fxLayoutAlign="space-evenly" class="episode">
+		<div fxFlex="10">{{ episode.label }}</div>
+		<div fxFlex="50">{{ episode.title }}</div>
+		<div fxFlex="15" fxLayoutAlign="end">{{ formatDate(episode.date) }}</div>
+
+		<div fxFlex="25" fxLayoutAlign="end" *ngIf="(getTorrentDownloadSpeed(episode) | async); let speed;">
+			<span *ngIf="speed != true">{{ speed }} Mb/s</span>
+			<i *ngIf="speed" class="material-icons download_btn hoverable circle" data-target="trailer_modal" (click)="play(episode)">play_arrow</i>
+		</div>
+		<div fxFlex="25" fxLayoutAlign="end" *ngIf="!(getTorrentDownloadSpeed(episode) | async); let speed;">
+			<i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle" (click)="download_episode(episode)">file_download</i>
+		</div>
+	</div>
+
+</div>

@@ -1,0 +1,29 @@
+.progress {
+	margin: 0;
+	border-radius: 0px;
+}
+
+.episode {
+	margin-bottom: .5rem;
+	padding: 1rem;
+	min-height: 48px;
+	border-style: solid;
+	border-width: 1px;
+	div {
+		font-size: 1.2rem;
+		margin: auto;
+	}
+}
+
+.material-icons {
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+.download_btn:active {
+	filter: blur(1px);
+}
+
+.episode_row {
+	margin: auto;
+}

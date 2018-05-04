@@ -1,0 +1,40 @@
+@import "~materialize-css/sass/materialize";
+
+// RESET
+html, body {
+	user-select: none;
+	margin: 0;
+	padding: 0;
+	// background: #303633;
+	// background: white;
+	@extend .blue-grey, .darken-3;
+	color: white;
+	font-family: 'Abel', sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+.hoverable {
+	cursor: pointer;
+}
+
+.material-icons {
+	padding: .2rem;
+	outline-color: transparent;
+}
+
+
+.container {
+	margin-top: 2rem !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+

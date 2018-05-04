@@ -1,0 +1,5 @@
+<div class="container" *ngIf="torrents">
+	<div *ngFor="let t of torrents">
+		<episode [episode]="t"></episode>
+	</div>
+</div>

@@ -1,0 +1,33 @@
+
+<div *ngIf="calendar && calendar.length" fxLayout="column" class="blue-grey darken-3">
+	<div *ngFor="let day of calendar; let day_i = index;" fxLayout="column">
+
+		<div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="2vw" class="row_container">
+			<div fxLayout="column" fxLayoutAlign="center" class="date_widget">
+				<span class="date_number center-align">{{ formatMonthDate(day.date) }}</span>
+				<span class="date_label center-align">{{ formatWeekDate(day.date) }}</span>
+			</div>
+			<span class="date_fromnow valign-wrapper">{{ formatFromNowDate(day.date) }}</span>
+		</div>
+
+		<div fxLayout="column">
+			<div fxLayout="row wrap" fxLayoutAlign="center center" class="show-day" id="day_{{ day_i }}">
+				<div fxLayout="column" class="show" *ngFor="let show of day.shows; let show_i = index;">
+					<div class="card hoverable" (mouseenter)="enterCard($event, show)" [ngStyle]="{'background-image': 'url(' + (show.poster | async)  + ')'}">
+					</div>
+				</div>	
+			</div>
+		</div>
+
+	</div>
+</div>
+<div id="expanded_card" class="z-depth-5" (click)="openShow()">
+	<div fxLayout="column" fxLayoutAlign="center" class="expanded_overlay">
+		<div fxLayout="column" class="center-align card-title" >
+			<span>{{ hovering_episode.title }}</span>
+		</div>
+		<div fxLayout="column" class="center-align card-episode" >
+			<span>{{ hovering_episode.episode }}</span>
+		</div>
+	</div>
+</div>

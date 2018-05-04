@@ -1,0 +1,107 @@
+@import "~materialize-css/sass/materialize";
+
+
+.col {
+	margin: auto;
+}
+
+.container {
+	padding-top: 1rem;
+}
+
+.row_container {
+	margin-top: 4rem;
+}
+
+.day_label {
+	width: 100%;
+	text-align: center;
+}
+
+.show-day {
+	overflow-x: hidden;
+}
+
+
+.show {
+	padding: 0 !important;
+}
+
+$poster_w: 18vw;
+$expanded_poster_w: 25vw;
+
+.card {
+	// 182 x 268
+	cursor: pointer;
+	margin: 1vw;
+	background-color: transparent;
+	width: calc(18vw + 7px);
+	height: calc(18vw * 1.47);
+	background-size: calc(18vw + 14px) calc(18vw * 1.47);
+	border-radius: 4px;
+	background-repeat: no-repeat;
+	background-position-x: -4px;
+	img {
+		border-radius: 4px;
+	}
+}
+
+
+h5 {
+	margin-top: 2rem;
+	margin-bottom: 0;
+}
+
+#expanded_card {
+	display: none;
+	z-index: 1;
+	width: $poster_w;
+	height: calc(#{$poster_w} * 1.47);
+	background-color: transparent;
+	position: absolute;
+	background-size: calc(25vw + 14px) calc(25vw * 1.47);
+	border-radius: 4px;
+	background-repeat: no-repeat;
+	background-position-x: -4px;
+	border-radius: 4px;
+	// box-shadow: 0 0 3rem .5rem rgba(0, 0, 0, 0.4);
+	// transition: background-image 0s, box-shadow .6s, height .6s, width .6s, left 0s, top 0s ease-in-out;
+}
+
+.expanded_overlay {
+	width: inherit;
+	height: inherit;
+	background-color: rgba(55, 71, 79, .8);
+	cursor: pointer;
+}
+
+.card-title {
+	line-height: 2.2rem;
+	padding-top: 1rem !important;
+}
+
+.card-episode {
+	padding-top: 1rem !important;
+}
+
+.date_widget {
+	padding: .5rem;
+	background-color: rgb(200, 210, 220);
+	color: rgb(100, 110, 120);
+	border-radius: .3rem;
+}
+
+.date_number {
+    font-size: 4rem;
+    line-height: 3rem;
+}
+
+.date_label {
+	font-size: 1.2rem;
+	line-height: 1.2rem;
+}
+
+.date_fromnow {
+	font-size: 1.6rem;
+}
+
