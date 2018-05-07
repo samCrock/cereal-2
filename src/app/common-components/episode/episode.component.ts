@@ -48,7 +48,7 @@ export class EpisodeComponent implements OnChanges {
     }
     if (this.episode['episode_label']) { this.episode['label'] = this.episode['episode_label']; }  
     
-    console.log(this.router.url);
+    // console.log(this.router.url);
     if (this.router.url === '/torrents') {
       this.titleAsButton = true;
     }

@@ -34,6 +34,7 @@ import { TorrentService } from './services/torrent.service';
 import { DbService } from './services/db.service';
 import { SubsService } from './services/subs.service';
 
+
 import { TorrentsComponent } from './components/torrents/torrents.component';
 
 import { CommonComponentsModule } from './common-components/common-components.module';

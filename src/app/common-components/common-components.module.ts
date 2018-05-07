@@ -7,6 +7,8 @@ import {
 	EpisodeComponent
 } from './index';
 
+// Pipes
+import { SortPipe, TrimPipe } from '../pipes/index';
 
 const COMMON_COMPONENTS = [
 EpisodeComponent
@@ -19,10 +21,14 @@ EpisodeComponent
 	RouterModule
 	],
 	declarations: [
-	...COMMON_COMPONENTS
+	...COMMON_COMPONENTS,
+	SortPipe,
+	TrimPipe
 	],
 	exports: [
-	...COMMON_COMPONENTS
+	...COMMON_COMPONENTS,
+	SortPipe,
+	TrimPipe
 	]
 })
 export class CommonComponentsModule { }

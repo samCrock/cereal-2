@@ -10,8 +10,8 @@ h3 {
 }
 
 h5 {
-	font-size: 2rem;
-	margin-top: 2rem;
+	font-size: calc(1rem + 1vw);
+	margin-top: calc(1rem + 1vw);
 	margin-bottom: 0;
 	text-transform: uppercase;
 }
@@ -56,14 +56,20 @@ h5 {
 }
 
 #title {
-	font-family: 'Anton', sans-serif;
-	font-size: 3rem;
+	font-family: 'Economica', sans-serif;
+	font-size: calc(1rem + 4vw);
 	letter-spacing: 2px;
+	font-weight: 800;
 }
 
 #network {
 	margin: 0 0;
-	font-size: 1.8rem;
+	font-size: calc(.8rem + 2vw);
+}
+
+#overview {
+	font-size: calc(.6rem + 1vw);
+	line-height: calc(.8rem + 1vw);
 }
 
 .show_header{
@@ -95,7 +101,7 @@ h5 {
 .genres {
 	color: rgba(230, 230, 130, .5);
 	text-transform: uppercase;
-	font-size: 1rem;
+	font-size: calc(.4rem + 1vw);
 	padding: .5rem;
 	border-radius: 4px;
 	margin-top: .5rem; 
@@ -103,4 +109,10 @@ h5 {
 
 #trailer_icon {
 	padding: 1rem;
+}
+
+@media only screen and (min-width: 993px) {	
+	.container {
+		width: 85% !important;
+	}
 }

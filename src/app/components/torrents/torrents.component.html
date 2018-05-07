@@ -1,5 +1,5 @@
 <div class="container" *ngIf="torrents">
-	<div *ngFor="let t of torrents">
+	<div *ngFor="let t of torrents | sort:'date'">
 		<episode [episode]="t"></episode>
 	</div>
 </div>

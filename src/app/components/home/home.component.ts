@@ -65,8 +65,8 @@ export class HomeComponent implements OnInit {
         exp_card.style.backgroundSize = 'calc(18vw + 1vw) calc(18vw * 1.47)';
         exp_card.getElementsByClassName('card-title')[0]['style']['transition'] = before_transitions;
         exp_card.getElementsByClassName('card-episode')[0]['style']['transition'] = before_transitions;
-        exp_card.getElementsByClassName('card-title')[0]['style']['font-size'] = '1.8rem';
-        exp_card.getElementsByClassName('card-episode')[0]['style']['font-size'] = '1rem';
+        exp_card.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1rem + 1vw)';
+        exp_card.getElementsByClassName('card-episode')[0]['style']['font-size'] = 'calc(.6rem + 1vw)';
 
         // TRANSITION
         setTimeout(function() {

@@ -92,16 +92,17 @@ h5 {
 }
 
 .date_number {
-    font-size: 4rem;
-    line-height: 3rem;
+    font-size: calc(1rem + 3vw);
+    line-height: calc(1rem + 3vw);
+    font-weight: bold;
 }
 
 .date_label {
-	font-size: 1.2rem;
-	line-height: 1.2rem;
+	font-size: calc(1rem + 1vw);
+	line-height: calc(1rem + 1vw);
 }
 
 .date_fromnow {
-	font-size: 1.6rem;
+	font-size: calc(1rem + 1vw);
 }
 

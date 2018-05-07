@@ -284,6 +284,8 @@ export class ScrapingService {
 				
 				for (var i = 1; i < 4; i++) {
 					
+					// console.log($('.resultdiv')[i]);
+
 					if ($('.resultdiv')[i]) {
 						let magnet = 'magnet:?xt=urn:btih:' +
 						$('.resultdiv')[i].children[3].children[11].children[0].data + '&dn=' +
@@ -293,6 +295,7 @@ export class ScrapingService {
 						observer.next({
 							name   : $('.resultdiv')[i].children[1].children[5].children[0].children[0].data.trim(),
 							seeds  : $('.resultdiv')[i].children[3].children[7].children[3].children[0].data,
+							size  : $('.resultdiv')[i].children[3].children[5].children[3].children[0].data,
 							magnet : magnet
 						});
 					} else {
