@@ -27,13 +27,10 @@ import { WebviewDirective } from './directives/webview.directive';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { ShowComponent } from './components/show/show.component';
+import { PlayerComponent } from './components/player/player.component';
 
 // Services
-import { ScrapingService } from './services/scraping.service';
-import { TorrentService } from './services/torrent.service';
-import { DbService } from './services/db.service';
-import { SubsService } from './services/subs.service';
-
+import { ScrapingService, TorrentService, DbService, SubsService, NavbarService } from './services/index';
 
 import { TorrentsComponent } from './components/torrents/torrents.component';
 
@@ -41,10 +38,10 @@ import { CommonComponentsModule } from './common-components/common-components.mo
 
 
 const materialDependencies = [
-MatButtonModule,
-MatCheckboxModule,
-MatIconModule
-]
+  MatButtonModule,
+  MatCheckboxModule,
+  MatIconModule
+];
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -53,37 +50,39 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 @NgModule({
   declarations: [
-  AppComponent,
-  HomeComponent,
-  ShowComponent,
-  WebviewDirective,
-  TorrentsComponent
+    AppComponent,
+    HomeComponent,
+    ShowComponent,
+    PlayerComponent,
+    WebviewDirective,
+    TorrentsComponent
   ],
   imports: [
-  BrowserModule,
-  NgxElectronModule,
-  materialDependencies,
-  FlexLayoutModule,
-  HttpClientJsonpModule, 
-  FormsModule,
-  HttpClientModule,
-  AppRoutingModule,
-  TranslateModule.forRoot({
-    loader: {
-      provide: TranslateLoader,
-      useFactory: (HttpLoaderFactory),
-      deps: [HttpClient]
-    }
-  }),
-  CommonComponentsModule
+    BrowserModule,
+    NgxElectronModule,
+    materialDependencies,
+    FlexLayoutModule,
+    HttpClientJsonpModule,
+    FormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (HttpLoaderFactory),
+        deps: [HttpClient]
+      }
+    }),
+    CommonComponentsModule
   ],
   exports: [materialDependencies],
   providers: [
-  ElectronService,
-  ScrapingService,
-  TorrentService,
-  DbService,
-  SubsService
+    ElectronService,
+    ScrapingService,
+    TorrentService,
+    DbService,
+    SubsService,
+    NavbarService
   ],
   bootstrap: [AppComponent]
 })

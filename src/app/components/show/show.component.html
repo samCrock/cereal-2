@@ -1,7 +1,7 @@
 	<div *ngIf="show" fxLayout="row" fxLayoutGap="2vw" class="show_header">
 		<div class="poster_container">
 			<div class="card" [ngStyle]="{'background-image': 'url(' + (show.poster)  + ')'}">
-				
+
 			</div>
 		</div>
 		<div fxLayout="column" fxLayoutAlign="start start">
@@ -39,7 +39,7 @@
 			</div>
 		</div>
 
-		<episode *ngFor="let episode of episodes" [episode]="episode" [show]="show"></episode>
+		<app-episode *ngFor="let episode of episodes" [episode]="episode" [show]="show"></app-episode>
 
 	</div>
 

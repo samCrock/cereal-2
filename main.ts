@@ -39,11 +39,13 @@ function createWindow() {
     y: 0,
     width: size.width,
     height: size.height,
-    webPreferences: { 
+    webPreferences: {
       webSecurity: false,
       allowRunningInsecureContent: true
     }
   });
+
+  win.setMenu(null);
 
   if (serve) {
     require('electron-reload')(__dirname, {

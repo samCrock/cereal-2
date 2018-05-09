@@ -58,18 +58,19 @@ h5 {
 #title {
 	font-family: 'Economica', sans-serif;
 	font-size: calc(1rem + 4vw);
+	line-height: calc(1rem + 4vw);
 	letter-spacing: 2px;
 	font-weight: 800;
 }
 
 #network {
 	margin: 0 0;
-	font-size: calc(.8rem + 2vw);
+	font-size: calc(1rem + 2vw);
 }
 
 #overview {
-	font-size: calc(.6rem + 1vw);
-	line-height: calc(.8rem + 1vw);
+	font-size: calc(.8rem + 1vw);
+	line-height: calc(1rem + 1vw);
 }
 
 .show_header{
@@ -101,8 +102,8 @@ h5 {
 .genres {
 	color: rgba(230, 230, 130, .5);
 	text-transform: uppercase;
-	font-size: calc(.4rem + 1vw);
-	padding: .5rem;
+	font-size: calc(.6rem + 1vw);
+	padding-right: .5rem;
 	border-radius: 4px;
 	margin-top: .5rem; 
 }
