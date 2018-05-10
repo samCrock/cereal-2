@@ -76,7 +76,7 @@ h5 {
 }
 
 .card-title {
-	line-height: 2.2rem;
+	line-height: calc(2rem + 1vw);
 	padding-top: 1rem !important;
 }
 
@@ -105,4 +105,3 @@ h5 {
 .date_fromnow {
 	font-size: calc(1rem + 1vw);
 }
-

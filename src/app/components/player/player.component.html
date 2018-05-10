@@ -1,23 +1,26 @@
-<video id="player" width="320" height="240" autoplay>Format not supported</video>
+<video id="player" width="320" height="240">Format not supported</video>
 
-<div id="controls" fxLayout="row" fxLayoutAlign="start center">
+<div id="info" [ngClass]="idleTime > 20 ? 'hidden' : ''" fxLayoutAlign="start center">
+  <span class="show">{{ show }}</span>
+  <span class="episode_label">{{ episode.label }}</span>
+  <span class="episode_title">{{ episode.title }}</span>
+</div>
+<div id="controls" [ngClass]="idleTime > 20 ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center">
   <div id="toggle_play" fxflex="auto" fxFlexOffset="calc(.5rem + 1vw)" (click)="toggle_play()">
     <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
   </div>
   <div id="duration" fxFlex="14" fxFlex.gt-xs="11">{{ currentTime }} / {{ totalTime }}</div>
   <div id="timeline" fxFlex="48" fxFlex.gt-xs="58" fxFlexOffset="calc(.5rem + 1vw)">
-    <div id="dot">
-      <i class="material-icons">fiber_manual_record</i>
-    </div>
+    <div class="timeline__drag"></div>
+    <span class="timeline__progress"></span>
   </div>
   <div id="toggle_fullscreen" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggle_fullscreen()">
     <i class="material-icons">{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</i>
-    <!-- <i class="material-icons">fullscreen_exit</i> -->
   </div>
-  <div id="toggle_subs" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center">
+  <div id="toggle_subs" [ngClass]="showSubs ? 'on' : ''" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggleSubs()">
     <i class="material-icons">textsms</i>
   </div>
-  <div id="toggle_episodes" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center">
+  <div id="toggle_episodes" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggleEpisodes()">
     <i class="material-icons">playlist_play</i>
   </div>
 </div>

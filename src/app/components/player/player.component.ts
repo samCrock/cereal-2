@@ -1,10 +1,12 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { DbService, SubsService, ScrapingService, TorrentService } from '../../services';
 import * as moment from 'moment';
 import { ElectronService } from 'ngx-electron';
 import * as magnet from 'magnet-uri';
 import { Router } from '@angular/router';
+import { TweenMax } from 'gsap';
+import * as Draggable from 'gsap/Draggable';
 
 @Component({
   selector: 'app-player',
@@ -13,42 +15,45 @@ import { Router } from '@angular/router';
   providers: [TorrentService]
 
 })
-export class PlayerComponent implements OnChanges, OnInit {
+export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
 
   private show: Object;
   private episode: Object;
   private file_path: string;
 
-  // private path = this.electronService.remote.getGlobal('path');
   private shell = this.electronService.remote.getGlobal('shell');
   private loading = true;
   private path = this.electronService.remote.getGlobal('path');
   private fs = this.electronService.remote.getGlobal('fs');
+  private srt2vtt = this.electronService.remote.getGlobal('srt2vtt');
 
   private isPlaying = true;
   private isFullscreen = false;
-  private currentTime = '0:00';
-  private totalTime = '0:00';
+  private currentTime = '00:00';
+  private totalTime = '00:00';
   private player;
+  private loopInterval;
+  private idleTime;
+  private lastMove = Date.now();
+  private isDragging = false;
+  private showSubs = true;
 
   constructor(
     private torrentService: TorrentService,
     private electronService: ElectronService,
     private router: Router
-  ) { }
+    ) { }
 
   ngOnChanges() {
     console.log('ngOnChanges');
   }
 
   ngOnInit() {
-
     const play = JSON.parse(localStorage.getItem('play'));
     this.show = play.show;
     this.episode = play.episode;
     this.file_path = play.file_path;
 
-    console.log('ngOnInit');
     console.log(this.show);
     console.log(this.episode);
     console.log(this.file_path);
@@ -58,18 +63,20 @@ export class PlayerComponent implements OnChanges, OnInit {
         files.forEach(file => {
           const ext = file.substring(file.length - 3, file.length);
           if (ext === 'mkv' || ext === 'mp4') {
-            console.log(ext);
+            console.log('File extension:', ext);
             this.file_path = this.path.join(this.file_path, file);
+          } else if (ext === 'srt') {
+            const subs_path = this.path.join(this.file_path, file);
+            console.log('Subs:', file);
+            that.addSubs(subs_path);
           }
         });
       }
       this.setup();
     });
 
-    ////////
     const that = this;
     document.body.onkeyup = function(e) {
-      // SPACE
       if (e.keyCode === 32) {
         that.toggle_play();
       }
@@ -78,17 +85,75 @@ export class PlayerComponent implements OnChanges, OnInit {
     .addEventListener('dblclick', function() {
       that.toggle_fullscreen();
     });
-    ////////
 
+  }
+
+  ngOnDestroy() {
+    if (this.loopInterval) { clearInterval(this.loopInterval); }
   }
 
   setup() {
     this.player = document.getElementById('player');
     console.log('File path', this.file_path);
     this.player.setAttribute('src', this.file_path);
+
+    const that = this;
+    const i = setInterval(function() {
+      if (this.player.readyState > 0) {
+        clearInterval(i);
+        const duration = +this.player.duration;
+        const minutes = Math.floor(duration / 60).toString().length === 1 ?
+        '0' + Math.floor(duration / 60).toString() : Math.floor(duration / 60).toString();
+        const seconds = Math.floor(this.player.duration % 60).toString().length === 1 ?
+        '0' + Math.floor(duration % 60).toString() : Math.floor(duration % 60).toString();
+        that.totalTime = minutes + ':' + seconds;
+
+        document.addEventListener('mousemove', function() {
+          that.lastMove = Date.now();
+        }, false);
+
+        document.addEventListener('dragenter', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+        }, false);
+
+        document.addEventListener('dragover', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+        }, false);
+
+        document.addEventListener('drop', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          const dt = e.dataTransfer,
+          files = dt.files;
+          console.log('Subs dropped:', files[0]);
+          that.addSubs(files[0].path);
+        }, false);
+
+        that.controlsLoop();
+        that.dragSetup();
+
+      }
+    }, 200);
+  }
+
+  controlsLoop() {
+    const that = this;
+    this.loopInterval = setInterval(() => {
+      const currentTime = +that.player.currentTime;
+      const totalTime = +that.player.duration;
+      const minutes = Math.floor(currentTime / 60).toString().length === 1 ?
+      '0' + Math.floor(currentTime / 60).toString() : Math.floor(currentTime / 60).toString();
+      const seconds = Math.floor(that.player.currentTime % 60).toString().length === 1 ?
+      '0' + Math.floor(currentTime % 60).toString() : Math.floor(currentTime % 60).toString();
+      that.currentTime = minutes + ':' + seconds;
+      that.idleTime = Math.floor(Date.now() / 100) - Math.floor(that.lastMove / 100);
+    }, 100);
   }
 
   toggle_play() {
+    this.lastMove = Date.now();
     if (this.isPlaying) {
       this.player.pause();
       this.isPlaying = false;
@@ -107,6 +172,105 @@ export class PlayerComponent implements OnChanges, OnInit {
       this.isFullscreen = true;
     }
   }
+
+  addSubs(file_path) {
+    const that = this;
+    const track = document.createElement('track');
+    track.kind = 'captions';
+    track.label = 'English';
+    track.srclang = 'en';
+    that.fs.createReadStream(file_path)
+    .pipe(that.srt2vtt())
+    .pipe(that.fs.createWriteStream(file_path.substring(0, file_path.length - 3) + 'vtt'));
+    setTimeout(function() {
+      track.src = file_path.substring(0, file_path.length - 3) + 'vtt';
+      that.player.appendChild(track);
+      that.player.textTracks[0].mode = 'showing';
+
+      setTimeout(function() {
+        let cues = that.player.textTracks[0].cues;
+        console.log('cues', cues);
+        Object.keys(cues).forEach(key => {
+          console.log(cues[key]);
+          cues[key].line = 15;
+        });
+
+      }, 1000);
+
+    }, 1000);
+  }
+
+  toggleSubs() {
+    let mode = this.player.textTracks[0].mode;
+    console.log('toggleSubs', mode);
+    if (mode === 'hidden') {
+      this.player.textTracks[0].mode = 'showing';
+      this.showSubs = true;
+    } else {
+      this.player.textTracks[0].mode = 'hidden';
+      this.showSubs = false;
+    }
+  }
+
+  toggleEpisodes() {
+    console.log('toggleEpisodes');
+  }
+
+  dragSetup() {
+    var video = document.getElementsByTagName('video')[0],
+    timeline: HTMLElement = document.getElementById('timeline'),
+    timelineProgress = document.getElementsByClassName('timeline__progress')[0],
+    drag = document.getElementsByClassName('timeline__drag')[0];
+
+    video.onplay = function() {
+      TweenMax.ticker.addEventListener('tick', vidUpdate);
+    };
+    video.onpause = function() {
+      TweenMax.ticker.removeEventListener('tick', vidUpdate);
+    };
+    video.onended = function() {
+      TweenMax.ticker.removeEventListener('tick', vidUpdate);
+    };
+
+    video.play();
+
+    function vidUpdate() {
+      TweenMax.set(timelineProgress, {
+        scaleX: (video.currentTime / video.duration).toFixed(5)
+      });
+      TweenMax.set(drag, {
+        x: (video.currentTime / video.duration * timeline.offsetWidth).toFixed(4)
+      });
+    }
+
+    let draggable = Draggable.create(drag, {
+      type: 'x',
+      trigger: timeline,
+      bounds: timeline,
+      onPress: function(e) {
+        video.currentTime = this.x / this.maxX * video.duration;
+        TweenMax.set(this.target, {
+          x: this.pointerX - timeline.getBoundingClientRect().left
+        });
+        this.update();
+        var progress = this.x / timeline.offsetWidth;
+        TweenMax.set(timelineProgress, {
+          scaleX: progress
+        });
+      },
+      onDrag: function() {
+        video.currentTime = this.x / this.maxX * video.duration;
+        var progress = this.x / timeline.offsetWidth;
+        TweenMax.set(timelineProgress, {
+          scaleX: progress
+        });
+      },
+      onRelease: function(e) {
+        e.preventDefault();
+      }
+    });
+  }
+
 
 
 }
