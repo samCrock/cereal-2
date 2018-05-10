@@ -216,6 +216,10 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     console.log('toggleEpisodes');
   }
 
+  openFolder() {
+    this.shell.openItem(this.file_path);
+  }
+
   dragSetup() {
     var video = document.getElementsByTagName('video')[0],
     timeline: HTMLElement = document.getElementById('timeline'),

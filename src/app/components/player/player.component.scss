@@ -87,6 +87,16 @@ i {
     opacity: 1;
 }
 
+#open_folder {
+  i {
+    font-size: calc(1rem + 1vw);
+  }
+}
+
+#toggle_episodes {
+  opacity: .4;
+}
+
 #duration {
   text-align: center;
   font-size: calc(.5rem + 1vw);
