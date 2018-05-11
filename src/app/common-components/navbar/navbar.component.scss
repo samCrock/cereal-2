@@ -9,3 +9,8 @@
 		font-size: calc(1rem + 1vw);
 	}
 }
+
+.active {
+	color: #2bbbad;
+	transition: all 1s;
+}

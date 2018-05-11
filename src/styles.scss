@@ -28,10 +28,11 @@ html, body {
 
 
 .btn {
-	border-color: #2bbbad !important;
+	// border-color: #2bbbad !important;
 	border-style: solid !important;
 	border-width: 1px !important;
 	background: transparent !important;
-	color: #2bbbad !important;
+	// color: #2bbbad !important;
 	font-size: calc(1rem + 1vw) !important;
+	transition: all .4s;
 }

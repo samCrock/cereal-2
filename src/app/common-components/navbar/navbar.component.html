@@ -1,12 +1,12 @@
-<div class="navbar" fxLayout="row" fxLayoutGap="2vw" fxLayoutAlign="start center">
+<div class="navbar" fxLayout="row" fxLayoutGap="2vw" fxLayoutAlign="start center" *ngIf="enabled">
 	<div>
-		<i class="material-icons hoverable circle" routerLink="">home</i>
+		<i [ngClass]="isActive('home') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="">home</i>
 	</div>
 	<div>
-		<i class="material-icons hoverable circle" routerLink="torrents" style="padding-top: 6px;">file_download</i>
+		<i [ngClass]="isActive('torrents') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="torrents" style="padding-top: 6px;">file_download</i>
 	</div>
 
 	<div *ngIf="current_show">
-		<a class="waves-effect waves-light btn" [routerLink]="['show', current_show.dashed_title]">{{ current_show.title }}</a>
+		<a [ngClass]="isActive('show') ? 'waves-effect waves-light btn active' : 'waves-effect waves-light btn'" [routerLink]="['show', current_show.dashed_title]">{{ current_show.title }}</a>
 	</div>
 </div>
