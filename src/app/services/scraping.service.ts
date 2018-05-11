@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-// import { Observable } from 'rxjs/Observable';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/observable/of';
@@ -7,12 +6,12 @@ import { mergeMap, catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
-
+import { DbService } from './db.service';
 
 @Injectable()
 export class ScrapingService {
 
-	constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient, private dbService: DbService) {}
 
 	retrieveShow(show: string): Observable<any> {
 		const _show = show;
@@ -197,7 +196,17 @@ export class ScrapingService {
 
 	retrievePoster(dashed_title: string): Observable<any> {
 		return Observable.create(observer => {
-			return this.retrieveRemotePoster(dashed_title, observer);
+			this.dbService.getShow(dashed_title)
+			.subscribe(show => {
+				let _observer = observer;
+				if (show.poster) {
+					return _observer.next(show.poster);
+				} else {
+					return this.retrieveRemotePoster(dashed_title, _observer);
+				}
+			}, noShow => {
+				return this.retrieveRemotePoster(dashed_title, observer);
+			});
 		});
 	}
 
