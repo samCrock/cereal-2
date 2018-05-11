@@ -96,8 +96,8 @@ label {
 }
 
 #speed {
-	line-height: 2.2rem;
-	font-size: 1.2rem;
+	font-size: calc(.8rem + 1vw);
+	line-height: calc(.8rem + 2vw);
 	color: rgba(230, 230, 130, 0.5);
 }
 

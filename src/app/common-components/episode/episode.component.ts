@@ -137,7 +137,7 @@ export class EpisodeComponent implements OnChanges {
           path = 'c:\\Users\\sam\\Downloads\\cereal\\' + this.show['title'] + '\\' + fresh_ep['label'] + '\\' + fresh_ep['dn'];
 
           localStorage.setItem('play', JSON.stringify({
-            show: this.show['dashed_title'],
+            show: this.show,
             episode: episode,
             file_path: path
           }));
