@@ -324,4 +324,20 @@ export class DbService {
 		});
 	}
 
+
+	// Used to navigate seasons in show component
+	setLastSeen(show, episode) {
+
+	}
+
+	// Used to set view progress on player exit
+	setEpisodeViewProgress(show, episode, progress) {
+
+	}
+
+	// Used to set progress in episode component
+	getEpisodeViewProgress(show, episode, progress) {
+
+	}
+
 }
