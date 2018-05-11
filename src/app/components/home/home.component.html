@@ -15,7 +15,7 @@
 				<div fxLayout="column" class="show" *ngFor="let show of day.shows; let show_i = index;">
 					<div class="card hoverable" (mouseenter)="enterCard($event, show)" [ngStyle]="{'background-image': 'url(' + (show.poster | async)  + ')'}">
 					</div>
-				</div>	
+				</div>
 			</div>
 		</div>
 

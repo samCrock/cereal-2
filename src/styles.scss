@@ -12,6 +12,18 @@ html, body {
 	text-rendering: optimizeLegibility;
 }
 
+::selection {
+  background: #26a69a;
+}
+
+:focus {
+    outline: none;
+}
+
+input {
+	font-family: 'Economica', sans-serif !important;
+}
+
 .hoverable {
 	cursor: pointer;
 }

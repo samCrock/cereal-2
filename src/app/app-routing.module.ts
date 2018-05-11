@@ -1,27 +1,28 @@
-import { HomeComponent } from './components/home/home.component';
-import { ShowComponent } from './components/show/show.component';
-import { PlayerComponent } from './components/player/player.component';
-import { TorrentsComponent } from './components/torrents/torrents.component';
+import { HomeComponent, ShowComponent, PlayerComponent, TorrentsComponent, SearchComponent } from './components/index';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-    {
-        path: '',
-        component: HomeComponent
-    },
-    {
-        path: 'show/:title',
-        component: ShowComponent
-    },
-    {
-        path: 'torrents',
-        component: TorrentsComponent
-    },
-    {
-        path: 'play',
-        component: PlayerComponent
-    }
+{
+    path: '',
+    component: HomeComponent
+},
+{
+    path: 'show/:title',
+    component: ShowComponent
+},
+{
+    path: 'torrents',
+    component: TorrentsComponent
+},
+{
+    path: 'play',
+    component: PlayerComponent
+},
+{
+    path: 'search',
+    component: SearchComponent
+}
 ];
 
 @NgModule({

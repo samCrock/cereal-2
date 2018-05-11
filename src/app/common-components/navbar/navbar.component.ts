@@ -48,6 +48,7 @@ export class NavbarComponent implements OnInit {
     if (route_name === 'home' && this.currentRoute === '/') { return true; }
     if (route_name === 'torrents' && this.currentRoute.indexOf('/torrents') > -1) { return true; }
     if (route_name === 'show' && this.currentRoute.indexOf('/show/') > -1) { return true; }
+    if (route_name === 'search' && this.currentRoute.indexOf('/search') > -1) { return true; }
     return false;
   }
 

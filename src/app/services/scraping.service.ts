@@ -315,6 +315,26 @@ export class ScrapingService {
 			});
 		});
 	}
+
+	searchShows(show_string: string): Observable<any> {
+		return Observable.create(observer => {
+			return this.http.get<any[]>('https://trakt.tv/search/shows?query=' + show_string, { responseType: 'text' as 'json' })
+			.subscribe(response => {
+				const $ = cheerio.load(response);
+				$('.grid-item')
+				.filter((i, result) => {
+					if (i < 6) {
+						let dashed_title = result.children[1]['attribs']['href'];
+						if (dashed_title) {
+							dashed_title = dashed_title.split('/shows/')[1];
+							// console.log('Found titles =>', dashed_title);
+							return observer.next(dashed_title);
+						}
+					}
+				});
+			});
+		});
+	}
 	
 
 

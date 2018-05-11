@@ -1,0 +1,16 @@
+#input_container {
+	margin: auto;
+	padding-top: 2rem;
+	input {
+		color: white;
+		font-size: calc(2rem + 3vw);
+		height: calc(2rem + 5vw);
+		padding: calc(.5rem + 1vw);
+		text-transform: capitalize;
+	}
+}
+
+#results_container {
+	margin: auto;
+	padding-top: 2rem;
+}

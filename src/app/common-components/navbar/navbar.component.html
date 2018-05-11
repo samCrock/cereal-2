@@ -5,7 +5,9 @@
 	<div>
 		<i [ngClass]="isActive('torrents') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="torrents" style="padding-top: 6px;">file_download</i>
 	</div>
-
+	<div>
+		<i [ngClass]="isActive('search') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="search" style="padding-top: 6px;">search</i>
+	</div>
 	<div *ngIf="current_show">
 		<a [ngClass]="isActive('show') ? 'waves-effect waves-light btn active' : 'waves-effect waves-light btn'" [routerLink]="['show', current_show.dashed_title]">{{ current_show.title }}</a>
 	</div>

@@ -1,0 +1,25 @@
+	<div *ngIf="show" fxLayout="row" fxLayoutGap="2vw" class="show_header">
+		<div class="poster_container" [routerLink]="['/show', show.dashed_title]">
+			<div class="card" [ngStyle]="{'background-image': 'url(' + (show.poster)  + ')'}"></div>
+		</div>
+		<div fxLayout="column" fxLayoutAlign="start start">
+			<div fxLayout="row" fxLayoutGap="2vw">
+				<h3 id="title">{{ show.title }}</h3>
+				<div class="valign-wrapper">
+					<i class="material-icons hoverable circle" id="trailer_icon" (click)="play_trailer()">live_tv</i>
+				</div>
+			</div>
+			<div fxLayout="row">
+				<span id="network" class="left-align valign-wrapper">{{ show.network }} </span>
+			</div>
+			<span id="overview">{{ show.overview }} </span>
+			<div fxLayout="row" fxLayoutGap="2vw">
+				<span class="genres" *ngFor="let g of show.genres">{{ g }} </span>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="show && openedTrailer" class="trailer_container" (click)="closeTrailer()">
+		<iframe id="player" [src]='getTrailer()' width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>
+		</iframe>
+	</div>

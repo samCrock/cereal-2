@@ -1,0 +1,79 @@
+.show_header{
+	margin: 2vw;
+	margin-left: 4vw;
+	margin-right: 4vw;
+}
+
+.poster_container {
+	// margin: auto;
+	border-radius: 4px;
+	background-size: cover;
+}
+
+.card {
+	cursor: pointer;
+	margin: 1vw;
+	background-color: transparent;
+	width: calc(18vw + 7px);
+	height: calc(18vw * 1.47);
+	background-size: calc(18vw + 14px) calc(18vw * 1.47);
+	border-radius: 4px;
+	background-repeat: no-repeat;
+	background-position-x: -4px;
+	img {
+		border-radius: 4px;
+	}
+}
+
+#title {
+	font-family: 'Economica', sans-serif;
+	font-size: calc(1rem + 4vw);
+	line-height: calc(1rem + 4vw);
+	letter-spacing: 2px;
+	font-weight: 800;
+}
+
+#trailer_icon {
+	padding: 1rem;
+	font-size: calc(1rem + 2vw);
+}
+
+#network {
+	margin: 0 0;
+	font-size: calc(1rem + 2vw);
+}
+
+.genres {
+	color: rgba(230, 230, 130, .5);
+	text-transform: uppercase;
+	font-size: calc(.6rem + 1vw);
+	padding-right: .5rem;
+	border-radius: 4px;
+	margin-top: .5rem; 
+}
+
+.trailer_container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.6);
+}
+
+#player {
+	position: absolute;
+	left: calc(50% - 320px);
+	top: calc(50% - 160px);
+}
+
+span {
+	margin: auto;
+	font-size: 1.2rem;
+}
+
+h3 {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+

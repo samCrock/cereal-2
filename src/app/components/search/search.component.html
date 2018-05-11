@@ -1,0 +1,9 @@
+<div fxLayout="row" fxFlex="90" id="input_container">
+	<input type="text" id="search_input" [value]="show_input" [formControl]="searchControl">
+</div>
+
+<div fxLayout="column" fxFlex="90" id="results_container">
+	<div fxLayout="row" *ngFor="let show of shows;">
+		<app-show-preview [show]="show"></app-show-preview>
+	</div>
+</div>

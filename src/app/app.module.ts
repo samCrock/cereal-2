@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import '../polyfills';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { HttpClientJsonpModule } from '@angular/common/http';
@@ -25,9 +25,7 @@ import { ElectronService } from './providers/electron.service';
 import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
-import { ShowComponent } from './components/show/show.component';
-import { PlayerComponent } from './components/player/player.component';
+import { HomeComponent, ShowComponent, PlayerComponent, SearchComponent } from './components/index';
 
 // Services
 import { ScrapingService, TorrentService, DbService, SubsService, NavbarService } from './services/index';
@@ -54,8 +52,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     HomeComponent,
     ShowComponent,
     PlayerComponent,
+    SearchComponent,
     WebviewDirective,
-    TorrentsComponent
+    TorrentsComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
@@ -64,6 +64,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     FlexLayoutModule,
     HttpClientJsonpModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
     TranslateModule.forRoot({
