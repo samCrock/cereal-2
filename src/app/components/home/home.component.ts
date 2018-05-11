@@ -38,7 +38,7 @@ export class HomeComponent implements OnInit {
       .subscribe(result => {
         console.log('calendar', result);
         this.calendar = result.reverse();
-        this.elRef.nativeElement.querySelector('#expanded_card');
+        // this.elRef.nativeElement.querySelector('#expanded_card');
       });
   }
 
@@ -124,24 +124,6 @@ export class HomeComponent implements OnInit {
     return Observable.create(observer => {
       return observer.next(poster);
     });
-  }
-
-  showScrollLeft(i) {
-    const el = document.getElementById('day_' + i);
-    return el && el.scrollLeft !== 0;
-  }
-
-  showScrollRight(i) {
-    const el = document.getElementById('day_' + i);
-    return el && el.scrollLeft < el.offsetWidth + 150;
-  }
-
-  scrollLeft(i) {
-    document.getElementById('day_' + i).scrollLeft += -300;
-  }
-
-  scrollRight(i) {
-    document.getElementById('day_' + i).scrollLeft += 300;
   }
 
   openShow() {
