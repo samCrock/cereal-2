@@ -1,7 +1,7 @@
 <video id="player" width="320" height="240">Format not supported</video>
 
 <div id="info" [ngClass]="idleTime > 20 ? 'hidden' : ''" fxLayoutAlign="start center">
-  <span class="show">{{ show }}</span>
+  <i class="material-icons back_icon" [routerLink]="['/show', show.dashed_title]">arrow_back_ios</i><span class="show">{{ show.title }}</span>
   <span class="episode_label">{{ episode.label }}</span>
   <span class="episode_title">{{ episode.title }}</span>
 </div>

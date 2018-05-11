@@ -36,7 +36,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   private idleTime;
   private lastMove = Date.now();
   private isDragging = false;
-  private showSubs = true;
+  private showSubs = false;
 
   constructor(
     private torrentService: TorrentService,
@@ -57,6 +57,8 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     console.log(this.show);
     console.log(this.episode);
     console.log(this.file_path);
+
+    // Set this episode as last_seen
 
     this.fs.readdir(this.file_path, (err, files) => {
       if (files) {
@@ -174,41 +176,46 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   addSubs(file_path) {
-    const that = this;
-    const track = document.createElement('track');
-    track.kind = 'captions';
-    track.label = 'English';
-    track.srclang = 'en';
-    that.fs.createReadStream(file_path)
-    .pipe(that.srt2vtt())
-    .pipe(that.fs.createWriteStream(file_path.substring(0, file_path.length - 3) + 'vtt'));
-    setTimeout(function() {
-      track.src = file_path.substring(0, file_path.length - 3) + 'vtt';
-      that.player.appendChild(track);
-      that.player.textTracks[0].mode = 'showing';
-
+    if (this.fs.existsSync(file_path)) { 
+      const that = this;
+      const track = document.createElement('track');
+      track.kind = 'captions';
+      track.label = 'English';
+      track.srclang = 'en';
+      that.fs.createReadStream(file_path)
+      .pipe(that.srt2vtt())
+      .pipe(that.fs.createWriteStream(file_path.substring(0, file_path.length - 3) + 'vtt'));
       setTimeout(function() {
-        let cues = that.player.textTracks[0].cues;
-        console.log('cues', cues);
+        track.src = file_path.substring(0, file_path.length - 3) + 'vtt';
+        that.player.appendChild(track);
+        that.player.textTracks[0].mode = 'showing';
+
+        setTimeout(function() {
+          let cues = that.player.textTracks[0].cues;
+        // console.log('cues', cues);
         Object.keys(cues).forEach(key => {
-          console.log(cues[key]);
+          // console.log(cues[key]);
           cues[key].line = 15;
         });
+        that.showSubs = true;
 
       }, 1000);
 
-    }, 1000);
+      }, 1000);
+    }
   }
 
   toggleSubs() {
-    let mode = this.player.textTracks[0].mode;
-    console.log('toggleSubs', mode);
-    if (mode === 'hidden') {
-      this.player.textTracks[0].mode = 'showing';
-      this.showSubs = true;
-    } else {
-      this.player.textTracks[0].mode = 'hidden';
-      this.showSubs = false;
+    if (this.player.textTracks[0]) { 
+      let mode = this.player.textTracks[0].mode;
+      console.log('toggleSubs', mode);
+      if (mode === 'hidden') {
+        this.player.textTracks[0].mode = 'showing';
+        this.showSubs = true;
+      } else {
+        this.player.textTracks[0].mode = 'hidden';
+        this.showSubs = false;
+      }
     }
   }
 

@@ -20,11 +20,12 @@ i {
   background-color: rgba(20, 20, 20, .7);
   transition: all .4s ease-in;
   padding: calc(1rem + 1vw);
+  z-index: 10000000000;
   .show {
     font-size: calc(1.5rem + 3vw);
     line-height: calc(1.5rem + 3vw);
     font-weight: bold;
-    padding-left: calc(1rem + 1vw);
+    // padding-left: calc(1rem + 1vw);
     text-transform: capitalize;
   }
   .episode_title {
@@ -52,11 +53,11 @@ i {
 #controls {
   position: absolute;
   width: 100%;
-  height: 4rem;
+  height: 5rem;
   opacity: 1;
   background: rgba(20, 20, 20, .7);
   // bottom: 0;
-  top: calc(100vh - 4rem);
+  top: calc(100vh - 5rem);
   z-index: 10000000000;
   transition: all .4s ease-in;
 }
@@ -150,4 +151,8 @@ video::cue {
   background-color: rgba(20, 20, 20, .7);
   font-size: calc(1.5rem + 2vw);
   border-radius: 1rem;
+}
+
+.back_icon {
+  color: #26a69a;
 }
