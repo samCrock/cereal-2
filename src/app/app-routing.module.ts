@@ -1,4 +1,4 @@
-import { HomeComponent, ShowComponent, PlayerComponent, TorrentsComponent, SearchComponent } from './components/index';
+import { HomeComponent, LibraryComponent, ShowComponent, PlayerComponent, TorrentsComponent, SearchComponent } from './components/index';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -6,6 +6,10 @@ const routes: Routes = [
 {
     path: '',
     component: HomeComponent
+},
+{
+    path: 'library',
+    component: LibraryComponent
 },
 {
     path: 'show/:title',

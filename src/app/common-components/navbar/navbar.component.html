@@ -3,6 +3,9 @@
 		<i [ngClass]="isActive('home') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="">home</i>
 	</div>
 	<div>
+		<i [ngClass]="isActive('library') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="library">video_library</i>
+	</div>
+	<div>
 		<i [ngClass]="isActive('torrents') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="torrents" style="padding-top: 6px;">file_download</i>
 	</div>
 	<div>
@@ -11,4 +14,27 @@
 	<div *ngIf="current_show">
 		<a [ngClass]="isActive('show') ? 'waves-effect waves-light btn active' : 'waves-effect waves-light btn'" [routerLink]="['show', current_show.dashed_title]">{{ current_show.title }}</a>
 	</div>
+	<div [ngClass]="settingsOpen ? 'options rotate' : 'options'">
+		<i [ngClass]="isActive('settings') ? 'material-icons dropdown-trigger hoverable circle active' : 'material-icons dropdown-trigger hoverable circle'" data-target='settings_dropdown' (click)="settingsOpen = !settingsOpen" style="padding-top: 6px;">settings</i>
+	</div>
 </div>
+<ul id='settings_dropdown' [ngClass]="settingsOpen ? 'open' : ''">
+	<li>
+		<a fxLayout="row" fxLayoutAlign="center center" (click)="refresh()">
+			<i fxFlex="30px" class="material-icons">refresh</i>
+			<span fxFlex="grow">Refresh</span>
+		</a>
+	</li>
+	<li>
+		<a fxLayout="row" fxLayoutAlign="center center">
+			<i fxFlex="30px" class="material-icons">folder_open</i>
+			<span fxFlex="grow">Set download folder</span>
+		</a>
+	</li>
+<!-- 	<li>
+		<a fxLayout="row" fxLayoutAlign="center center">
+			<i fxFlex="30px" class="material-icons">delete_outline</i>
+			<span fxFlex="grow">Dump db</span>
+		</a>
+	</li> -->
+</ul>

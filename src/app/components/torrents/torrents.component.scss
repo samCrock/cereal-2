@@ -1,0 +1,10 @@
+.container {
+	span {
+		position: absolute;
+		width: 100%;
+		top: calc(50% - calc(1.5rem + 1.5vw));
+		font-size: calc(1.5rem + 1.5vw);
+		text-align: center;
+		opacity: .6;
+	}
+}

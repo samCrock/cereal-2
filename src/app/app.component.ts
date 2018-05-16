@@ -12,6 +12,7 @@ import { EventEmitter } from '@angular/core';
 import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 import * as magnet from 'magnet-uri';
 import { Router, NavigationEnd } from '@angular/router';
+import * as Materialize from 'materialize-css';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private torrentService: TorrentService,
     private dbService: DbService,
     private router: Router
-  ) {
+    ) {
     window['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
     translate.setDefaultLang('en');
     this.alive = true;
@@ -43,11 +44,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     IntervalObservable.create(1000)
-      .takeWhile(() => this.alive)
-      .subscribe(() => {
+    .takeWhile(() => this.alive)
+    .subscribe(() => {
 
-        const torrents = this.dbService.getPendingTorrents()
-          .subscribe(_torrents => {
+      const torrents = this.dbService.getPendingTorrents()
+      .subscribe(_torrents => {
             // if (torrents.length > 0) { console.log('Pending torrents', torrents); }
             _torrents.forEach(torrent => {
               // console.log('Pending torrent', torrent);
@@ -55,18 +56,25 @@ export class AppComponent implements OnInit, OnDestroy {
               if (_torrent && _torrent.progress === 1) {
                 console.log('Setting torrent to ready', _torrent);
                 this.dbService.readyTorrent(_torrent.infoHash)
-                  .subscribe(ep => {
-                    console.log('Setting episode to ready', ep);
-                    this.dbService.readyEpisode(ep)
-                      .subscribe(show => {
-                        console.log('Episode set to ready!');
-                      });
+                .subscribe(ep => {
+                  console.log('Setting episode to ready', ep);
+                  this.dbService.readyEpisode(ep)
+                  .subscribe(show => {
+                    Materialize.toast({
+                      html: show['title'] + ' ' + ep['episode_label'] + ' is ready',
+                      displayLength: 2000,
+                      inDuration: 600,
+                      outDuration: 400,
+                      classes: ''
+                    });
+                    console.log('Episode set to ready!');
                   });
+                });
               }
               this.torrentService.addTorrent(torrent);
             });
           });
-      });
+    });
   }
 
 }

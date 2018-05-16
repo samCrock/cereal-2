@@ -33,7 +33,7 @@ export class ShowComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private electronService: ElectronService,
     private sanitizer: DomSanitizer
-  ) {
+    ) {
     this.alive = true;
   }
 
@@ -42,23 +42,23 @@ export class ShowComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.title = params['title'];
       this.dbService.getShow(this.title)
+      .subscribe(show => {
+        this.show = show;
+        this.navbarService.setShow(show);
+        console.log('show from db', show);
+        this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
+        this.retrieveSeason();
+      }, () => {
+        this.scrapingService.retrieveShow(this.title)
         .subscribe(show => {
           this.show = show;
           this.navbarService.setShow(show);
-          console.log('show from db', show);
-          this.current_season = this.show['seasons'];
+          console.log('show from remote', show);
+          this.dbService.addShow(this.show);
+          this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
           this.retrieveSeason();
-        }, () => {
-          this.scrapingService.retrieveShow(this.title)
-            .subscribe(show => {
-              this.show = show;
-              this.navbarService.setShow(show);
-              console.log('show from remote', show);
-              this.dbService.addShow(this.show);
-              this.current_season = this.show['seasons'];
-              this.retrieveSeason();
-            });
         });
+      });
     });
   }
 
@@ -69,15 +69,15 @@ export class ShowComponent implements OnInit, OnDestroy {
       return this.episodes = this.show['Seasons'][this.current_season];
     }
     this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.current_season)
-      .subscribe(episodes => {
-        console.log('Season', this.current_season, episodes);
-        this.episodes = episodes;
-        this.dbService.addSeason(this.show['dashed_title'], this.current_season, episodes)
-          .subscribe(show => {
-            console.log('Season', this.current_season, 'saved');
-            this.show = show;
-          });
+    .subscribe(episodes => {
+      console.log('Season', this.current_season, episodes);
+      this.episodes = episodes;
+      this.dbService.addSeason(this.show['dashed_title'], this.current_season, episodes)
+      .subscribe(show => {
+        console.log('Season', this.current_season, 'saved');
+        this.show = show;
       });
+    });
   }
 
   play_trailer() {

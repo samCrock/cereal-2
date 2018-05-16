@@ -18,12 +18,19 @@ export class TorrentsComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.dbService.getTorrents()
+		this.setup();
+	}
+
+	setup() {
+		this.dbService.getPendingTorrents()
 		.subscribe(torrents => {
 			console.log(torrents);
 			this.torrents = torrents;
 		});
+	}
 
+	episodeDeleted() {
+		this.setup();
 	}
 
 

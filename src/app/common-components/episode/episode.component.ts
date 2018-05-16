@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, Output, OnChanges, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { DbService, SubsService, ScrapingService, TorrentService } from '../../services';
 import * as moment from 'moment';
@@ -17,6 +17,8 @@ export class EpisodeComponent implements OnChanges {
 
   @Input() show: Object;
   @Input() episode: Object;
+  @Output() emit = new EventEmitter<any>();
+
 
   private path = this.electronService.remote.getGlobal('path');
   private shell = this.electronService.remote.getGlobal('shell');
@@ -180,6 +182,8 @@ export class EpisodeComponent implements OnChanges {
     episode['dashed_title'] = this.show['dashed_title'];
     episode['episode_label'] = episode['label'];
     console.log('deleteTorrent', episode);
+
+    this.emit.emit(episode);
 
     // delete from torrent client
     this.torrentService.removeTorrent(episode.infoHash);

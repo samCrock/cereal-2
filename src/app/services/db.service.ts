@@ -101,6 +101,26 @@ export class DbService {
 		});
 	}
 
+	getLibrary(): Observable<any> {
+		return new Observable(observer => {
+			this.openDb().subscribe(db => {
+				db = event.target['result'];
+				let objectStore = db['transaction'](['shows']).objectStore('shows');
+				let request = objectStore.getAll();
+				request.onerror = function(event) {
+					return observer.error();
+				};
+				request.onsuccess = function(event) {
+					if (request.result) { 
+						return observer.next(request.result); 
+					} else { 
+						return observer.error(); 
+					}	
+				};
+			});
+		});	
+	}
+
 	addSeason(dashed_title, s_number, season) {
 		return new Observable(observer => {
 			this.openDb().subscribe(db => {
@@ -150,6 +170,8 @@ export class DbService {
 					request.result['Seasons'][Number(season)][Number(episode) - 1].infoHash = episode_torrent['infoHash'];
 					request.result['Seasons'][Number(season)][Number(episode) - 1].dn = episode_torrent['dn'];
 					request.result['Seasons'][Number(season)][Number(episode) - 1].date = episode_torrent['date'];
+					request.result['updated'] = new Date;
+					request.result['watching_season'] = Number(season);
 
 					let requestUpdate = objectStore.put(request.result);
 					requestUpdate.onerror = function(event) {};
@@ -234,8 +256,10 @@ export class DbService {
 					pending = [];					
 					if (torrents && torrents.length > 0) {
 						torrents.forEach(t => {
-							if (t['status'] === 'pending') { pending.push(t) }
-					});
+							if (t['status'] === 'pending') { 
+								pending.push(t);
+							}
+						});
 					}
 					if (request.result) { return observer.next(pending); } 
 					else { return observer.error(); }	

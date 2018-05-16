@@ -19,18 +19,20 @@ export class ScrapingService {
 			return this.http.get<any[]>('https://trakt.tv/shows/' + _show, { responseType: 'text' as 'json'})
 			.subscribe(response => {
 				const $ = cheerio.load(response),
-				dashed_title = _show,
+				dashed_title = _show;
 				// poster = $('.sidebar')['0'].children[0].children[1].attribs['data-original'],
-				title = $('#summary-ratings-wrapper')['0'].next.children[0].children[0].children[1].children[0].children[0].data.trim(),
-				seasons = $('.season-count')[1].attribs['data-all-count'],
+				let title = $('#summary-ratings-wrapper')['0'].next.children[0].children[0].children[1].children[0].children[0].data;
+				if (title) { title = title.trim(); } else { title = ''; }
+				const seasons = $('.season-count')[1] ? $('.season-count')[1].attribs['data-all-count'] : 0,
 				genres = $('#overview')['0'].children[2].children[0].children[0].children[6] ? $('#overview')['0'].children[2].children[0].children[0].children[6].children : [],
-				premiered = $('#overview')['0'].children[2].children[0].children[0].children[1].children[2] ? $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs.content : '',
-				overview = $('#overview')[1].children[0].children[0].data,
+				premiered = $('#overview')['0'] && $('#overview')['0'].children[2].children[0].children[1].children[2] && $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs ?
+				$('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs.content : '',
+				overview = $('#overview')[1].children[0]  ? $('#overview')[1].children[0].children[0].data : '',
 				trailer = $('.affiliate-links')['0'].children[0] ? $('.affiliate-links')['0'].children[0].children[1].attribs.href : '',
 				// wallpaper = $('#summary-wrapper')['0'].attribs['data-fanart'];
 				poster = this.retrievePoster(_show);
 				let network = $('.additional-stats')['0'].children[0].children[4] ? $('.additional-stats')['0'].children[0].children[4].data : '',
-				runtime = $('#overview')['0'].children[2].children[0].children[0].children[2].children[1].data,
+				runtime =  $('#overview')['0'].children[2].children[0].children[0].children[2] ? $('#overview')['0'].children[2].children[0].children[0].children[2].children[1].data : '',
 				genresArray = [];
 
 				network = network.split(' on ');
@@ -41,7 +43,6 @@ export class ScrapingService {
 				})
 				poster.subscribe(res_poster => {
 					const show = {
-						updated: new Date,
 						title: title,
 						dashed_title: dashed_title,
 						network: network,
@@ -50,7 +51,6 @@ export class ScrapingService {
 						genres: genresArray,
 						overview: overview,
 						trailer: trailer,
-						// wallpaper: wallpaper,
 						poster: res_poster,
 						seasons: seasons,
 						Seasons: {}
@@ -216,23 +216,23 @@ export class ScrapingService {
 		.subscribe(response => {
 			const $ = cheerio.load(response),
 			results = $('.primary_photo');
-			const small_img = results[0].children[1].children[0].attribs.src;
+			if (results[0]) {
+				const small_img = results[0].children[1].children[0].attribs.src;
+				let large_img = small_img.replace('V1_UX32_CR0,0,32,44_AL_', 'V1_UY268_CR1,0,182,268_AL_');
 
-			// console.log(dashed_title, small_img);
-
-			let large_img = small_img.replace('V1_UX32_CR0,0,32,44_AL_', 'V1_UY268_CR1,0,182,268_AL_');
-
-			if (small_img.indexOf('V1_UX32_CR0,0,32,44_AL_') < 0) {
-				large_img = small_img.replace('V1_UY44_CR0,0,32,44_AL_', 'V1_UY182_CR0,0,182,268_AL_');
-				if (small_img.indexOf('V1_UY44_CR1,0,32,44_AL_') > -1) {
-					large_img = small_img.replace('V1_UY44_CR1,0,32,44_AL_', 'V1_UY268_CR12,0,182,268_AL_');
+				if (small_img.indexOf('V1_UX32_CR0,0,32,44_AL_') < 0) {
+					large_img = small_img.replace('V1_UY44_CR0,0,32,44_AL_', 'V1_UY182_CR0,0,182,268_AL_');
+					if (small_img.indexOf('V1_UY44_CR1,0,32,44_AL_') > -1) {
+						large_img = small_img.replace('V1_UY44_CR1,0,32,44_AL_', 'V1_UY268_CR12,0,182,268_AL_');
+					}
+					if (small_img.indexOf('V1_UY44_CR13,0,32,44_AL_') > -1) {
+						large_img = small_img.replace('V1_UY44_CR13,0,32,44_AL_', 'V1_UY268_CR87,0,182,268_AL_');
+					}
 				}
-				if (small_img.indexOf('V1_UY44_CR13,0,32,44_AL_') > -1) {
-					large_img = small_img.replace('V1_UY44_CR13,0,32,44_AL_', 'V1_UY268_CR87,0,182,268_AL_');
-				}
+				return observer.next(large_img);
+			} else {
+				return observer.next('');
 			}
-
-			return observer.next(large_img);
 		});
 	}
 
@@ -321,8 +321,11 @@ export class ScrapingService {
 			return this.http.get<any[]>('https://trakt.tv/search/shows?query=' + show_string, { responseType: 'text' as 'json' })
 			.subscribe(response => {
 				const $ = cheerio.load(response);
+				let hasResults = false;
 				$('.grid-item')
 				.filter((i, result) => {
+					console.log('has results');
+					hasResults = true;
 					if (i < 6) {
 						let dashed_title = result.children[1]['attribs']['href'];
 						if (dashed_title) {
@@ -332,6 +335,12 @@ export class ScrapingService {
 						}
 					}
 				});
+
+				setTimeout(function() {
+					if (!hasResults) {
+						return observer.next();						
+					}
+				}, 2000);
 			});
 		});
 	}

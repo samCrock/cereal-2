@@ -13,6 +13,9 @@ import { AppRoutingModule } from './app-routing.module';
 // Material
 import { MatButtonModule, MatCheckboxModule, MatIconModule } from '@angular/material';
 
+// import 'materialize-css';
+// import { MaterializeModule } from 'angular2-materialize';
+
 import { NgxElectronModule } from 'ngx-electron';
 
 // NG Translate
@@ -25,7 +28,7 @@ import { ElectronService } from './providers/electron.service';
 import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
-import { HomeComponent, ShowComponent, PlayerComponent, SearchComponent } from './components/index';
+import { HomeComponent, ShowComponent, PlayerComponent, SearchComponent, LibraryComponent } from './components/index';
 
 // Services
 import { ScrapingService, TorrentService, DbService, SubsService, NavbarService } from './services/index';
@@ -55,12 +58,14 @@ export function HttpLoaderFactory(http: HttpClient) {
     SearchComponent,
     WebviewDirective,
     TorrentsComponent,
-    SearchComponent
+    SearchComponent,
+    LibraryComponent
   ],
   imports: [
     BrowserModule,
     NgxElectronModule,
     materialDependencies,
+    // MaterializeModule,
     FlexLayoutModule,
     HttpClientJsonpModule,
     FormsModule,

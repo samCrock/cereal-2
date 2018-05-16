@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { NavbarService } from '../../services';
+import { NavbarService, DbService } from '../../services';
 import * as moment from 'moment';
 import { ElectronService } from 'ngx-electron';
 import * as magnet from 'magnet-uri';
@@ -20,10 +20,12 @@ export class NavbarComponent implements OnInit {
   private subscription: Subscription;
   private enabled = true;
   private currentRoute = '';
+  private settingsOpen = false;
 
   constructor(
     private navbarService: NavbarService,
-    private router: Router
+    private router: Router,
+    private dbService: DbService
     ) {
   }
 
@@ -46,10 +48,17 @@ export class NavbarComponent implements OnInit {
 
   isActive(route_name) {
     if (route_name === 'home' && this.currentRoute === '/') { return true; }
+    if (route_name === 'library' && this.currentRoute === '/library') { return true; }
     if (route_name === 'torrents' && this.currentRoute.indexOf('/torrents') > -1) { return true; }
     if (route_name === 'show' && this.currentRoute.indexOf('/show/') > -1) { return true; }
     if (route_name === 'search' && this.currentRoute.indexOf('/search') > -1) { return true; }
+    if (route_name === 'settings' && this.settingsOpen) { return true; }
     return false;
   }
+
+  refresh() {
+    window.location.reload();
+  }
+
 
 }

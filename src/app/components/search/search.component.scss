@@ -5,12 +5,31 @@
 		color: white;
 		font-size: calc(2rem + 3vw);
 		height: calc(2rem + 5vw);
+		width: auto;
 		padding: calc(.5rem + 1vw);
 		text-transform: capitalize;
+		margin-bottom: 0;
 	}
 }
 
 #results_container {
 	margin: auto;
 	padding-top: 2rem;
+}
+
+#progress {
+	position: relative;
+	top: -1px;
+	height: 4px;
+	width: 0%;
+	background-color: #26a69a;
+}
+
+#noResults {
+	position: absolute;
+	top: calc(50% - calc(1.5rem + 1.5vw));
+	left: calc(50% - calc(1.5rem + 1.5vw));
+	font-size: calc(1.5rem + 1.5vw);
+	text-align: center;
+	opacity: .6;
 }

@@ -18,7 +18,7 @@ export class ShowPreviewComponent implements OnInit {
 	constructor(private sanitizer: DomSanitizer) { }
 
 	ngOnInit() {
-		console.log('ShowPreviewComponent', this.show);
+		// console.log('ShowPreviewComponent', this.show);
 	}
 
 	play_trailer() {

@@ -27,61 +27,10 @@
 	padding: 0 !important;
 }
 
-$poster_w: 18vw;
-$expanded_poster_w: 25vw;
-
-.card {
-	// 182 x 268
-	cursor: pointer;
-	margin: 1vw;
-	background-color: transparent;
-	width: calc(18vw + 7px);
-	height: calc(18vw * 1.47);
-	background-size: calc(18vw + 14px) calc(18vw * 1.47);
-	border-radius: 4px;
-	background-repeat: no-repeat;
-	background-position-x: -4px;
-	img {
-		border-radius: 4px;
-	}
-}
-
 
 h5 {
 	margin-top: 2rem;
 	margin-bottom: 0;
-}
-
-#expanded_card {
-	display: none;
-	z-index: 1;
-	width: $poster_w;
-	height: calc(#{$poster_w} * 1.47);
-	background-color: transparent;
-	position: absolute;
-	background-size: calc(25vw + 14px) calc(25vw * 1.47);
-	border-radius: 4px;
-	background-repeat: no-repeat;
-	background-position-x: -4px;
-	border-radius: 4px;
-	// box-shadow: 0 0 3rem .5rem rgba(0, 0, 0, 0.4);
-	// transition: background-image 0s, box-shadow .6s, height .6s, width .6s, left 0s, top 0s ease-in-out;
-}
-
-.expanded_overlay {
-	width: inherit;
-	height: inherit;
-	background-color: rgba(55, 71, 79, .8);
-	cursor: pointer;
-}
-
-.card-title {
-	line-height: calc(2rem + 1vw);
-	padding-top: 1rem !important;
-}
-
-.card-episode {
-	padding-top: 1rem !important;
 }
 
 .date_widget {

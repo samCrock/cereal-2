@@ -27,6 +27,7 @@ label {
 	border-style: solid;
 	border-width: 1px;
 	font-size: calc(.6rem + 1vw);
+	line-height: calc(.6rem + 1vw);
 }
 
 .material-icons {
@@ -35,7 +36,7 @@ label {
 }
 
 .download_btn {
-	font-size: calc(1rem + 1vw);
+	font-size: calc(1rem + 1.5vw);
 }
 
 .download_btn:active {
@@ -118,8 +119,11 @@ label {
 #no_results {
 	width: 100%;
 	text-align: center;
-	font-size: calc(1rem + 1vw);
 	opacity: 0;
 	z-index: 0;
 	transition: all 0.4s ease-in;
+	span {
+		font-size: calc(1rem + 1vw);
+		line-height: calc(7rem + 1vw);
+	}
 }
