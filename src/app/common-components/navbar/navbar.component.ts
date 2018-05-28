@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { NavbarService, DbService } from '../../services';
 import * as moment from 'moment';
-import { ElectronService } from 'ngx-electron';
 import * as magnet from 'magnet-uri';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
@@ -21,6 +20,7 @@ export class NavbarComponent implements OnInit {
   private enabled = true;
   private currentRoute = '';
   private settingsOpen = false;
+
 
   constructor(
     private navbarService: NavbarService,
@@ -58,6 +58,15 @@ export class NavbarComponent implements OnInit {
 
   refresh() {
     window.location.reload();
+  }
+
+  chooseFolder() {
+    const folder_input = document.getElementById('folder_input')
+    folder_input.addEventListener('change', e => {
+      e.preventDefault();
+      console.log(e.target['value']);
+    });
+    folder_input.click();
   }
 
 

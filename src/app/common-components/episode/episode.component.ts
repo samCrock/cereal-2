@@ -22,6 +22,7 @@ export class EpisodeComponent implements OnChanges {
 
   private path = this.electronService.remote.getGlobal('path');
   private shell = this.electronService.remote.getGlobal('shell');
+  private app = this.electronService.remote.getGlobal('app');
   private expanded = false;
   private ep_torrents = [];
   private selectedTorrent;
@@ -136,7 +137,7 @@ export class EpisodeComponent implements OnChanges {
         const s = episode['label'].substring(1, 3),
           e = episode['label'].substring(4, 6),
           fresh_ep = this.show['Seasons'][Number(s)][Number(e) - 1],
-          path = 'c:\\Users\\sam\\Downloads\\cereal\\' + this.show['title'] + '\\' + fresh_ep['label'] + '\\' + fresh_ep['dn'];
+          path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], fresh_ep['label'], fresh_ep['dn']);
 
           localStorage.setItem('play', JSON.stringify({
             show: this.show,

@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as magnet from 'magnet-uri';
 import { ElectronService } from 'ngx-electron';
 import { DomSanitizer } from '@angular/platform-browser';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-show',
@@ -44,6 +45,7 @@ export class ShowComponent implements OnInit, OnDestroy {
       this.dbService.getShow(this.title)
       .subscribe(show => {
         this.show = show;
+        console.log('show', show);
         this.navbarService.setShow(show);
         console.log('show from db', show);
         this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];

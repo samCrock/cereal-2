@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { ScrapingService } from '../../services';
 import * as moment from 'moment';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 
 @Component({
@@ -46,11 +46,11 @@ export class HomeComponent implements OnInit {
   }
 
 
-  retrievePoster(poster: string) {
-    return Observable.create(observer => {
-      return observer.next(poster);
-    });
-  }
+  // retrievePoster(poster: string) {
+  //   return Observable.create(observer => {
+  //     return observer.next(poster);
+  //   });
+  // }
 
 
 

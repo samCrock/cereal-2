@@ -1,13 +1,14 @@
-import { app, BrowserWindow, screen, session, remote, ipcMain } from 'electron';
+import { app, BrowserWindow, screen, session, remote, ipcMain, protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
 import * as webtorrent from 'webtorrent';
 const os = require('os');
 const { shell } = require('electron');
-const fs = require('fs');
+const fs = require('fs-extra');
 const srt2vtt = require('srt-to-vtt');
 const zip = require('decompress-zip');
+const { exec } = require('child_process');
 
 global['wt_client'] = new webtorrent();
 global['local_path'] = os.homedir();
@@ -16,8 +17,10 @@ global['fs'] = fs;
 global['srt2vtt'] = srt2vtt;
 global['zip'] = zip;
 global['path'] = path;
+global['exec'] = exec;
+global['app'] = app;
 
-console.log('Local path:', os.homedir());
+console.log('Local path:', os.homedir(), __dirname);
 
 let win, serve;
 const args = process.argv.slice(1);
@@ -33,7 +36,6 @@ function createWindow() {
 
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
-
 
   // Create the browser window.
   win = new BrowserWindow({
