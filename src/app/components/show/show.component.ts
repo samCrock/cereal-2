@@ -42,15 +42,15 @@ export class ShowComponent implements OnInit, OnDestroy {
     window.scrollTo(0, 0);
     this.route.params.subscribe(params => {
       this.title = params['title'];
-      this.dbService.getShow(this.title)
-      .subscribe(show => {
-        this.show = show;
-        console.log('show', show);
-        this.navbarService.setShow(show);
-        console.log('show from db', show);
-        this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
-        this.retrieveSeason();
-      }, () => {
+      // this.dbService.getShow(this.title)
+      // .subscribe(show => {
+      //   this.show = show;
+      //   console.log('show', show);
+      //   this.navbarService.setShow(show);
+      //   console.log('show from db', show);
+      //   this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
+      //   this.retrieveSeason();
+      // }, () => {
         this.scrapingService.retrieveShow(this.title)
         .subscribe(show => {
           this.show = show;
@@ -59,7 +59,7 @@ export class ShowComponent implements OnInit, OnDestroy {
           this.dbService.addShow(this.show);
           this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
           this.retrieveSeason();
-        });
+        // });
       });
     });
   }
