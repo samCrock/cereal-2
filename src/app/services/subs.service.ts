@@ -83,13 +83,19 @@ export class SubsService {
                   });
 
                   this.fs.appendFileSync(_path + 'subs.zip', new Buffer(__response), err => {
-                    if (err) { console.log('Error creating zip file', err); }
+                    if (err) {
+                      console.log('Error creating zip file', err);
+                    }
                   });
 
-                  const unzipper = new this.zip(this.path.join(_path + 'subs.zip'));
+                  const zip_path = this.path.join(_path + 'subs.zip');
+                  const unzipper = new this.zip(zip_path);
 
                   unzipper.on('extract', function(log) {
                     console.log('Finished extracting', log);
+                    that.fs.remove(zip_path, err => {
+                      if (err) { console.log('Deleting zip:', zip_path, err); }
+                    });
                   });
 
                   unzipper.on('error', function(err) {
