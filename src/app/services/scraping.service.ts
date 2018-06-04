@@ -311,28 +311,56 @@ export class ScrapingService {
   }
 
 
+  // retrieveEpisode(show: string, episode: string, custom?: number) {
+  //   show = show.replace(/'/g, ' ');
+  //   const url = encodeURI('https://idope.se/torrent-list/' + show + ' ' + episode);
+  //   console.log('Downloading episode', show, episode);
+  //   // console.log('url', url);
+  //   return Observable.create(observer => {
+  //     return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+  //       .subscribe(response => {
+  //         const $ = cheerio.load(response);
+  //         const _custom = custom ? custom : 1;
+  //         if ($('.resultdiv')[_custom]) {
+  //           const magnet = 'magnet:?xt=urn:btih:' +
+  //             $('.resultdiv')[_custom].children[3].children[11].children[0].data + '&dn=' +
+  //             $('.resultdiv')[_custom].children[3].children[13].children[0].data +
+  //             $('#hidetrack')[0].attribs.value;
+
+  //           return observer.next({
+  //             name: $('.resultdiv')[_custom].children[1].children[5].children[0].children[0].data.trim(),
+  //             seeds: $('.resultdiv')[_custom].children[3].children[7].children[3].children[0].data,
+  //             magnet: magnet
+  //           });
+  //         } else {
+  //           return observer.next();
+  //         }
+  //       });
+  //   });
+  // }
   retrieveEpisode(show: string, episode: string, custom?: number) {
     show = show.replace(/'/g, ' ');
-    const url = encodeURI('https://idope.se/torrent-list/' + show + ' ' + episode);
+    const url = encodeURI('https://indiaproxy.in/s/?q=' + show + ' ' + episode);
     console.log('Downloading episode', show, episode);
     // console.log('url', url);
     return Observable.create(observer => {
-      return this.http.get < any[] > (url, { responseType: 'text' as 'json' })
+      return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
           const _custom = custom ? custom : 1;
-          if ($('.resultdiv')[_custom]) {
-            const magnet = 'magnet:?xt=urn:btih:' +
-              $('.resultdiv')[_custom].children[3].children[11].children[0].data + '&dn=' +
-              $('.resultdiv')[_custom].children[3].children[13].children[0].data +
-              $('#hidetrack')[0].attribs.value;
-
-            // console.log($('.resultdiv')[1]);
-
-            return observer.next({
-              name: $('.resultdiv')[_custom].children[1].children[5].children[0].children[0].data.trim(),
-              seeds: $('.resultdiv')[_custom].children[3].children[7].children[3].children[0].data,
-              magnet: magnet
+          if ($('tr')[_custom]) {
+            const nested_url = $('tr')[_custom].children[2].children[3].attribs.href;
+            const name = $('tr')[_custom].children[2].children[1].children[1].children[0].data;
+            const seeds = $('tr')[_custom].children[4].children[0].data;
+            return this.http.get<any[]>('https://proxytpb.pw' + nested_url, { responseType: 'text' as 'json' })
+            .subscribe(nested_response => {
+              const _$ = cheerio.load(nested_response);
+              const magnet = _$('.download')[0].children[1].attribs.href;
+              return observer.next({
+                name: name.trim(),
+                seeds: seeds,
+                magnet: magnet
+              });
             });
           } else {
             return observer.next();
@@ -341,29 +369,71 @@ export class ScrapingService {
     });
   }
 
+
+
+  // retrieveTorrentsList(show: string, episode: string) {
+  //   show = show.replace(/'/g, ' ');
+  //   const url = encodeURI('https://idope.se/torrent-list/' + show + ' ' + episode);
+
+  //   // console.log('url', url);
+  //   return Observable.create(observer => {
+  //     return this.http.get < any[] > (url, { responseType: 'text' as 'json' })
+  //       .subscribe(response => {
+  //         const $ = cheerio.load(response);
+
+  //         for (let i = 1; i < 4; i++) {
+  //           // console.log($('.resultdiv')[i]);
+  //           if ($('.resultdiv')[i]) {
+  //             const magnet = 'magnet:?xt=urn:btih:' +
+  //               $('.resultdiv')[i].children[3].children[11].children[0].data + '&dn=' +
+  //               $('.resultdiv')[i].children[3].children[13].children[0].data +
+  //               $('#hidetrack')[0].attribs.value;
+
+  //             observer.next({
+  //               name: $('.resultdiv')[i].children[1].children[5].children[0].children[0].data.trim(),
+  //               seeds: $('.resultdiv')[i].children[3].children[7].children[3].children[0].data,
+  //               size: $('.resultdiv')[i].children[3].children[5].children[3].children[0].data,
+  //               magnet: magnet
+  //             });
+  //           } else {
+  //             return observer.next();
+  //           }
+  //         }
+
+  //       });
+  //   });
+  // }
   retrieveTorrentsList(show: string, episode: string) {
     show = show.replace(/'/g, ' ');
-    const url = encodeURI('https://idope.se/torrent-list/' + show + ' ' + episode);
-
+    const url = encodeURI('https://indiaproxy.in/s/?q=' + show + ' ' + episode);
+    console.log('Retrieving episode', show, episode);
     // console.log('url', url);
     return Observable.create(observer => {
-      return this.http.get < any[] > (url, { responseType: 'text' as 'json' })
+      return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
-
-          for (let i = 1; i < 4; i++) {
-            // console.log($('.resultdiv')[i]);
-            if ($('.resultdiv')[i]) {
-              const magnet = 'magnet:?xt=urn:btih:' +
-                $('.resultdiv')[i].children[3].children[11].children[0].data + '&dn=' +
-                $('.resultdiv')[i].children[3].children[13].children[0].data +
-                $('#hidetrack')[0].attribs.value;
-
-              observer.next({
-                name: $('.resultdiv')[i].children[1].children[5].children[0].children[0].data.trim(),
-                seeds: $('.resultdiv')[i].children[3].children[7].children[3].children[0].data,
-                size: $('.resultdiv')[i].children[3].children[5].children[3].children[0].data,
-                magnet: magnet
+          for(let i = 1; i < 4; i++) {
+            if ($('tr')[i]) {
+              const nested_url = $('tr')[i].children[2].children[3].attribs.href;
+              const name = $('tr')[i].children[2].children[1].children[1].children[0].data;
+              const seeds = $('tr')[i].children[4].children[0].data;
+              let size = $('tr')[i].children[2].children[7].children[0].data;
+              size = size.substring(
+                  size.lastIndexOf('Size ') + 5,
+                  size.lastIndexOf('iB')
+              );
+              size += 'b';
+              const sub = this.http.get<any[]>('https://proxytpb.pw' + nested_url, { responseType: 'text' as 'json' })
+              .subscribe(nested_response => {
+                const _$ = cheerio.load(nested_response);
+                const magnet = _$('.download')[0].children[1].attribs.href;
+                // sub.unsubscribe();
+                return observer.next({
+                  name: name.trim(),
+                  seeds: seeds,
+                  size: size,
+                  magnet: magnet
+                });
               });
             } else {
               return observer.next();
