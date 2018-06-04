@@ -23,12 +23,15 @@ export class EpisodeComponent implements OnChanges {
   private path = this.electronService.remote.getGlobal('path');
   private shell = this.electronService.remote.getGlobal('shell');
   private app = this.electronService.remote.getGlobal('app');
+  private fs = this.electronService.remote.getGlobal('fs');
+
   private expanded = false;
   private ep_torrents = [];
   private selectedTorrent;
   private titleAsButton = false;
   private loading = true;
   private hasResults: boolean;
+  private currentTorrentsListSub;
 
   constructor(
     private dbService: DbService,
@@ -107,7 +110,7 @@ export class EpisodeComponent implements OnChanges {
             date: episode['date']
           }).subscribe(() => {
             console.log('Torrent ready for download');
-            this.subsService.downloadSub(result['name'], this.path.join(this.show['title'], episode['label'], result['name'])).subscribe();
+            this.subsService.downloadSub(result['name'], this.path.join(this.show['title'], episode['label'])).subscribe();
           });
           this.dbService.addTorrent({
             dn: result['name'],
@@ -137,15 +140,27 @@ export class EpisodeComponent implements OnChanges {
         const s = episode['label'].substring(1, 3),
           e = episode['label'].substring(4, 6),
           fresh_ep = this.show['Seasons'][Number(s)][Number(e) - 1],
-          path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], fresh_ep['label'], fresh_ep['dn']);
+          path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], fresh_ep['label']
+          // this.fs.readdirSync(this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], fresh_ep['label']))[0]
+        );
+
+        let video_path = path;
+        const that = this;
+        const files = this.fs.readdirSync(path);
+        files.map(file => {
+          const stats = that.fs.statSync(that.path.join(path, file));
+            if (stats.isDirectory()) {
+              video_path = that.path.join(path, file);
+              console.log('video path', video_path);
+            }
+        });
 
           localStorage.setItem('play', JSON.stringify({
             show: this.show,
             episode: episode,
-            file_path: path
+            file_path: video_path
           }));
           this.router.navigate(['play']);
-        // this.shell.openItem(path);
       });
   }
 
@@ -159,15 +174,18 @@ export class EpisodeComponent implements OnChanges {
   }
 
   retrieveTorrentsList(episode): Observable<any> {
-    return this.scrapingService.retrieveTorrentsList(this.show['dashed_title'], episode.label)
+    if (this.currentTorrentsListSub) { this.currentTorrentsListSub.unsubscribe(); }
+    this.currentTorrentsListSub = this.scrapingService.retrieveTorrentsList(this.show['dashed_title'], episode.label)
       .subscribe(result => {
         if (result) {
           this.hasResults = true;
           this.ep_torrents.push(result);
+          // currentTorrentsListSub.unsubscribe();
         }
       }, notFound => {
         this.hasResults = false;
       });
+      return this.currentTorrentsListSub;
   }
 
   onTorrentChange(t) {
