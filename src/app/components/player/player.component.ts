@@ -54,15 +54,17 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     this.episode = play.episode;
     this.file_path = play.file_path;
 
-    console.log(this.show);
-    console.log(this.episode);
-    console.log(this.file_path);
+    // console.log(this.show);
+    // console.log(this.episode);
+    console.log('file_path', this.file_path);
 
-    // Set this episode as last_seen
+    // Set this episode as last_seen ..
+
 
     this.fs.readdir(this.file_path, (err, files) => {
       if (files) {
         files.forEach(file => {
+          console.log('file', file);
           const ext = file.substring(file.length - 3, file.length);
           if (ext === 'mkv' || ext === 'mp4') {
             console.log('File extension:', ext);
@@ -76,6 +78,20 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
       }
       this.setup();
     });
+
+    const parent_folder = this.path.resolve(this.file_path, '..');
+    this.fs.readdir(parent_folder, (err, files) => {
+      files.forEach(file => {
+        // console.log('Folder file', file);
+        const ext = file.substring(file.length - 3, file.length);
+        if (ext === 'srt') {
+          const subs_path = this.path.join(parent_folder, file);
+          console.log('Subs:', subs_path);
+          that.addSubs(subs_path);
+        }
+      });
+    });
+
 
     const that = this;
     document.body.onkeyup = function(e) {
@@ -176,7 +192,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   addSubs(file_path) {
-    if (this.fs.existsSync(file_path)) { 
+    if (this.fs.existsSync(file_path)) {
       const that = this;
       const track = document.createElement('track');
       track.kind = 'captions';
@@ -191,7 +207,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
         that.player.textTracks[0].mode = 'showing';
 
         setTimeout(function() {
-          let cues = that.player.textTracks[0].cues;
+          const cues = that.player.textTracks[0].cues;
         // console.log('cues', cues);
         Object.keys(cues).forEach(key => {
           // console.log(cues[key]);
@@ -206,8 +222,8 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   toggleSubs() {
-    if (this.player.textTracks[0]) { 
-      let mode = this.player.textTracks[0].mode;
+    if (this.player.textTracks[0]) {
+      const mode = this.player.textTracks[0].mode;
       console.log('toggleSubs', mode);
       if (mode === 'hidden') {
         this.player.textTracks[0].mode = 'showing';
@@ -228,7 +244,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   dragSetup() {
-    var video = document.getElementsByTagName('video')[0],
+    const video = document.getElementsByTagName('video')[0],
     timeline: HTMLElement = document.getElementById('timeline'),
     timelineProgress = document.getElementsByClassName('timeline__progress')[0],
     drag = document.getElementsByClassName('timeline__drag')[0];
@@ -254,7 +270,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
       });
     }
 
-    let draggable = Draggable.create(drag, {
+    const draggable = Draggable.create(drag, {
       type: 'x',
       trigger: timeline,
       bounds: timeline,
@@ -264,14 +280,14 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
           x: this.pointerX - timeline.getBoundingClientRect().left
         });
         this.update();
-        var progress = this.x / timeline.offsetWidth;
+        const progress = this.x / timeline.offsetWidth;
         TweenMax.set(timelineProgress, {
           scaleX: progress
         });
       },
       onDrag: function() {
         video.currentTime = this.x / this.maxX * video.duration;
-        var progress = this.x / timeline.offsetWidth;
+        const progress = this.x / timeline.offsetWidth;
         TweenMax.set(timelineProgress, {
           scaleX: progress
         });
