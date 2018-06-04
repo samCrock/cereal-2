@@ -14,12 +14,12 @@
 	cursor: pointer;
 	margin: 1vw;
 	background-color: transparent;
-	width: calc(18vw + 7px);
+	width: calc(18vw);
 	height: calc(18vw * 1.47);
-	background-size: calc(18vw + 14px) calc(18vw * 1.47);
+	background-size: calc(18vw) calc(18vw * 1.47);
 	border-radius: 4px;
 	background-repeat: no-repeat;
-	background-position-x: -4px;
+	// background-position-x: -4px;
 	img {
 		border-radius: 4px;
 	}

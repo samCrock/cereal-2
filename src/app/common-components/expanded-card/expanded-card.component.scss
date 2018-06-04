@@ -9,12 +9,12 @@ $expanded_poster_w: 25vw;
 	cursor: pointer;
 	margin: 1vw;
 	background-color: transparent;
-	width: calc(18vw + 6px);
+	width: calc(18vw);
 	height: calc(18vw * 1.47);
-	background-size: calc(18vw + 14px) calc(18vw * 1.47);
+	background-size: calc(18vw) calc(18vw * 1.47);
 	border-radius: 4px;
 	background-repeat: no-repeat;
-	background-position-x: -4px;
+	// background-position-x: -4px;
 	img {
 		border-radius: 4px;
 	}
@@ -27,10 +27,10 @@ $expanded_poster_w: 25vw;
 	height: calc(#{$poster_w} * 1.47);
 	background-color: transparent;
 	position: absolute;
-	background-size: calc(25vw + 14px) calc(25vw * 1.47);
+	background-size: calc(25vw) calc(25vw * 1.47);
 	border-radius: 4px;
 	background-repeat: no-repeat;
-	background-position-x: -4px;
+	// background-position-x: -4px;
 	border-radius: 4px;
 }
 
