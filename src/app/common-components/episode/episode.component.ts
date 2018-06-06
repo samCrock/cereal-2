@@ -29,7 +29,7 @@ export class EpisodeComponent implements OnChanges {
   private ep_torrents = [];
   private selectedTorrent;
   private titleAsButton = false;
-  private loading = true;
+  private loading: boolean;
   private hasResults: boolean;
   private currentTorrentsListSub;
 
@@ -174,15 +174,18 @@ export class EpisodeComponent implements OnChanges {
   }
 
   retrieveTorrentsList(episode): Observable<any> {
+    this.loading = true;
     if (this.currentTorrentsListSub) { this.currentTorrentsListSub.unsubscribe(); }
     this.currentTorrentsListSub = this.scrapingService.retrieveTorrentsList(this.show['dashed_title'], episode.label)
-      .subscribe(result => {
-        if (result) {
-          this.hasResults = true;
-          this.ep_torrents.push(result);
-          // currentTorrentsListSub.unsubscribe();
-        }
-      }, notFound => {
+    .subscribe(result => {
+      if (result) {
+        this.hasResults = true;
+        this.loading = false;
+        this.ep_torrents.push(result);
+        // currentTorrentsListSub.unsubscribe();
+      }
+    }, notFound => {
+        this.loading = false;
         this.hasResults = false;
       });
       return this.currentTorrentsListSub;

@@ -59,7 +59,8 @@
 				<i *ngIf="downloadable(episode.date)" id="delete_btn" class="material-icons download_btn hoverable circle" [ngClass]="expanded ? 'expanded' : ''" (click)="toggleExtra(episode); deleteTorrent(episode);">delete</i>
 			</div>
 
-			<div *ngIf="!hasResults" id="no_results"><span>No results</span></div>
+			<div *ngIf="!hasResults && !loading" class="episode_msg"><span>No results</span></div>
+			<div *ngIf="loading" class="episode_msg"><span>Loading</span></div>
 
 		</div>
 

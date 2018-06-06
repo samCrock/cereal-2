@@ -151,22 +151,37 @@ export class ScrapingService {
                   title = result.children[i].children[1].children[0].children[6].children[7].children[0].attribs['content'];
                   episode = result.children[i].children[1].children[0].children[6].children[3].children[0].children[0].data;
                   network = result.children[i].children[1].children[0].children[6].children[2].children[0].data;
-                  console.log(title, 'Season premiere');
+                  // console.log(title, 'Season premiere');
                 } else {
                   title = result.children[i].children[1].children[0].children[6].children[6].children[0].attribs['content'];
                   episode = result.children[i].children[1].children[0].children[6].children[2].children[0].children[0].data;
                   network = result.children[i].children[1].children[0].children[6].children[1].children[0].data;
                 }
               } else {
-                if (result.children[i].children[1].children[0].children[5].children.length === 9) {
-                  title = result.children[i].children[1].children[0].children[5].children[8].children[0].attribs['content'];
-                  network = result.children[i].children[1].children[0].children[5].children[2].children[0].data;
-                  episode = result.children[i].children[1].children[0].children[5].children[4].children[0].children[0].data;
-                  console.log(title, 'Season Finale');
-                } else {
-                  title = result.children[i].children[1].children[0].children[5].children[7].children[0].attribs['content'];
-                  network = result.children[i].children[1].children[0].children[5].children[1].children[0].data;
-                  episode = result.children[i].children[1].children[0].children[5].children[3].children[0].children[0].data;
+                const _result = result.children[i].children[1].children[0].children[5];
+                switch (_result.children.length) {
+                  case 9:
+                  // console.log('9', _result);
+                  title = _result.children[3].children[0].data;
+                  network = _result.children[2].children[0].data;
+                  episode = _result.children[4].children[0].children[0].data;
+                  // console.log(title, network, episode, 'Season Finale');
+                  break;
+                  case 8:
+                  // console.log('8', _result);
+                  title = _result.children[2].children[0].data;
+                  network = _result.children[1].children[0].data;
+                  episode = _result.children[4].children[0] ? _result.children[4].children[0].children[0].data :
+                  _result.children[3].children[0].children[0].data;
+                  // console.log(title, network, episode, 'Season Finale');
+                  break;
+                  case 7:
+                  // console.log('7', _result);
+                  title = _result.children[1].children[0].data;
+                  // network = _result.children[1].children[0].data;
+                  episode = _result.children[2].children[0].children[0].data;
+                  // console.log(title, episode, 'Season Finale');
+                  break;
                 }
               }
 
@@ -273,14 +288,20 @@ export class ScrapingService {
         let path = this.path.join(this.app.getPath('appData'), 'Cereal', 'posters');
         this.fs.mkdirsSync(path);
         path = this.path.join(path, dashed_title + '.jpg');
-        this.exec('curl ' + poster + ' > ' + path, (err, stdout, stderr) => {
-          if (err) {
-            console.error(err);
-            // return observer.next(this.retrieveAlternatePoster(dashed_title, observer));
-          }
+        if (!this.fs.pathExistsSync(path)) {
+          this.exec('curl ' + poster + ' > ' + path, (err, stdout, stderr) => {
+            if (err) {
+              console.error(err);
+              // return observer.next(this.retrieveAlternatePoster(dashed_title, observer));
+            }
+            path = this.normalizePath(path);
+            return observer.next(path);
+          });
+        } else {
           path = this.normalizePath(path);
           return observer.next(path);
-        });
+        }
+
 
       });
   }
@@ -298,14 +319,20 @@ export class ScrapingService {
           let path = this.path.join(this.app.getPath('appData'), 'Cereal', 'wallpapers');
           this.fs.mkdirsSync(path);
           path = this.path.join(path, dashed_title + '.jpg');
-          this.exec('curl ' + wallpaper + ' > ' + path, (err, stdout, stderr) => {
-            if (err) {
-              console.error(err);
-              // return observer.next(this.retrieveAlternatePoster(dashed_title, observer));
-            }
+          if (!this.fs.pathExistsSync(path)) {
+            this.exec('curl ' + wallpaper + ' > ' + path, (err, stdout, stderr) => {
+              if (err) {
+                console.error(err);
+                // return observer.next(this.retrieveAlternatePoster(dashed_title, observer));
+              }
+              path = this.normalizePath(path);
+              return observer.next(path);
+            });
+          } else {
             path = this.normalizePath(path);
             return observer.next(path);
-          });
+          }
+
         });
       });
   }
@@ -412,17 +439,20 @@ export class ScrapingService {
       return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
-          for(let i = 1; i < 4; i++) {
+          for (let i = 1; i < 4; i++) {
             if ($('tr')[i]) {
               const nested_url = $('tr')[i].children[2].children[3].attribs.href;
               const name = $('tr')[i].children[2].children[1].children[1].children[0].data;
               const seeds = $('tr')[i].children[4].children[0].data;
-              let size = $('tr')[i].children[2].children[7].children[0].data;
+              let size = $('tr')[i].children[2].children[7].children ?
+              $('tr')[i].children[2].children[7].children[0].data : $('tr')[i].children[2].children[6].children[0].data;
+
               size = size.substring(
-                  size.lastIndexOf('Size ') + 5,
-                  size.lastIndexOf('iB')
+                size.lastIndexOf('Size ') + 5,
+                size.lastIndexOf('iB')
               );
               size += 'b';
+
               const sub = this.http.get<any[]>('https://proxytpb.pw' + nested_url, { responseType: 'text' as 'json' })
               .subscribe(nested_response => {
                 const _$ = cheerio.load(nested_response);
