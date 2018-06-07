@@ -1,8 +1,0 @@
-<div class="container" *ngIf="torrents">
-	<div *ngFor="let t of torrents | sort:'date'">
-		<app-episode (emit)="episodeDeleted()" [episode]="t"></app-episode>
-	</div>
-</div>
-<div class="container" *ngIf="torrents && torrents.length === 0;" fxLayoutAlign="center center" flex>
-	<span>There are no pending downloads</span>
-</div>
