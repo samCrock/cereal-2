@@ -9,8 +9,8 @@ import { isDefined } from '@angular/compiler/src/util';
 })
 export class LibraryComponent implements OnInit {
 
-  private library;
-  constructor(private dbService: DbService) {}
+  public library;
+  constructor(public dbService: DbService) {}
 
   ngOnInit() {
     this.dbService.getLibrary()

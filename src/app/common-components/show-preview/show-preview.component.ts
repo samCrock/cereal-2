@@ -14,13 +14,13 @@ export class ShowPreviewComponent implements OnChanges {
 
   @Input() show: Object;
 
-  private openedTrailer = false;
-  private sanitizedTrailer;
-  private wallpaper;
+  public openedTrailer = false;
+  public sanitizedTrailer;
+  public wallpaper;
   constructor(
-    private sanitizer: DomSanitizer,
-    private scrapingService: ScrapingService,
-    private router: Router
+    public sanitizer: DomSanitizer,
+    public scrapingService: ScrapingService,
+    public router: Router
   ) {}
 
   ngOnChanges() {

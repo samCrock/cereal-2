@@ -18,22 +18,22 @@ import { style } from '@angular/animations';
 })
 export class ShowComponent implements OnInit, OnDestroy {
 
-  private title: string;
-  private show: {};
-  private episodes = [];
-  private current_season: number;
-  private alive: boolean;
-  private minified = false;
-  private sanitizedTrailer;
-  private openedTrailer = false;
+  public title: string;
+  public show: {};
+  public episodes = [];
+  public current_season: number;
+  public alive: boolean;
+  public minified = false;
+  public sanitizedTrailer;
+  public openedTrailer = false;
 
   constructor(
-    private scrapingService: ScrapingService,
-    private navbarService: NavbarService,
-    private dbService: DbService,
-    private route: ActivatedRoute,
-    private electronService: ElectronService,
-    private sanitizer: DomSanitizer
+    public scrapingService: ScrapingService,
+    public navbarService: NavbarService,
+    public dbService: DbService,
+    public route: ActivatedRoute,
+    public electronService: ElectronService,
+    public sanitizer: DomSanitizer
     ) {
     this.alive = true;
   }
@@ -42,15 +42,26 @@ export class ShowComponent implements OnInit, OnDestroy {
     window.scrollTo(0, 0);
     this.route.params.subscribe(params => {
       this.title = params['title'];
-      // this.dbService.getShow(this.title)
-      // .subscribe(show => {
-      //   this.show = show;
-      //   console.log('show', show);
-      //   this.navbarService.setShow(show);
-      //   console.log('show from db', show);
-      //   this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
-      //   this.retrieveSeason();
-      // }, () => {
+      this.dbService.getShow(this.title)
+      .subscribe(show => {
+        this.show = show;
+        this.navbarService.setShow(show);
+
+        this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
+        .subscribe(lastSeason => {
+          const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
+          if (lastSeason.length > dbLastSeason.length) {
+            const missingEpisodes = lastSeason.length - dbLastSeason.length;
+            for (let index = 0; index < missingEpisodes; index++) {
+              dbLastSeason.push(lastSeason[dbLastSeason.length + index]);
+            }
+            console.log('Updated season:', dbLastSeason);
+          }
+        });
+
+        this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
+        this.retrieveSeason();
+      }, () => {
         this.scrapingService.retrieveShow(this.title)
         .subscribe(show => {
           this.show = show;
@@ -59,7 +70,7 @@ export class ShowComponent implements OnInit, OnDestroy {
           this.dbService.addShow(this.show);
           this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
           this.retrieveSeason();
-        // });
+        });
       });
     });
   }

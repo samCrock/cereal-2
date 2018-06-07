@@ -12,8 +12,8 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  private calendar = [];
-  private hovering_episode = {};
+  public calendar = [];
+  public hovering_episode = {};
 
   formatFromNowDate(date) {
     let d = moment(date, 'DD-MM-YYYY').from(moment().startOf('day'));

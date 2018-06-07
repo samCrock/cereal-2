@@ -17,31 +17,31 @@ import * as Draggable from 'gsap/Draggable';
 })
 export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
 
-  private show: Object;
-  private episode: Object;
-  private file_path: string;
+  public show: Object;
+  public episode: Object;
+  public file_path: string;
 
-  private shell = this.electronService.remote.getGlobal('shell');
-  private loading = true;
-  private path = this.electronService.remote.getGlobal('path');
-  private fs = this.electronService.remote.getGlobal('fs');
-  private srt2vtt = this.electronService.remote.getGlobal('srt2vtt');
+  public shell = this.electronService.remote.getGlobal('shell');
+  public loading = true;
+  public path = this.electronService.remote.getGlobal('path');
+  public fs = this.electronService.remote.getGlobal('fs');
+  public srt2vtt = this.electronService.remote.getGlobal('srt2vtt');
 
-  private isPlaying = true;
-  private isFullscreen = false;
-  private currentTime = '00:00';
-  private totalTime = '00:00';
-  private player;
-  private loopInterval;
-  private idleTime;
-  private lastMove = Date.now();
-  private isDragging = false;
-  private showSubs = false;
+  public isPlaying = true;
+  public isFullscreen = false;
+  public currentTime = '00:00';
+  public totalTime = '00:00';
+  public player;
+  public loopInterval;
+  public idleTime;
+  public lastMove = Date.now();
+  public isDragging = false;
+  public showSubs = false;
 
   constructor(
-    private torrentService: TorrentService,
-    private electronService: ElectronService,
-    private router: Router
+    public torrentService: TorrentService,
+    public electronService: ElectronService,
+    public router: Router
     ) { }
 
   ngOnChanges() {

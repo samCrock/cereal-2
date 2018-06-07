@@ -43,3 +43,15 @@ npm install
 ## To build for development
 
 - **in a terminal window** -> npm run start  
+
+
+
+``` bash
+npm install --save-dev electron-rebuild
+
+# Every time you run "npm install", run this
+./node_modules/.bin/electron-rebuild
+
+# On Windows if you have trouble, try:
+.\node_modules\.bin\electron-rebuild.cmd
+```

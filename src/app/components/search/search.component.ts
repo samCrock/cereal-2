@@ -8,66 +8,67 @@ import { ScrapingService } from '../../services/index';
 import { TweenMax, TimelineMax } from 'gsap';
 
 @Component({
-	selector: 'app-search',
-	templateUrl: './search.component.html',
-	styleUrls: ['./search.component.scss']
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
 
-	private show_input = '';
-	private searchControl = new FormControl();
-	private searchCtrlSub: Subscription;
-	private shows = [];
-	private noResults;
+  public show_input = '';
+  public searchControl = new FormControl();
+  public searchCtrlSub: Subscription;
+  public shows = [];
+  public noResults;
 
-	constructor(private scrapingService: ScrapingService) {
+  constructor(public scrapingService: ScrapingService) {
 
-	}
-	
-	ngOnInit() {
+  }
 
-		// TweenMax.fromTo( progress, 5, { width: '0%' }, { width: '100%', yoyo: true, repeat: -1 } );
+  ngOnInit() {
 
-		const progress = document.getElementById('progress');
-		var tl = new TimelineMax({ 
-			repeat: -1, 
-			repeatDelay: 0 
-		});
-		tl.add( TweenMax.to(progress, 2, { left: '0%', width: '100%' }) );
-		tl.add( TweenMax.to(progress, 2, { left: '100%', width: '0%' }) );
-		tl.pause();
+    // TweenMax.fromTo( progress, 5, { width: '0%' }, { width: '100%', yoyo: true, repeat: -1 } );
 
-		setTimeout(function () {
-			document.getElementById('search_input').focus();
-		}, 10);
+    const progress = document.getElementById('progress');
+    const tl = new TimelineMax({
+      repeat: -1,
+      repeatDelay: 0
+    });
+    tl.add(TweenMax.to(progress, 2, { left: '0%', width: '100%' }));
+    tl.add(TweenMax.to(progress, 2, { left: '100%', width: '0%' }));
+    tl.pause();
 
-		this.searchCtrlSub = this.searchControl.valueChanges
-		.debounceTime(500)
-		.subscribe(newValue => {
-			if (newValue.length > 0) {
-				if (tl.paused()) { tl.duration(2).resume(); } else { tl.duration(2).play(); }
-				this.shows = [];
-				this.show_input = newValue
-				this.scrapingService.searchShows(this.show_input)
-				.subscribe(result => {
-					if (!result) {
-						tl.seek(0);
-						tl.pause();
-						this.noResults = true;
-					} else {	
-						this.noResults = false;
-						this.scrapingService.retrieveShow(result)
-						.subscribe(show => {
-							tl.seek(0);
-							tl.pause();
-							this.shows.push(show);
-							console.log('Search shows result:', show);
-						});
-					}
-				});
-			}
-		});
-	}
+    setTimeout(function() {
+      document.getElementById('search_input').focus();
+    }, 10);
 
+    this.searchCtrlSub = this.searchControl.valueChanges
+      .debounceTime(500)
+      .subscribe(newValue => {
+        if (newValue.length > 0) {
+          if (tl.paused()) {
+            tl.duration(2).resume();
+          } else { tl.duration(2).play(); }
+          this.shows = [];
+          this.show_input = newValue;
+          this.scrapingService.searchShows(this.show_input)
+            .subscribe(result => {
+              if (!result) {
+                tl.seek(0);
+                tl.pause();
+                this.noResults = true;
+              } else {
+                this.noResults = false;
+                this.scrapingService.retrieveShow(result)
+                  .subscribe(show => {
+                    tl.seek(0);
+                    tl.pause();
+                    this.shows.push(show);
+                    console.log('Search shows result:', show);
+                  });
+              }
+            });
+        }
+      });
+  }
 
 }

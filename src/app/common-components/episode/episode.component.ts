@@ -20,26 +20,26 @@ export class EpisodeComponent implements OnChanges {
   @Output() emit = new EventEmitter<any>();
 
 
-  private path = this.electronService.remote.getGlobal('path');
-  private shell = this.electronService.remote.getGlobal('shell');
-  private app = this.electronService.remote.getGlobal('app');
-  private fs = this.electronService.remote.getGlobal('fs');
+  public path = this.electronService.remote.getGlobal('path');
+  public shell = this.electronService.remote.getGlobal('shell');
+  public app = this.electronService.remote.getGlobal('app');
+  public fs = this.electronService.remote.getGlobal('fs');
 
-  private expanded = false;
-  private ep_torrents = [];
-  private selectedTorrent;
-  private titleAsButton = false;
-  private loading: boolean;
-  private hasResults: boolean;
-  private currentTorrentsListSub;
+  public expanded = false;
+  public ep_torrents = [];
+  public selectedTorrent;
+  public titleAsButton = false;
+  public loading: boolean;
+  public hasResults: boolean;
+  public currentTorrentsListSub;
 
   constructor(
-    private dbService: DbService,
-    private scrapingService: ScrapingService,
-    private subsService: SubsService,
-    private torrentService: TorrentService,
-    private electronService: ElectronService,
-    private router: Router
+    public dbService: DbService,
+    public scrapingService: ScrapingService,
+    public subsService: SubsService,
+    public torrentService: TorrentService,
+    public electronService: ElectronService,
+    public router: Router
   ) { }
 
   ngOnChanges() {

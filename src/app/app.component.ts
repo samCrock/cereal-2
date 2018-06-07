@@ -44,7 +44,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     IntervalObservable.create(1000)
-    .takeWhile(() => this.alive)
     .subscribe(() => {
 
       const torrents = this.dbService.getPendingTorrents()

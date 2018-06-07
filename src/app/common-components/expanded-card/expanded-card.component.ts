@@ -17,19 +17,19 @@ export class ExpandedCardComponent implements OnChanges {
 
   @Input() show: Object;
 
-  private path = this.electronService.remote.getGlobal('path');
-  private shell = this.electronService.remote.getGlobal('shell');
-  private expanded = false;
-  private hovering_episode = {};
-  private isPosterAsync = false;
+  public path = this.electronService.remote.getGlobal('path');
+  public shell = this.electronService.remote.getGlobal('shell');
+  public expanded = false;
+  public hovering_episode = {};
+  public isPosterAsync = false;
 
   constructor(
-    private dbService: DbService,
-    private scrapingService: ScrapingService,
-    private subsService: SubsService,
-    private torrentService: TorrentService,
-    private electronService: ElectronService,
-    private router: Router
+    public dbService: DbService,
+    public scrapingService: ScrapingService,
+    public subsService: SubsService,
+    public torrentService: TorrentService,
+    public electronService: ElectronService,
+    public router: Router
     ) { }
 
   ngOnChanges() {
@@ -90,9 +90,9 @@ export class ExpandedCardComponent implements OnChanges {
       exp_card.style.transition = after_transitions;
       exp_card.style.top = 'calc(' + target.offsetTop + 'px - 5vw)';
       exp_card.style.left = 'calc(' + target_coordinates.left + 'px - 3.5vw)';
-      exp_card.style.width = '25vw';
-      exp_card.style.height = 'calc(25vw * 1.47)';
-      exp_card.style.backgroundSize = 'calc(25vw + 1vw) calc(25vw * 1.47)';
+      exp_card.style.width = '26vw';
+      exp_card.style.height = 'calc(26vw * 1.5)';
+      exp_card.style.backgroundSize = 'calc(26vw) calc(26vw * 1.5)';
       exp_card.getElementsByClassName('card-title')[0]['style']['transition'] = after_transitions;
       exp_card.getElementsByClassName('card-episode')[0]['style']['transition'] = after_transitions;
       exp_card.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1rem + 3vw)';

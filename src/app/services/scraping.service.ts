@@ -16,6 +16,7 @@ export class ScrapingService {
   private path = this.electronService.remote.getGlobal('path');
   private app = this.electronService.remote.getGlobal('app');
   private fs = this.electronService.remote.getGlobal('fs');
+  private curl = this.electronService.remote.getGlobal('curl');
 
   constructor(
     private http: HttpClient,
@@ -289,14 +290,18 @@ export class ScrapingService {
         this.fs.mkdirsSync(path);
         path = this.path.join(path, dashed_title + '.jpg');
         if (!this.fs.pathExistsSync(path)) {
-          this.exec('curl ' + poster + ' > ' + path, (err, stdout, stderr) => {
-            if (err) {
-              console.error(err);
-              // return observer.next(this.retrieveAlternatePoster(dashed_title, observer));
-            }
-            path = this.normalizePath(path);
+
+        const that = this;
+        this.curl.request({
+          url: poster,
+          encoding: null
+        }, function (err, data) {
+            if (err) { console.error('err', err); }
+            that.fs.outputFileSync(path, data);
+            path = that.normalizePath(path);
             return observer.next(path);
-          });
+        });
+
         } else {
           path = this.normalizePath(path);
           return observer.next(path);
@@ -320,14 +325,19 @@ export class ScrapingService {
           this.fs.mkdirsSync(path);
           path = this.path.join(path, dashed_title + '.jpg');
           if (!this.fs.pathExistsSync(path)) {
-            this.exec('curl ' + wallpaper + ' > ' + path, (err, stdout, stderr) => {
-              if (err) {
-                console.error(err);
-                // return observer.next(this.retrieveAlternatePoster(dashed_title, observer));
-              }
-              path = this.normalizePath(path);
-              return observer.next(path);
+
+
+            const that = this;
+            this.curl.request({
+              url: wallpaper,
+              encoding: null
+            }, function (err, data) {
+                if (err) { console.error('err', err); }
+                that.fs.outputFileSync(path, data);
+                path = that.normalizePath(path);
+                return observer.next(path);
             });
+
           } else {
             path = this.normalizePath(path);
             return observer.next(path);
@@ -337,7 +347,7 @@ export class ScrapingService {
       });
   }
 
-
+  // IDOPE
   // retrieveEpisode(show: string, episode: string, custom?: number) {
   //   show = show.replace(/'/g, ' ');
   //   const url = encodeURI('https://idope.se/torrent-list/' + show + ' ' + episode);
@@ -365,6 +375,8 @@ export class ScrapingService {
   //       });
   //   });
   // }
+
+  // PB proxy
   retrieveEpisode(show: string, episode: string, custom?: number) {
     show = show.replace(/'/g, ' ');
     const url = encodeURI('https://indiaproxy.in/s/?q=' + show + ' ' + episode);

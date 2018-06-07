@@ -15,17 +15,17 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class NavbarComponent implements OnInit {
 
-  private current_show: Object;
-  private subscription: Subscription;
-  private enabled = true;
-  private currentRoute = '';
-  private settingsOpen = false;
+  public current_show: Object;
+  public subscription: Subscription;
+  public enabled = true;
+  public currentRoute = '';
+  public settingsOpen = false;
 
 
   constructor(
-    private navbarService: NavbarService,
-    private router: Router,
-    private dbService: DbService
+    public navbarService: NavbarService,
+    public router: Router,
+    public dbService: DbService
     ) {
   }
 
@@ -61,7 +61,7 @@ export class NavbarComponent implements OnInit {
   }
 
   chooseFolder() {
-    const folder_input = document.getElementById('folder_input')
+    const folder_input = document.getElementById('folder_input');
     folder_input.addEventListener('change', e => {
       e.preventDefault();
       console.log(e.target['value']);
