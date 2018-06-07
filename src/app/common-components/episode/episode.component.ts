@@ -1,5 +1,6 @@
 import { Component, Input, Output, OnChanges, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { DbService, SubsService, ScrapingService, TorrentService } from '../../services';
 import * as moment from 'moment';
 import { ElectronService } from 'ngx-electron';
