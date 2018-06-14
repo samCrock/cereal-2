@@ -18,6 +18,7 @@ export class EpisodeComponent implements OnChanges {
 
   @Input() show: Object;
   @Input() episode: Object;
+  @Input() format = 'extended';
   @Output() emit = new EventEmitter<any>();
 
 
@@ -45,6 +46,7 @@ export class EpisodeComponent implements OnChanges {
 
   ngOnChanges() {
     this.setup();
+    console.log(this.format);
   }
 
   setup(triggered?: boolean) {
@@ -96,7 +98,7 @@ export class EpisodeComponent implements OnChanges {
   }
 
   download_episode(episode) {
-    this.loading = true;
+    // this.loading = true;
     this.scrapingService.retrieveEpisode(this.show['title'], episode['label'])
       .subscribe(result => {
         if (this.selectedTorrent) { result = this.selectedTorrent; }
@@ -184,12 +186,12 @@ export class EpisodeComponent implements OnChanges {
         this.loading = false;
         this.ep_torrents.push(result);
         // currentTorrentsListSub.unsubscribe();
-      }
-    }, notFound => {
+      } else {
         this.loading = false;
         this.hasResults = false;
-      });
-      return this.currentTorrentsListSub;
+      }
+    });
+    return this.currentTorrentsListSub;
   }
 
   onTorrentChange(t) {

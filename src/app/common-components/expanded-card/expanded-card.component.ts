@@ -77,9 +77,9 @@ export class ExpandedCardComponent implements OnChanges {
     exp_card.style.left = 'calc(' + target_coordinates.left + 'px - 2px)';
 
     exp_card.style.width = 'calc(18vw + 1vw)';
-    exp_card.style.height = 'calc(18vw * 1.47 + 1px)';
+    exp_card.style.height = 'calc(18vw * 1.5 + 1px)';
     exp_card.style.backgroundImage = target.style.backgroundImage;
-    exp_card.style.backgroundSize = 'calc(18vw + 1vw) calc(18vw * 1.47)';
+    exp_card.style.backgroundSize = 'calc(18vw + 1vw) calc(18vw * 1.5)';
     exp_card.getElementsByClassName('card-title')[0]['style']['transition'] = before_transitions;
     exp_card.getElementsByClassName('card-episode')[0]['style']['transition'] = before_transitions;
     exp_card.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1rem + 2vw)';
@@ -96,6 +96,7 @@ export class ExpandedCardComponent implements OnChanges {
       exp_card.getElementsByClassName('card-title')[0]['style']['transition'] = after_transitions;
       exp_card.getElementsByClassName('card-episode')[0]['style']['transition'] = after_transitions;
       exp_card.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1rem + 3vw)';
+      exp_card.getElementsByClassName('card-title')[0]['style']['padding'] = 'calc(1vw)';
       exp_card.getElementsByClassName('card-episode')[0]['style']['font-size'] = 'calc(.6rem + 3vw)';
     }, 10);
 

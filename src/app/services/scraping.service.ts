@@ -86,11 +86,10 @@ export class ScrapingService {
               ep_title = '',
               ep_date = '';
             if (episode.children[0].name === 'h3') {
-              // console.log(episode);
               ep_label = episode.children[0].children[1] ? episode.children[0].children[1].children[0].children[0].data :
                 episode.children[0].children[0].children[0].children[0].data;
-              ep_title = (episode.children[0].children[1] && episode.children[0].children[1].children[2].children[0]) ?
-                episode.children[0].children[1].children[2].children[0].data : '';
+              ep_title = (episode.children[0].children[0] && episode.children[0].children[0].children[2].children[0]) ?
+                episode.children[0].children[0].children[2].children[0].data : '';
               ep_date = episode.children[1].children[0].children[0].attribs['data-date'];
               if (i === 1) {
                 ep_date = episode.children[1].children[0].children[2].attribs['data-date'];
@@ -451,18 +450,35 @@ export class ScrapingService {
       return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
+          if ($('tr').length === 0) {
+            console.log('No results');
+            return observer.next();
+          }
           for (let i = 1; i < 4; i++) {
             if ($('tr')[i]) {
               const nested_url = $('tr')[i].children[2].children[3].attribs.href;
               const name = $('tr')[i].children[2].children[1].children[1].children[0].data;
               const seeds = $('tr')[i].children[4].children[0].data;
-              let size = $('tr')[i].children[2].children[7].children ?
-              $('tr')[i].children[2].children[7].children[0].data : $('tr')[i].children[2].children[6].children[0].data;
+              let size = '';
 
-              size = size.substring(
+              console.log($('tr')[i].children[2].children);
+              
+              switch ($('tr')[i].children[2].children.length) {
+                case 10:
+                size = $('tr')[i].children[2].children[8].children[0].data;
+                break;
+                case 9:
+                size = $('tr')[i].children[2].children[7].children[0].data;
+                break;
+                case 8:
+                size = $('tr')[i].children[2].children[6].children[0].data;
+                break;
+              }
+              console.log('size', size); 
+              size = size ? size.substring(
                 size.lastIndexOf('Size ') + 5,
                 size.lastIndexOf('iB')
-              );
+              ) : '';
               size += 'b';
 
               const sub = this.http.get<any[]>('https://proxytpb.pw' + nested_url, { responseType: 'text' as 'json' })
@@ -477,11 +493,11 @@ export class ScrapingService {
                   magnet: magnet
                 });
               });
-            } else {
-              return observer.next();
-            }
-          }
+            }}
 
+        }, reason => {
+          console.error('Not found', reason);
+          observer.next();
         });
     });
   }
