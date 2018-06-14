@@ -94,8 +94,39 @@ i {
   }
 }
 
-#toggle_episodes {
-  opacity: .4;
+#episodes_list {
+  display: none !important;
+  position: absolute;
+  bottom: 8vw;
+  right: .5rem;
+  width: 50vw;
+  // height: 60vw;
+  background-color: rgba(20, 20, 20, .7);
+}
+
+#episodes_list.on {
+  display: block !important;
+}
+
+.menu_episode {
+  cursor: pointer;
+  height: calc(2vw + 3rem);
+  label {
+    text-align: center;
+    cursor: pointer;
+    font-size: 1.4rem;
+  }
+}
+.menu_episode:hover {
+  label {
+    color: #26a69a;
+  }
+}
+
+.current_episode {
+  label {
+    color: rgba(255, 255, 255, .9);
+  }
 }
 
 #duration {

@@ -37,6 +37,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   public lastMove = Date.now();
   public isDragging = false;
   public showSubs = false;
+  public toggledEpisodes = false;
 
   constructor(
     public torrentService: TorrentService,
@@ -54,8 +55,8 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     this.episode = play.episode;
     this.file_path = play.file_path;
 
-    // console.log(this.show);
-    // console.log(this.episode);
+    console.log(this.show);
+    console.log(this.episode);
     console.log('file_path', this.file_path);
 
     // Set this episode as last_seen ..
@@ -236,11 +237,15 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   toggleEpisodes() {
-    console.log('toggleEpisodes');
+    this.toggledEpisodes = !this.toggledEpisodes;
   }
 
   openFolder() {
     this.shell.openItem(this.file_path);
+  }
+
+  isCurrent_episode(ep_label) {
+    return ep_label === this.episode['label'];
   }
 
   dragSetup() {
