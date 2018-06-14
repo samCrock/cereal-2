@@ -6,6 +6,7 @@ import * as magnet from 'magnet-uri';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
+import { ElectronService } from 'ngx-electron';
 
 @Component({
   selector: 'app-navbar',
@@ -21,11 +22,13 @@ export class NavbarComponent implements OnInit {
   public currentRoute = '';
   public settingsOpen = false;
 
+  public remote = this.electronService.remote;
 
   constructor(
     public navbarService: NavbarService,
     public router: Router,
-    public dbService: DbService
+    public dbService: DbService,
+    public electronService: ElectronService
     ) {
   }
 
@@ -44,6 +47,14 @@ export class NavbarComponent implements OnInit {
         }
       }
     });
+
+    const that = this;
+    document.addEventListener('keydown', function (e) {
+      if (e.which === 116) {
+        location.reload();
+      }
+    });
+
   }
 
   isActive(route_name) {
