@@ -15,6 +15,7 @@ html, body {
 	// font-family: 'Abel', sans-serif;
 	font-family: 'Economica', sans-serif;
 	text-rendering: optimizeLegibility;
+	overflow-x: hidden;
 }
 
 body {
@@ -73,4 +74,26 @@ input {
 	// color: #2bbbad !important;
 	font-size: calc(1rem + 1vw) !important;
 	transition: all .4s;
+}
+
+
+// CUSTOM SCROLLBAR
+/* width */
+::-webkit-scrollbar {
+	width: calc(.2rem + .5vw);
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #26a69a; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #26a69a; 
 }

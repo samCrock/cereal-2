@@ -1,9 +1,6 @@
-import { Component, Input, OnChanges, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { DbService, SubsService, ScrapingService, TorrentService } from '../../services';
-import * as moment from 'moment';
+import { Component, OnChanges, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { TorrentService } from '../../services';
 import { ElectronService } from 'ngx-electron';
-import * as magnet from 'magnet-uri';
 import { Router } from '@angular/router';
 import { TweenMax } from 'gsap';
 import * as Draggable from 'gsap/Draggable';
@@ -42,7 +39,8 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   constructor(
     public torrentService: TorrentService,
     public electronService: ElectronService,
-    public router: Router
+    public router: Router,
+    private zone: NgZone
     ) { }
 
   ngOnChanges() {
@@ -50,6 +48,11 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.init();
+  }
+
+
+  init() {
     const play = JSON.parse(localStorage.getItem('play'));
     this.show = play.show;
     this.episode = play.episode;
@@ -105,10 +108,12 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
       that.toggle_fullscreen();
     });
 
+
   }
 
   ngOnDestroy() {
     if (this.loopInterval) { clearInterval(this.loopInterval); }
+    window.onwheel = function() {};
   }
 
   setup() {
@@ -204,6 +209,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
       .pipe(that.fs.createWriteStream(file_path.substring(0, file_path.length - 3) + 'vtt'));
       setTimeout(function() {
         track.src = file_path.substring(0, file_path.length - 3) + 'vtt';
+        that.player.removeChild(that.player.firstChild); // clean old subs
         that.player.appendChild(track);
         that.player.textTracks[0].mode = 'showing';
 
@@ -236,8 +242,29 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  handleScroll(e) {
+    e = e || window.event;
+    if (e.preventDefault) {
+      event.preventDefault();
+      // console.log(event);
+      const list = document.getElementById('episodes_list');
+      if (list) {
+        const list_style = window.getComputedStyle(list);
+        if (e.deltaY < 0) {
+          list.scrollTop -= 5.5 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        } else {
+          list.scrollTop += 5.5 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+        }
+      }
+    }
+    e.returnValue = false;
+  }
+
   toggleEpisodes() {
     this.toggledEpisodes = !this.toggledEpisodes;
+    if (this.toggledEpisodes) {
+      window.onwheel = this.handleScroll;
+    }
   }
 
   openFolder() {
@@ -303,6 +330,11 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
+  play_episode(event) {
+    this.zone.run(() => {
+      this.init();
+    });
+  }
 
 
 }

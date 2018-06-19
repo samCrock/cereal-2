@@ -3,7 +3,7 @@
 	<div class="progress" *ngIf="(getTorrentProgress(episode) | async); let progress;">
 		<div class="determinate" [ngStyle]="{ 'width': progress + '%' }"></div>
 	</div>
-	<div fxLayout="column" class="episode">
+	<div fxLayout="column" fxLayoutAlign="space-evenly" class="episode">
 
 		<div fxLayout="row" fxLayoutAlign="space-evenly" fxFill fxLayoutGap="1vw">
 			<div fxFlex="50" fxLayoutAlign="center center" class="waves-effect waves-light btn" *ngIf="titleAsButton" [routerLink]="['/show/' + episode.dashed_title]">{{ episode.title }}</div>
@@ -27,7 +27,7 @@
 
 			<div fxFlex fxLayout="column" fxLayoutAlign="center start" *ngIf="ep_torrents.length">
 				<div fxLayout="row" fxLayoutAlign="space-evenly" class="extras_header">
-					<div fxFlex="80">
+					<div fxFlex="76">
 						<label style="margin-left: calc(1rem + 2vw);">Name</label>
 					</div>
 					<div fxFlex="5">
@@ -39,7 +39,7 @@
 					</div>
 				</div>
 				<div fxLayout="row" fxLayoutAlign="space-evenly" *ngFor="let t of ep_torrents; let idx = index;" class="torrent_extras">
-					<div fxFlex="80">
+					<div fxFlex="76">
 						<label>
 							<input name="group1" type="radio" [checked]="idx === 0" [value]="t.name" (change)="onTorrentChange(t)"/>
 							<span>{{ t.name | trim }}</span>

@@ -81,15 +81,16 @@ export class ScrapingService {
         .subscribe(response => {
           const $ = cheerio.load(response);
           const episodes = [];
+          let ep_label = '',
+            ep_title = '',
+            ep_date = '',
+            ep_overview = '';
           $('.titles').filter((i, episode) => {
-            let ep_label = '',
-              ep_title = '',
-              ep_date = '';
             if (episode.children[0].name === 'h3') {
               ep_label = episode.children[0].children[1] ? episode.children[0].children[1].children[0].children[0].data :
-                episode.children[0].children[0].children[0].children[0].data;
+              episode.children[0].children[0].children[0].children[0].data;
               ep_title = (episode.children[0].children[0] && episode.children[0].children[0].children[2].children[0]) ?
-                episode.children[0].children[0].children[2].children[0].data : '';
+              episode.children[0].children[0].children[2].children[0].data : '';
               ep_date = episode.children[1].children[0].children[0].attribs['data-date'];
               if (i === 1) {
                 ep_date = episode.children[1].children[0].children[2].attribs['data-date'];
@@ -105,10 +106,14 @@ export class ScrapingService {
               if (ep_date) { ep_date = ep_date.substring(0, 10); }
               if (!ep_date) { ep_date = ''; }
 
+                ep_overview = episode.parent.children[1].children[0] ? episode.parent.children[1].children[0].data : '';
+                // console.log('Episode', episode.parent.children[1].children[0] ? episode.parent.children[1].children[0].data : '');
+
               episodes.push({
                 label: ep_label,
                 title: ep_title,
-                date: ep_date
+                date: ep_date,
+                overview: ep_overview
               });
             }
           });
@@ -461,8 +466,8 @@ export class ScrapingService {
               const seeds = $('tr')[i].children[4].children[0].data;
               let size = '';
 
-              console.log($('tr')[i].children[2].children);
-              
+              // console.log($('tr')[i].children[2].children);
+
               switch ($('tr')[i].children[2].children.length) {
                 case 10:
                 size = $('tr')[i].children[2].children[8].children[0].data;
@@ -474,7 +479,7 @@ export class ScrapingService {
                 size = $('tr')[i].children[2].children[6].children[0].data;
                 break;
               }
-              console.log('size', size); 
+              // console.log('size', size);
               size = size ? size.substring(
                 size.lastIndexOf('Size ') + 5,
                 size.lastIndexOf('iB')
@@ -510,7 +515,7 @@ export class ScrapingService {
           let hasResults = false;
           $('.grid-item')
             .filter((i, result) => {
-              console.log('has results');
+              // console.log('has results');
               hasResults = true;
               if (i < 6) {
                 let dashed_title = result.children[1]['attribs']['href'];

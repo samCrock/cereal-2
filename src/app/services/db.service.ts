@@ -2,13 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/observable/of';
-import { mergeMap, catchError } from 'rxjs/operators';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import * as cheerio from 'cheerio';
-import * as moment from 'moment';
-import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 import { TorrentService } from './torrent.service';
-import { ScrapingService } from './scraping.service';
 
 @Injectable()
 export class DbService {

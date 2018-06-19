@@ -50,7 +50,7 @@ export class ShowComponent implements OnInit, OnDestroy {
         this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
         .subscribe(lastSeason => {
           const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
-          console.log(lastSeason.length, dbLastSeason.length);
+          // console.log('lastSeason.length', lastSeason.length, dbLastSeason.length);
 
           if (lastSeason.length > dbLastSeason.length) {
             const missingEpisodes = lastSeason.length - dbLastSeason.length;

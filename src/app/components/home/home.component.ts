@@ -45,13 +45,4 @@ export class HomeComponent implements OnInit {
       });
   }
 
-
-  // retrievePoster(poster: string) {
-  //   return Observable.create(observer => {
-  //     return observer.next(poster);
-  //   });
-  // }
-
-
-
 }

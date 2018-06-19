@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { ElectronService } from 'ngx-electron';
 import * as magnet from 'magnet-uri';
 import { Router } from '@angular/router';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-expanded-card',
@@ -40,7 +41,10 @@ export class ExpandedCardComponent implements OnChanges {
 
   enterCard(event, show) {
     // console.log('< enter', event);
+    const card = event.srcElement;
     this.hovering_episode = show;
+
+    // console.log(show);
     // document.getElementById('expanded_card').style.display = 'none';
     document.querySelectorAll('[id=expanded_card]')['forEach'](element => {
       element.style.display = 'none';
@@ -70,34 +74,40 @@ export class ExpandedCardComponent implements OnChanges {
 
     exp_card.style.transition = before_transitions;
     exp_card.style.display = 'block';
-    // exp_card.style.boxShadow = '0 0 3rem .5rem rgba(0, 0, 0, 0.4)';
 
     // START
+    const card_style = window.getComputedStyle(card);
+    const computed_card_h = card_style.height.split('px')[0];
+    const computed_card_w = card_style.width.split('px')[0];
+
     exp_card.style.top = 'calc(' + target.offsetTop + 'px - 2px)';
     exp_card.style.left = 'calc(' + target_coordinates.left + 'px - 2px)';
 
-    exp_card.style.width = 'calc(18vw + 1vw)';
-    exp_card.style.height = 'calc(18vw * 1.5 + 1px)';
+    exp_card.style.width = 'calc(' + computed_card_w + 'px + 2px)';
+    exp_card.style.height = 'calc(' + computed_card_h + 'px + 2px)';
+
     exp_card.style.backgroundImage = target.style.backgroundImage;
-    exp_card.style.backgroundSize = 'calc(18vw + 1vw) calc(18vw * 1.5)';
     exp_card.getElementsByClassName('card-title')[0]['style']['transition'] = before_transitions;
     exp_card.getElementsByClassName('card-episode')[0]['style']['transition'] = before_transitions;
-    exp_card.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1rem + 2vw)';
-    exp_card.getElementsByClassName('card-episode')[0]['style']['font-size'] = 'calc(.6rem + 2vw)';
+    exp_card.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1rem + 1vw)';
+    exp_card.getElementsByClassName('card-episode')[0]['style']['font-size'] = 'calc(.5rem + 1vw)';
+    exp_card.getElementsByClassName('card-title')[0]['style']['padding'] = 'calc(1vw)';
 
     // TRANSITION
     setTimeout(function() {
       exp_card.style.transition = after_transitions;
-      exp_card.style.top = 'calc(' + target.offsetTop + 'px - 5vw)';
-      exp_card.style.left = 'calc(' + target_coordinates.left + 'px - 3.5vw)';
-      exp_card.style.width = '26vw';
-      exp_card.style.height = 'calc(26vw * 1.5)';
-      exp_card.style.backgroundSize = 'calc(26vw) calc(26vw * 1.5)';
+      exp_card.style.top = 'calc(' + target.offsetTop + 'px - ' + Math.floor(+computed_card_h / 10) + 'px)';
+      exp_card.style.left = 'calc(' + target_coordinates.left + 'px - ' + Math.floor(+computed_card_w / 10) + 'px)';
+
+      exp_card.style.width = 'calc(' + computed_card_w + 'px + ' + Math.floor(+computed_card_w / 5) + 'px)';
+      exp_card.style.height = 'calc(' + computed_card_h + 'px + ' + Math.floor(+computed_card_h / 5) + 'px)';
+
       exp_card.getElementsByClassName('card-title')[0]['style']['transition'] = after_transitions;
       exp_card.getElementsByClassName('card-episode')[0]['style']['transition'] = after_transitions;
-      exp_card.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1rem + 3vw)';
-      exp_card.getElementsByClassName('card-title')[0]['style']['padding'] = 'calc(1vw)';
-      exp_card.getElementsByClassName('card-episode')[0]['style']['font-size'] = 'calc(.6rem + 3vw)';
+
+      exp_card.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1.5rem + 1vw)';
+      exp_card.getElementsByClassName('card-episode')[0]['style']['font-size'] = 'calc(1rem + 1vw)';
+      exp_card.getElementsByClassName('card-title')[0]['style']['line-height'] = 'calc(1rem + 1vw)';
     }, 10);
 
     document.onmousemove = handleMouseMove;

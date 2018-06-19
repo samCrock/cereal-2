@@ -1,12 +1,11 @@
 <video id="player" width="320" height="240" (click)="toggledEpisodes = false">Format not supported</video>
 
-<div id="info" [ngClass]="idleTime > 20 ? 'hidden' : ''" fxLayoutAlign="start center">
+<div id="info" [ngClass]="(idleTime > 20 && !toggledEpisodes) ? 'hidden' : ''" fxLayoutAlign="start center">
   <i class="material-icons back_icon" [routerLink]="['/show', show['dashed_title']]">arrow_back_ios</i><span class="show">{{ show['title'] }}</span>
   <span class="episode_label">{{ episode['label'] }}</span>
   <span class="episode_title">{{ episode['title'] }}</span>
 </div>
-<!-- <div id="controls" [ngClass]="idleTime > 20 ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center"> -->
-<div id="controls"  fxLayout="row" fxLayoutAlign="start center">
+<div id="controls" [ngClass]="(idleTime > 20 && !toggledEpisodes) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center">
   <div id="toggle_play" fxflex="auto" fxFlexOffset="calc(.5rem + 1vw)" (click)="toggle_play()">
     <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
   </div>
@@ -27,13 +26,13 @@
   <div fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggleEpisodes()">
     <i class="material-icons">playlist_play</i>
   </div>
-  <div id="episodes_list" *ngIf="toggleEpisodes" [ngClass]="toggledEpisodes ? 'on' : ''" fxLayout="column">
+  <div id="episodes_list" *ngIf="toggleEpisodes" [ngClass]="toggledEpisodes ? 'on' : ''">
     
     <!-- <div *ngFor="let episode of show.Seasons[show.watching_season]">
       <div class="menu_episode" fxLayout="row" fxLayoutAlign="center center" fxFlex [ngClass]="isCurrent_episode(episode.label) ? 'current_episode' : ''">
          -->
-        <app-episode *ngFor="let episode of show.Seasons[show.watching_season]" [episode]="episode" [show]="show" [format]="'compact'"></app-episode>
-
+        <app-episode *ngFor="let episode of show.Seasons[show.watching_season]" (notify)="play_episode($event)" [episode]="episode" [show]="show" [format]="'compact'"></app-episode>
+         
         <!-- <label fxFlex="30">{{ episode.label }}</label>
         <label fxFlex="70">{{ episode.title }}</label>
       </div>

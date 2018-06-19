@@ -97,11 +97,14 @@ i {
 #episodes_list {
   display: none !important;
   position: absolute;
-  bottom: 8vw;
-  right: .5rem;
-  width: 50vw;
-  // height: 60vw;
-  background-color: rgba(20, 20, 20, .7);
+  bottom: 5rem;
+  right: 0;
+  width: calc(50vw - 1rem);
+  min-width: 500px;
+  height: calc(100vh - 12rem);
+  overflow-y: auto;
+  padding-right: .5rem;
+  background-color: rgba(20, 20, 20, .8);
 }
 
 #episodes_list.on {

@@ -12,7 +12,9 @@ $expanded_poster_w: 26vw;
 	background-color: transparent;
 	width: calc(18vw);
 	height: calc(18vw * 1.5);
-	background-size: calc(18vw) calc(18vw * 1.5);
+	max-width: 220px;
+	max-height: 330px;
+	background-size: cover;
 	border-radius: 4px;
 	background-repeat: no-repeat;
 	img {
@@ -25,9 +27,11 @@ $expanded_poster_w: 26vw;
 	z-index: 1;
 	width: $poster_w;
 	height: calc(#{$poster_w} * 1.5);
+	// max-width: 220px;
+	// max-height: 330px;
 	background-color: transparent;
 	position: absolute;
-	background-size: calc(26vw) calc(26vw * 1.5);
+	background-size: cover;
 	border-radius: 4px;
 	background-repeat: no-repeat;
 	border-radius: 4px;
@@ -41,10 +45,15 @@ $expanded_poster_w: 26vw;
 }
 
 .card-title {
-	line-height: calc(2rem + 1vw);
+	line-height: calc(1rem + 1vw);
 	padding-top: 1rem !important;
 }
 
 .card-episode {
 	padding-top: 1rem !important;
+}
+
+.card-network {
+	padding-top: 1rem !important;
+	font-size: calc(.6rem + 1vw);
 }

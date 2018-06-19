@@ -19,7 +19,7 @@ export class EpisodeComponent implements OnChanges {
   @Input() show: Object;
   @Input() episode: Object;
   @Input() format = 'extended';
-  @Output() emit = new EventEmitter<any>();
+  @Output() notify: EventEmitter<any> = new EventEmitter<any>();
 
 
   public path = this.electronService.remote.getGlobal('path');
@@ -46,7 +46,7 @@ export class EpisodeComponent implements OnChanges {
 
   ngOnChanges() {
     this.setup();
-    console.log(this.format);
+    // console.log(this.format);
   }
 
   setup(triggered?: boolean) {
@@ -158,12 +158,17 @@ export class EpisodeComponent implements OnChanges {
             }
         });
 
-          localStorage.setItem('play', JSON.stringify({
-            show: this.show,
-            episode: episode,
-            file_path: video_path
-          }));
+        localStorage.setItem('play', JSON.stringify({
+          show: this.show,
+          episode: episode,
+          file_path: video_path
+        }));
+        if (this.format === 'extended') {
           this.router.navigate(['play']);
+        } else {
+          // this.router.navigate(['play']);
+          this.notify.emit(episode);
+        }
       });
   }
 
@@ -208,7 +213,7 @@ export class EpisodeComponent implements OnChanges {
     episode['episode_label'] = episode['label'];
     console.log('deleteTorrent', episode);
 
-    this.emit.emit(episode);
+    this.notify.emit(episode);
 
     // delete from torrent client
     this.torrentService.removeTorrent(episode.infoHash);
