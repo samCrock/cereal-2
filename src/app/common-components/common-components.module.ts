@@ -3,23 +3,25 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule, Routes } from '@angular/router';
-import { EpisodeComponent, NavbarComponent, ShowPreviewComponent, ExpandedCardComponent } from './index';
-
+import { EpisodeComponent, NavbarComponent, ShowPreviewComponent, ExpandedCardComponent, DialogComponent } from '.';
+import { MatDialogModule } from '@angular/material';
 // Pipes
-import { SortPipe, TrimPipe } from '../pipes/index';
+import { SortPipe, TrimPipe } from '../pipes';
 
 const COMMON_COMPONENTS = [
   EpisodeComponent,
   NavbarComponent,
   ShowPreviewComponent,
-  ExpandedCardComponent
+  ExpandedCardComponent,
+  DialogComponent
 ];
 
 @NgModule({
   imports: [
     CommonModule,
     FlexLayoutModule,
-    RouterModule
+    RouterModule,
+    MatDialogModule
   ],
   declarations: [
     ...COMMON_COMPONENTS,
@@ -30,6 +32,7 @@ const COMMON_COMPONENTS = [
     ...COMMON_COMPONENTS,
     SortPipe,
     TrimPipe
-  ]
+  ],
+  // entryComponents: [DialogComponent]
 })
 export class CommonComponentsModule { }

@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ScrapingService } from '../../services/scraping.service';
-import { style } from '@angular/animations';
+import { ScrapingService, DbService } from '../../services/index';
 import { Router } from '@angular/router';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { DialogComponent } from '../dialog/dialog.component';
+import * as Materialize from 'materialize-css';
 
 @Component({
   selector: 'app-show-preview',
@@ -13,6 +15,7 @@ export class ShowPreviewComponent implements OnChanges {
 
 
   @Input() show: Object;
+  confirmDialogRef: MatDialogRef<DialogComponent>;
 
   public openedTrailer = false;
   public sanitizedTrailer;
@@ -20,7 +23,9 @@ export class ShowPreviewComponent implements OnChanges {
   constructor(
     public sanitizer: DomSanitizer,
     public scrapingService: ScrapingService,
-    public router: Router
+    public dbService: DbService,
+    public router: Router,
+    public dialog: MatDialog
   ) {}
 
   ngOnChanges() {
@@ -37,6 +42,27 @@ export class ShowPreviewComponent implements OnChanges {
 
   play_trailer() {
     this.openedTrailer = true;
+  }
+
+  delete_show() {
+    this.confirmDialogRef = this.dialog.open(DialogComponent);
+    this.confirmDialogRef.afterClosed()
+    .subscribe(confirmed => {
+      if (confirmed) {
+        this.dbService.deleteShow(this.show['dashed_title'])
+        .subscribe(result => {
+          console.log('deleteShow', result);
+          this.router.navigate(['']);
+          Materialize.toast({
+            html: this.show['title'] + ' has been deleted',
+            displayLength: 2000,
+            inDuration: 600,
+            outDuration: 400,
+            classes: ''
+          });
+        });
+      }
+    });
   }
 
   getTrailer() {

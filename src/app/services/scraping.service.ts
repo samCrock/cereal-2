@@ -107,7 +107,7 @@ export class ScrapingService {
               if (!ep_date) { ep_date = ''; }
 
                 ep_overview = episode.parent.children[1].children[0] ? episode.parent.children[1].children[0].data : '';
-                // console.log('Episode', episode.parent.children[1].children[0] ? episode.parent.children[1].children[0].data : '');
+                // console.log('Overview', episode.parent.children[1].children[0] ? episode.parent.children[1].children[0].data : '');
 
               episodes.push({
                 label: ep_label,
@@ -381,9 +381,43 @@ export class ScrapingService {
   // }
 
   // PB proxy
+  // retrieveEpisode(show: string, episode: string, custom?: number) {
+  //   show = show.replace(/'/g, ' ');
+  //   const url = encodeURI('https://baypirateproxy.org/s/?q=' + show + ' ' + episode);
+  //   console.log('Downloading episode', show, episode);
+  //   // console.log('url', url);
+  //   return Observable.create(observer => {
+  //     return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+  //       .subscribe(response => {
+  //         const $ = cheerio.load(response);
+  //         const _custom = custom ? custom : 1;
+  //         if ($('tr')[_custom]) {
+  //           const nested_url = $('tr')[_custom].children[2].children[3].attribs.href;
+  //           const name = $('tr')[_custom].children[2].children[1].children[1].children[0].data;
+  //           const seeds = $('tr')[_custom].children[4].children[0].data;
+  //           console.log(nested_url);
+
+  //           return this.http.get<any[]>('https://baypirateproxy.org' + nested_url, { responseType: 'text' as 'json' })
+  //           .subscribe(nested_response => {
+  //             const _$ = cheerio.load(nested_response);
+  //             const magnet = _$('.download')[0].children[1].attribs.href;
+  //             return observer.next({
+  //               name: name.trim(),
+  //               seeds: seeds,
+  //               magnet: magnet
+  //             });
+  //           });
+  //         } else {
+  //           return observer.next();
+  //         }
+  //       });
+  //   });
+  // }
+
+  // Kickass
   retrieveEpisode(show: string, episode: string, custom?: number) {
     show = show.replace(/'/g, ' ');
-    const url = encodeURI('https://indiaproxy.in/s/?q=' + show + ' ' + episode);
+    const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');
     console.log('Downloading episode', show, episode);
     // console.log('url', url);
     return Observable.create(observer => {
@@ -391,19 +425,19 @@ export class ScrapingService {
         .subscribe(response => {
           const $ = cheerio.load(response);
           const _custom = custom ? custom : 1;
-          if ($('tr')[_custom]) {
-            const nested_url = $('tr')[_custom].children[2].children[3].attribs.href;
-            const name = $('tr')[_custom].children[2].children[1].children[1].children[0].data;
-            const seeds = $('tr')[_custom].children[4].children[0].data;
-            return this.http.get<any[]>('https://proxytpb.pw' + nested_url, { responseType: 'text' as 'json' })
-            .subscribe(nested_response => {
-              const _$ = cheerio.load(nested_response);
-              const magnet = _$('.download')[0].children[1].attribs.href;
-              return observer.next({
-                name: name.trim(),
-                seeds: seeds,
-                magnet: magnet
-              });
+          if ($('#torrent_latest_torrents')[_custom]) {
+            const t_row = $('#torrent_latest_torrents')[_custom];
+            console.log(t_row);
+            const name = t_row.children[1].children[3].children[5].children[1].children[0].data;
+            const magnet_link = t_row.children[1].children[1].children[5].attribs['href'];
+            const size = t_row.children[3].children[0].data;
+            const seeds = t_row.children[7].children[0].data;
+            const magnet = decodeURIComponent(magnet_link.split('https://mylink.lol/?url=')[1]);
+            return observer.next({
+              name: name.trim(),
+              seeds: seeds,
+              size: size,
+              magnet: magnet
             });
           } else {
             return observer.next();
@@ -411,8 +445,37 @@ export class ScrapingService {
         });
     });
   }
-
-
+  retrieveTorrentsList(show: string, episode: string) {
+    show = show.replace(/'/g, ' ');
+    const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');
+    console.log('Downloading episode', show, episode);
+    // console.log('url', url);
+    return Observable.create(observer => {
+      return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+        .subscribe(response => {
+          const $ = cheerio.load(response);
+          for (let index = 0; index < 3; index++) {
+            if ($('#torrent_latest_torrents')[index]) {
+              const t_row = $('#torrent_latest_torrents')[index];
+              // console.log(t_row);
+              const name = t_row.children[1].children[3].children[5].children[1].children[0].data;
+              const magnet_link = t_row.children[1].children[1].children[5].attribs['href'];
+              const size = t_row.children[3].children[0].data;
+              const seeds = t_row.children[7].children[0].data;
+              const magnet = decodeURIComponent(magnet_link.split('https://mylink.lol/?url=')[1]);
+              observer.next({
+                name: name.trim(),
+                seeds: seeds,
+                size: size,
+                magnet: magnet
+              });
+            } else {
+              return observer.next();
+            }
+          }
+        });
+    });
+  }
 
   // retrieveTorrentsList(show: string, episode: string) {
   //   show = show.replace(/'/g, ' ');
@@ -446,66 +509,66 @@ export class ScrapingService {
   //       });
   //   });
   // }
-  retrieveTorrentsList(show: string, episode: string) {
-    show = show.replace(/'/g, ' ');
-    const url = encodeURI('https://indiaproxy.in/s/?q=' + show + ' ' + episode);
-    console.log('Retrieving episode', show, episode);
-    // console.log('url', url);
-    return Observable.create(observer => {
-      return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
-        .subscribe(response => {
-          const $ = cheerio.load(response);
-          if ($('tr').length === 0) {
-            console.log('No results');
-            return observer.next();
-          }
-          for (let i = 1; i < 4; i++) {
-            if ($('tr')[i]) {
-              const nested_url = $('tr')[i].children[2].children[3].attribs.href;
-              const name = $('tr')[i].children[2].children[1].children[1].children[0].data;
-              const seeds = $('tr')[i].children[4].children[0].data;
-              let size = '';
+  // retrieveTorrentsList(show: string, episode: string) {
+  //   show = show.replace(/'/g, ' ');
+  //   const url = encodeURI('https://indiaproxy.in/s/?q=' + show + ' ' + episode);
+  //   console.log('Retrieving episode', show, episode);
+  //   // console.log('url', url);
+  //   return Observable.create(observer => {
+  //     return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+  //       .subscribe(response => {
+  //         const $ = cheerio.load(response);
+  //         if ($('tr').length === 0) {
+  //           console.log('No results');
+  //           return observer.next();
+  //         }
+  //         for (let i = 1; i < 4; i++) {
+  //           if ($('tr')[i]) {
+  //             const nested_url = $('tr')[i].children[2].children[3].attribs.href;
+  //             const name = $('tr')[i].children[2].children[1].children[1].children[0].data;
+  //             const seeds = $('tr')[i].children[4].children[0].data;
+  //             let size = '';
 
-              // console.log($('tr')[i].children[2].children);
+  //             // console.log($('tr')[i].children[2].children);
 
-              switch ($('tr')[i].children[2].children.length) {
-                case 10:
-                size = $('tr')[i].children[2].children[8].children[0].data;
-                break;
-                case 9:
-                size = $('tr')[i].children[2].children[7].children[0].data;
-                break;
-                case 8:
-                size = $('tr')[i].children[2].children[6].children[0].data;
-                break;
-              }
-              // console.log('size', size);
-              size = size ? size.substring(
-                size.lastIndexOf('Size ') + 5,
-                size.lastIndexOf('iB')
-              ) : '';
-              size += 'b';
+  //             switch ($('tr')[i].children[2].children.length) {
+  //               case 10:
+  //               size = $('tr')[i].children[2].children[8].children[0].data;
+  //               break;
+  //               case 9:
+  //               size = $('tr')[i].children[2].children[7].children[0].data;
+  //               break;
+  //               case 8:
+  //               size = $('tr')[i].children[2].children[6].children[0].data;
+  //               break;
+  //             }
+  //             // console.log('size', size);
+  //             size = size ? size.substring(
+  //               size.lastIndexOf('Size ') + 5,
+  //               size.lastIndexOf('iB')
+  //             ) : '';
+  //             size += 'b';
 
-              const sub = this.http.get<any[]>('https://proxytpb.pw' + nested_url, { responseType: 'text' as 'json' })
-              .subscribe(nested_response => {
-                const _$ = cheerio.load(nested_response);
-                const magnet = _$('.download')[0].children[1].attribs.href;
-                // sub.unsubscribe();
-                return observer.next({
-                  name: name.trim(),
-                  seeds: seeds,
-                  size: size,
-                  magnet: magnet
-                });
-              });
-            }}
+  //             const sub = this.http.get<any[]>('https://proxytpb.pw' + nested_url, { responseType: 'text' as 'json' })
+  //             .subscribe(nested_response => {
+  //               const _$ = cheerio.load(nested_response);
+  //               const magnet = _$('.download')[0].children[1].attribs.href;
+  //               // sub.unsubscribe();
+  //               return observer.next({
+  //                 name: name.trim(),
+  //                 seeds: seeds,
+  //                 size: size,
+  //                 magnet: magnet
+  //               });
+  //             });
+  //           }}
 
-        }, reason => {
-          console.error('Not found', reason);
-          observer.next();
-        });
-    });
-  }
+  //       }, reason => {
+  //         console.error('Not found', reason);
+  //         observer.next();
+  //       });
+  //   });
+  // }
 
   searchShows(show_string: string): Observable < any > {
     return Observable.create(observer => {

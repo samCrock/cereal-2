@@ -58,7 +58,7 @@ label {
 
 .extra.expanded {
 	opacity: 1;
-	height: calc(7rem + 1vw);
+	height: calc(15rem + 8vw);
 	.extras_header div label {
 		opacity: 1;
 	}
@@ -113,13 +113,14 @@ label {
 #delete_btn {
 	margin-top: 0;
 	opacity: 0;
+	float: right;
 	position: relative;
 	transition: margin-top 2s, opacity .4s ease-in;
 }
 
 #delete_btn.expanded {
 	opacity: 1;
-	margin-top: 3rem;
+	margin-top: 1rem;
 }
 
 .episode_msg {
@@ -143,4 +144,11 @@ label {
 	0% { opacity: .2; }
 	50% { opacity: .6; }
 	100% { opacity: .2; }
+}
+
+.overview {
+	text-align: center;
+	padding: 1.5rem 2rem .5rem;
+	font-size: calc(1rem + .4vw);
+	color: rgba(255,255,255, .8);
 }

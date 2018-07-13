@@ -190,6 +190,7 @@ export class EpisodeComponent implements OnChanges {
         this.hasResults = true;
         this.loading = false;
         this.ep_torrents.push(result);
+        console.log('this.ep_torrents', this.ep_torrents);
         // currentTorrentsListSub.unsubscribe();
       } else {
         this.loading = false;

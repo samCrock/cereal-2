@@ -8,6 +8,9 @@
 				<div class="valign-wrapper" *ngIf="show.trailer">
 					<i class="material-icons hoverable circle" id="trailer_icon" (click)="play_trailer()">live_tv</i>
 				</div>
+				<div class="valign-wrapper" *ngIf="show.trailer">
+						<i class="material-icons hoverable circle" id="delete_icon" (click)="delete_show()">delete</i>
+					</div>
 			</div>
 			<div fxLayout="row">
 				<span id="network" class="left-align valign-wrapper">{{ show.network }} </span>

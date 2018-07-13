@@ -81,11 +81,12 @@ export class ShowComponent implements OnInit, OnDestroy {
 
   retrieveSeason() {
     if (this.show['Seasons'][this.current_season]) {
+      console.log('Local', this.show['Seasons'][this.current_season]);
       return this.episodes = this.show['Seasons'][this.current_season];
     }
     this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.current_season)
     .subscribe(episodes => {
-      console.log('Season', this.current_season, episodes);
+      console.log('Scraped season', this.current_season, episodes);
       this.episodes = episodes;
       this.dbService.addSeason(this.show['dashed_title'], this.current_season, episodes)
       .subscribe(show => {

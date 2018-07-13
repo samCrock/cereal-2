@@ -1,70 +1,76 @@
 <div class="episode_row" *ngIf="show">
 
-	<div class="progress" *ngIf="(getTorrentProgress(episode) | async); let progress;">
-		<div class="determinate" [ngStyle]="{ 'width': progress + '%' }"></div>
-	</div>
-	<div fxLayout="column" fxLayoutAlign="space-evenly" class="episode">
+  <div class="progress" *ngIf="(getTorrentProgress(episode) | async); let progress;">
+    <div class="determinate" [ngStyle]="{ 'width': progress + '%' }"></div>
+  </div>
+  <div fxLayout="column" fxLayoutAlign="space-evenly" class="episode">
 
-		<div fxLayout="row" fxLayoutAlign="space-evenly" fxFill fxLayoutGap="1vw">
-			<div fxFlex="50" fxLayoutAlign="center center" class="waves-effect waves-light btn" *ngIf="titleAsButton" [routerLink]="['/show/' + episode.dashed_title]">{{ episode.title }}</div>
-			<div fxFlex="50" fxLayoutAlign="start center" class="right" *ngIf="!titleAsButton">{{ episode.title }}</div>
-			<div fxFlex="10" fxLayoutAlign="end center" class="right">{{ episode.label }}</div>
-			<div fxFlex="15" fxLayoutAlign="end center" *ngIf="format == 'extended'">{{ formatDate(episode.date) }}</div>
+    <div fxLayout="row" fxLayoutAlign="space-evenly" fxFill fxLayoutGap="1vw">
+      <div fxFlex="50" fxLayoutAlign="center center" class="waves-effect waves-light btn" *ngIf="titleAsButton" [routerLink]="['/show/' + episode.dashed_title]">{{ episode.title }}</div>
+      <div fxFlex="50" fxLayoutAlign="start center" class="right" *ngIf="!titleAsButton">{{ episode.title }}</div>
+      <div fxFlex="10" fxLayoutAlign="end center" class="right">{{ episode.label }}</div>
+      <div fxFlex="15" fxLayoutAlign="end center" *ngIf="format == 'extended'">{{ formatDate(episode.date) }}</div>
 
-			<div fxFlex="20" fxLayoutAlign="end center" *ngIf="(getTorrentDownloadSpeed(episode) | async); let speed;">
-				<span id="speed" *ngIf="speed != true">{{ speed }} Mb/s</span>
-				<i *ngIf="speed" class="material-icons download_btn hoverable circle" data-target="trailer_modal" (click)="play(episode)">play_arrow</i>
-			</div>
-			<div fxFlex="20" fxLayoutAlign="end center" *ngIf="!(getTorrentDownloadSpeed(episode) | async); let speed;">
-				<i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle" (click)="download_episode(episode)">file_download</i>
-			</div>
-			<div fxFlex="5" fxLayoutAlign="end center">
-				<i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle" [ngClass]="expanded ? 'rotate' : ''" (click)="toggleExtra(episode)">more_vert</i>
-			</div>
-		</div>
+      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="(getTorrentDownloadSpeed(episode) | async); let speed;">
+        <span id="speed" *ngIf="speed != true">{{ speed }} Mb/s</span>
+        <i *ngIf="speed" class="material-icons download_btn hoverable circle" data-target="trailer_modal" (click)="play(episode)">play_arrow</i>
+      </div>
+      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!(getTorrentDownloadSpeed(episode) | async); let speed;">
+        <i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle" (click)="download_episode(episode)">file_download</i>
+      </div>
+      <div fxFlex="5" fxLayoutAlign="end center">
+        <i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle" [ngClass]="expanded ? 'rotate' : ''" (click)="toggleExtra(episode)">more_vert</i>
+      </div>
+    </div>
 
-		<div fxLayout="row" class="extra" id="ep_{{ episode.label }}" [ngClass]="expanded ? 'expanded' : ''">
+    <div fxLayout="row" class="extra" id="ep_{{ episode.label }}" [ngClass]="expanded ? 'expanded' : ''">
 
-			<div fxFlex fxLayout="column" fxLayoutAlign="center start" *ngIf="ep_torrents.length">
-				<div fxLayout="row" fxLayoutAlign="space-evenly" class="extras_header">
-					<div fxFlex="76">
-						<label style="margin-left: calc(1rem + 2vw);">Name</label>
-					</div>
-					<div fxFlex="5">
-						<label>Seeds</label>
-					</div>
-					<div fxFlex="2"></div>
-					<div fxFlex="13">
-						<label>Size</label>
-					</div>
-				</div>
-				<div fxLayout="row" fxLayoutAlign="space-evenly" *ngFor="let t of ep_torrents; let idx = index;" class="torrent_extras">
-					<div fxFlex="76">
-						<label>
+      <div fxLayout="column" fxFlex="100" *ngIf="expanded">
+
+        <div class="overview">{{ episode.overview }}</div>
+
+        <div fxFlex fxLayout="column" fxLayoutAlign="center start" *ngIf="ep_torrents.length">
+          <div fxLayout="row" fxLayoutAlign="space-evenly" class="extras_header">
+            <div fxFlex="76">
+              <label style="margin-left: calc(1rem + 2vw);">Name</label>
+            </div>
+            <div fxFlex="5">
+              <label>Seeds</label>
+            </div>
+            <div fxFlex="2"></div>
+            <div fxFlex="13">
+              <label>Size</label>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-evenly" *ngFor="let t of ep_torrents; let idx = index;" class="torrent_extras">
+            <div fxFlex="76">
+              <label>
 							<input name="group1" type="radio" [checked]="idx === 0" [value]="t.name" (change)="onTorrentChange(t)"/>
 							<span>{{ t.name | trim }}</span>
 						</label>
-					</div>
-					<div fxFlex="5">
-						<span class="seeds">{{ t.seeds }}</span>
-					</div>
-					<div fxFlex="2"></div>
-					<div fxFlex="13">
-						<span class="seeds">{{ t.size }}</span>
-					</div>
+            </div>
+            <div fxFlex="5">
+              <span class="seeds">{{ t.seeds }}</span>
+            </div>
+            <div fxFlex="2"></div>
+            <div fxFlex="13">
+              <span class="seeds">{{ t.size }}</span>
+            </div>
+          </div>
+        </div>
+
+
+				<div id="delete_container" *ngIf="ep_torrents.length">
+					<i *ngIf="downloadable(episode.date)" id="delete_btn" class="material-icons download_btn hoverable circle" [ngClass]="expanded ? 'expanded' : ''" (click)="toggleExtra(episode); deleteTorrent(episode);">delete</i>
 				</div>
+
+				<div *ngIf="!hasResults && !loading" class="episode_msg"><span>No results</span></div>
+				<div *ngIf="loading" class="episode_msg glow"><span>Loading</span></div>
 			</div>
 
-			<div id="delete_container" *ngIf="ep_torrents.length">
-				<i *ngIf="downloadable(episode.date)" id="delete_btn" class="material-icons download_btn hoverable circle" [ngClass]="expanded ? 'expanded' : ''" (click)="toggleExtra(episode); deleteTorrent(episode);">delete</i>
-			</div>
+    </div>
 
-			<div *ngIf="!hasResults && !loading" class="episode_msg"><span>No results</span></div>
-			<div *ngIf="loading" class="episode_msg glow"><span>Loading</span></div>
-
-		</div>
-
-	</div>
+  </div>
 
 
 </div>

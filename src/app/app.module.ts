@@ -11,7 +11,8 @@ import { HttpClientJsonpModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 
 // Material
-import { MatButtonModule, MatCheckboxModule, MatIconModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatIconModule, MatDialogModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // import 'materialize-css';
 // import { MaterializeModule } from 'angular2-materialize';
@@ -29,6 +30,7 @@ import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
 import { HomeComponent, ShowComponent, PlayerComponent, SearchComponent, LibraryComponent } from './components/index';
+import { DialogComponent } from './common-components/index';
 
 // Services
 import { ScrapingService, TorrentService, DbService, SubsService, NavbarService } from './services/index';
@@ -41,7 +43,8 @@ import { CommonComponentsModule } from './common-components/common-components.mo
 const materialDependencies = [
   MatButtonModule,
   MatCheckboxModule,
-  MatIconModule
+  MatIconModule,
+  MatDialogModule
 ];
 
 // AoT requires an exported function for factories
@@ -72,6 +75,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
+    BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -90,6 +94,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SubsService,
     NavbarService
   ],
+  entryComponents: [DialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

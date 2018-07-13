@@ -97,3 +97,19 @@ input {
 ::-webkit-scrollbar-thumb:hover {
 	background: #26a69a;
 }
+
+.cdk-global-overlay-wrapper {
+	position: absolute;
+    top: 0;
+    width: 100%;
+    height: -webkit-fill-available;
+    background: rgba(0,0,0,.6);
+    z-index: 999999999;
+}
+
+.cdk-overlay-pane {
+	position: relative !important;
+	top: 40vh;
+	margin: auto;
+	background: rgb(58, 70, 76);
+}

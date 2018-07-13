@@ -214,6 +214,22 @@ export class DbService {
     });
   }
 
+  deleteShow(dashed_title): Observable<any> {
+    return new Observable(observer => {
+      this.openDb().subscribe(db => {
+        db = event.target['result'];
+        const objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
+        const request = objectStore.delete(dashed_title);
+        request.onerror = function(event) {
+          return observer.error();
+        };
+        request.onsuccess = function(event) {
+          return observer.next();
+        };
+      });
+    });
+  }
+
   deleteEpisode(episode_torrent) {
     return new Observable(observer => {
       this.openDb().subscribe(db => {
