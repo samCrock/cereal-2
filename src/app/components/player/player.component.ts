@@ -1,5 +1,5 @@
 import { Component, OnChanges, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { TorrentService } from '../../services';
+import { TorrentService, SubsService } from '../../services';
 import { ElectronService } from 'ngx-electron';
 import { Router } from '@angular/router';
 import { TweenMax } from 'gsap';
@@ -35,9 +35,11 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   public isDragging = false;
   public showSubs = false;
   public toggledEpisodes = false;
+  public dn;
 
   constructor(
     public torrentService: TorrentService,
+    public subsService: SubsService,
     public electronService: ElectronService,
     public router: Router,
     private zone: NgZone
@@ -57,43 +59,37 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     this.show = play.show;
     this.episode = play.episode;
     this.file_path = play.file_path;
+    this.dn = play.episode.dn;
 
-    console.log(this.show);
-    console.log(this.episode);
-    console.log('file_path', this.file_path);
+    // console.log(this.show);
+    // console.log(this.episode);
+    console.log(this.dn);
+    // console.log('file_path', this.file_path);
 
     // Set this episode as last_seen ..
 
-
+    // Set video file path
     this.fs.readdir(this.file_path, (err, files) => {
       if (files) {
         files.forEach(file => {
-          console.log('file', file);
           const ext = file.substring(file.length - 3, file.length);
           if (ext === 'mkv' || ext === 'mp4') {
-            console.log('File extension:', ext);
             this.file_path = this.path.join(this.file_path, file);
-          } else if (ext === 'srt') {
-            const subs_path = this.path.join(this.file_path, file);
-            console.log('Subs:', file);
-            that.addSubs(subs_path);
           }
         });
       }
-      this.setup();
     });
 
-    const parent_folder = this.path.resolve(this.file_path, '..');
-    this.fs.readdir(parent_folder, (err, files) => {
-      files.forEach(file => {
-        // console.log('Folder file', file);
-        const ext = file.substring(file.length - 3, file.length);
-        if (ext === 'srt') {
-          const subs_path = this.path.join(parent_folder, file);
-          console.log('Subs:', subs_path);
-          that.addSubs(subs_path);
-        }
+    // Add subs tracks
+    this.subsService.retrieveSubs(this.show['title'], this.episode['label'],  this.dn)
+    .subscribe(subs => {
+      subs.forEach(sub => {
+        this.subsService.downloadSub(sub, play.file_path).subscribe(subPath => {
+          console.log('subPath', subPath);
+          that.addSubs(subPath);
+        });
       });
+      this.setup();
     });
 
 
@@ -118,8 +114,17 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
 
   setup() {
     this.player = document.getElementById('player');
-    console.log('File path', this.file_path);
+    // Clean player
+    while (this.player.firstChild) {
+      this.player.firstChild.remove();
+    }
     this.player.setAttribute('src', this.file_path);
+    const track = document.createElement('track');
+    track.kind = 'captions';
+    track.label = 'English';
+    track.srclang = 'en';
+    track.label = '[ Disable ]';
+    this.player.appendChild(track);
 
     const that = this;
     const i = setInterval(function() {
@@ -159,7 +164,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
         that.dragSetup();
 
       }
-    }, 200);
+    }, 10);
   }
 
   controlsLoop() {
@@ -209,35 +214,51 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
       .pipe(that.fs.createWriteStream(file_path.substring(0, file_path.length - 3) + 'vtt'));
       setTimeout(function() {
         track.src = file_path.substring(0, file_path.length - 3) + 'vtt';
-        that.player.removeChild(that.player.firstChild); // clean old subs
-        that.player.appendChild(track);
-        that.player.textTracks[0].mode = 'showing';
+        track.label = that.path.normalize(track.src).split(that.path.sep)[that.path.normalize(track.src).split(that.path.sep).length - 1];
+        track.label = track.label.substring(0, track.label.length - 4);
+        let duplicate = false;
+        for (const key in that.player.textTracks) {
+          if (that.player.textTracks.hasOwnProperty(key)) {
+            const element = that.player.textTracks[key];
+            element.mode = 'hidden';
+            if (key === '1') {
+              element.mode = 'showing';
+            }
+            if (element.label === track.label) {
+              duplicate = true;
+            }
+          }
+        }
+        if (!duplicate) {
+          that.player.appendChild(track);
+        }
 
         setTimeout(function() {
-          const cues = that.player.textTracks[0].cues;
-        // console.log('cues', cues);
-        Object.keys(cues).forEach(key => {
-          // console.log(cues[key]);
-          cues[key].line = 15;
-        });
-        that.showSubs = true;
+          const cues = that.player.textTracks[1].cues;
+          // console.log('cues', cues);
+          Object.keys(cues).forEach(key => {
+            console.log(cues[key]);
+            cues[key].snapToLines = false;
+            cues[key].line = 90;
+          });
+        }, 10);
 
-      }, 1000);
-
-      }, 1000);
+      }, 10);
     }
   }
 
   toggleSubs() {
-    if (this.player.textTracks[0]) {
-      const mode = this.player.textTracks[0].mode;
-      console.log('toggleSubs', mode);
-      if (mode === 'hidden') {
-        this.player.textTracks[0].mode = 'showing';
-        this.showSubs = true;
-      } else {
-        this.player.textTracks[0].mode = 'hidden';
-        this.showSubs = false;
+    this.showSubs = !this.showSubs;
+  }
+
+  selectSubs(sub) {
+    for (const key in this.player.textTracks) {
+      if (this.player.textTracks.hasOwnProperty(key)) {
+        const element = this.player.textTracks[key];
+        element.mode = 'hidden';
+        if (element.label === sub.label) {
+          element.mode = 'showing';
+        }
       }
     }
   }

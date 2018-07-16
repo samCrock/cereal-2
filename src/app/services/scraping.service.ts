@@ -249,31 +249,31 @@ export class ScrapingService {
     });
   }
 
-    retrieveAlternatePoster(dashed_title: string, observer) {
-      // console.log('Retrieving poster for', dashed_title);
-      return this.http.get('http://www.imdb.com/find?ref_=nv_sr_fn&q=' + dashed_title + '&s=all', { responseType: 'text' as 'json' })
-        .subscribe(response => {
-          const $ = cheerio.load(response),
-            results = $('.primary_photo');
-          if (results[0]) {
-            const small_img = results[0].children[1].children[0].attribs.src;
-            let large_img = small_img.replace('V1_UX32_CR0,0,32,44_AL_', 'V1_UY268_CR1,0,182,268_AL_');
+  retrieveAlternatePoster(dashed_title: string, observer) {
+    // console.log('Retrieving poster for', dashed_title);
+    return this.http.get('http://www.imdb.com/find?ref_=nv_sr_fn&q=' + dashed_title + '&s=all', { responseType: 'text' as 'json' })
+      .subscribe(response => {
+        const $ = cheerio.load(response),
+          results = $('.primary_photo');
+        if (results[0]) {
+          const small_img = results[0].children[1].children[0].attribs.src;
+          let large_img = small_img.replace('V1_UX32_CR0,0,32,44_AL_', 'V1_UY268_CR1,0,182,268_AL_');
 
-            if (small_img.indexOf('V1_UX32_CR0,0,32,44_AL_') < 0) {
-              large_img = small_img.replace('V1_UY44_CR0,0,32,44_AL_', 'V1_UY182_CR0,0,182,268_AL_');
-              if (small_img.indexOf('V1_UY44_CR1,0,32,44_AL_') > -1) {
-                large_img = small_img.replace('V1_UY44_CR1,0,32,44_AL_', 'V1_UY268_CR12,0,182,268_AL_');
-              }
-              if (small_img.indexOf('V1_UY44_CR13,0,32,44_AL_') > -1) {
-                large_img = small_img.replace('V1_UY44_CR13,0,32,44_AL_', 'V1_UY268_CR87,0,182,268_AL_');
-              }
+          if (small_img.indexOf('V1_UX32_CR0,0,32,44_AL_') < 0) {
+            large_img = small_img.replace('V1_UY44_CR0,0,32,44_AL_', 'V1_UY182_CR0,0,182,268_AL_');
+            if (small_img.indexOf('V1_UY44_CR1,0,32,44_AL_') > -1) {
+              large_img = small_img.replace('V1_UY44_CR1,0,32,44_AL_', 'V1_UY268_CR12,0,182,268_AL_');
             }
-            return observer.next(large_img);
-          } else {
-            return observer.next('');
+            if (small_img.indexOf('V1_UY44_CR13,0,32,44_AL_') > -1) {
+              large_img = small_img.replace('V1_UY44_CR13,0,32,44_AL_', 'V1_UY268_CR87,0,182,268_AL_');
+            }
           }
-        });
-    }
+          return observer.next(large_img);
+        } else {
+          return observer.next('');
+        }
+      });
+  }
 
   normalizePath(path) {
     path = this.path.normalize(path);
@@ -351,35 +351,6 @@ export class ScrapingService {
       });
   }
 
-  // IDOPE
-  // retrieveEpisode(show: string, episode: string, custom?: number) {
-  //   show = show.replace(/'/g, ' ');
-  //   const url = encodeURI('https://idope.se/torrent-list/' + show + ' ' + episode);
-  //   console.log('Downloading episode', show, episode);
-  //   // console.log('url', url);
-  //   return Observable.create(observer => {
-  //     return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
-  //       .subscribe(response => {
-  //         const $ = cheerio.load(response);
-  //         const _custom = custom ? custom : 1;
-  //         if ($('.resultdiv')[_custom]) {
-  //           const magnet = 'magnet:?xt=urn:btih:' +
-  //             $('.resultdiv')[_custom].children[3].children[11].children[0].data + '&dn=' +
-  //             $('.resultdiv')[_custom].children[3].children[13].children[0].data +
-  //             $('#hidetrack')[0].attribs.value;
-
-  //           return observer.next({
-  //             name: $('.resultdiv')[_custom].children[1].children[5].children[0].children[0].data.trim(),
-  //             seeds: $('.resultdiv')[_custom].children[3].children[7].children[3].children[0].data,
-  //             magnet: magnet
-  //           });
-  //         } else {
-  //           return observer.next();
-  //         }
-  //       });
-  //   });
-  // }
-
   // PB proxy
   // retrieveEpisode(show: string, episode: string, custom?: number) {
   //   show = show.replace(/'/g, ' ');
@@ -445,6 +416,7 @@ export class ScrapingService {
         });
     });
   }
+
   retrieveTorrentsList(show: string, episode: string) {
     show = show.replace(/'/g, ' ');
     const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');
@@ -477,38 +449,6 @@ export class ScrapingService {
     });
   }
 
-  // retrieveTorrentsList(show: string, episode: string) {
-  //   show = show.replace(/'/g, ' ');
-  //   const url = encodeURI('https://idope.se/torrent-list/' + show + ' ' + episode);
-
-  //   // console.log('url', url);
-  //   return Observable.create(observer => {
-  //     return this.http.get < any[] > (url, { responseType: 'text' as 'json' })
-  //       .subscribe(response => {
-  //         const $ = cheerio.load(response);
-
-  //         for (let i = 1; i < 4; i++) {
-  //           // console.log($('.resultdiv')[i]);
-  //           if ($('.resultdiv')[i]) {
-  //             const magnet = 'magnet:?xt=urn:btih:' +
-  //               $('.resultdiv')[i].children[3].children[11].children[0].data + '&dn=' +
-  //               $('.resultdiv')[i].children[3].children[13].children[0].data +
-  //               $('#hidetrack')[0].attribs.value;
-
-  //             observer.next({
-  //               name: $('.resultdiv')[i].children[1].children[5].children[0].children[0].data.trim(),
-  //               seeds: $('.resultdiv')[i].children[3].children[7].children[3].children[0].data,
-  //               size: $('.resultdiv')[i].children[3].children[5].children[3].children[0].data,
-  //               magnet: magnet
-  //             });
-  //           } else {
-  //             return observer.next();
-  //           }
-  //         }
-
-  //       });
-  //   });
-  // }
   // retrieveTorrentsList(show: string, episode: string) {
   //   show = show.replace(/'/g, ' ');
   //   const url = encodeURI('https://indiaproxy.in/s/?q=' + show + ' ' + episode);

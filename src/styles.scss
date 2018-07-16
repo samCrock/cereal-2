@@ -102,7 +102,7 @@ input {
 	position: absolute;
     top: 0;
     width: 100%;
-    height: -webkit-fill-available;
+    height: stretch;
     background: rgba(0,0,0,.6);
     z-index: 999999999;
 }

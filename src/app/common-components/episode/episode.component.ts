@@ -113,7 +113,7 @@ export class EpisodeComponent implements OnChanges {
             date: episode['date']
           }).subscribe(() => {
             console.log('Torrent ready for download');
-            this.subsService.downloadSub(result['name'], this.path.join(this.show['title'], episode['label'])).subscribe();
+            // this.subsService.downloadSub(result['name'], this.path.join(this.show['title'], episode['label'])).subscribe();
           });
           this.dbService.addTorrent({
             dn: result['name'],
@@ -127,6 +127,10 @@ export class EpisodeComponent implements OnChanges {
           }).subscribe(show => {
             console.log('Updated show', show);
             this.show = show;
+            this.getTorrentProgress(episode)
+            .subscribe(speed => {
+              this.play(episode, result['name']);
+            });
           });
 
         } else {
@@ -136,7 +140,7 @@ export class EpisodeComponent implements OnChanges {
       });
   }
 
-  play(episode) {
+  play(episode, dn) {
     this.dbService.getShow(this.show['dashed_title'])
       .subscribe(show => {
         this.show = show;
@@ -161,7 +165,8 @@ export class EpisodeComponent implements OnChanges {
         localStorage.setItem('play', JSON.stringify({
           show: this.show,
           episode: episode,
-          file_path: video_path
+          file_path: video_path,
+          dn: dn
         }));
         if (this.format === 'extended') {
           this.router.navigate(['play']);
@@ -170,6 +175,18 @@ export class EpisodeComponent implements OnChanges {
           this.notify.emit(episode);
         }
       });
+  }
+
+  isCurrent() {
+    let isCurrent = false;
+    let current = localStorage.getItem('play');
+    if (current) {
+      current = JSON.parse(current);
+      if (current['show']['dashed_title'] === this.show['dashed_title'] && current['episode']['label'] === this.episode['label']) {
+        isCurrent = true;
+      }
+    }
+    return isCurrent;
   }
 
   toggleExtra(episode) {

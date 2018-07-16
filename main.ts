@@ -58,7 +58,7 @@ function createWindow() {
     require('electron-reload')(__dirname, {
     });
     win.loadURL('http://localhost:4200');
-    // win.openDevTools();
+    win.openDevTools();
   } else {
     win.loadURL(url.format({
       pathname: path.join(__dirname, 'dist/index.html'),
@@ -67,7 +67,7 @@ function createWindow() {
     }));
   }
 
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on('closed', () => {

@@ -13,7 +13,9 @@
 
       <div fxFlex="20" fxLayoutAlign="end center" *ngIf="(getTorrentDownloadSpeed(episode) | async); let speed;">
         <span id="speed" *ngIf="speed != true">{{ speed }} Mb/s</span>
-        <i *ngIf="speed" class="material-icons download_btn hoverable circle" data-target="trailer_modal" (click)="play(episode)">play_arrow</i>
+        <i *ngIf="speed" class="material-icons download_btn hoverable circle"
+        [class.active]="isCurrent()"
+        data-target="trailer_modal" (click)="play(episode)">play_arrow</i>
       </div>
       <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!(getTorrentDownloadSpeed(episode) | async); let speed;">
         <i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle" (click)="download_episode(episode)">file_download</i>
@@ -23,7 +25,7 @@
       </div>
     </div>
 
-    <div fxLayout="row" class="extra" id="ep_{{ episode.label }}" [ngClass]="expanded ? 'expanded' : ''">
+    <div fxLayout="row" class="extra" id="ep_{{ episode.label }}" [class.expanded]="expanded">
 
       <div fxLayout="column" fxFlex="100" *ngIf="expanded">
 
@@ -61,7 +63,7 @@
 
 
 				<div id="delete_container" *ngIf="ep_torrents.length">
-					<i *ngIf="downloadable(episode.date)" id="delete_btn" class="material-icons download_btn hoverable circle" [ngClass]="expanded ? 'expanded' : ''" (click)="toggleExtra(episode); deleteTorrent(episode);">delete</i>
+					<i *ngIf="downloadable(episode.date)" id="delete_btn" class="material-icons download_btn hoverable circle" [class.expanded]="expanded" (click)="toggleExtra(episode); deleteTorrent(episode);">delete</i>
 				</div>
 
 				<div *ngIf="!hasResults && !loading" class="episode_msg"><span>No results</span></div>

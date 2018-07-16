@@ -45,7 +45,7 @@ i {
   display: block;
   position: relative;
   width: 100%;
-  height: -webkit-fill-available;
+  height: stretch;
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.6);
@@ -78,16 +78,19 @@ i {
 }
 
 #toggle_subs {
-  opacity: .4;
-  transition: opacity .4s ease-in;
+  transition: color .4s ease-in;
   i {
     font-size: calc(1rem + 1vw);
   }
 }
 
-#toggle_subs.on {
-    opacity: 1;
+#toggle_episodes {
+  transition: color .4s ease-in;
+  i {
+    font-size: calc(1.4rem + 1.4vw);
+  }
 }
+
 
 #open_folder {
   i {
@@ -105,7 +108,8 @@ i {
   height: calc(100vh - 12rem);
   overflow-y: auto;
   padding-right: .5rem;
-  background-color: rgba(20, 20, 20, .8);
+  transition: all .4s ease-in;
+  // background-color: rgba(20, 20, 20, .8);
 }
 
 #episodes_list.on {
@@ -184,10 +188,28 @@ i {
 
 video::cue {
   background-color: rgba(20, 20, 20, .7);
-  font-size: calc(1.5rem + 2vw);
+  font-size: calc(1.2rem + 1.6vw);
   border-radius: 1rem;
 }
 
 .back_icon {
   color: #26a69a;
+}
+
+.active {
+  color: rgba(230, 230, 130, 1);
+}
+
+#subs_list {
+  position: absolute;
+  bottom: 5rem;
+  right: 9rem;
+}
+
+.subs {
+  background-color: rgba(20, 20, 20, 0.6);
+  font-size: calc(.8rem + .8vw);
+  padding: .5rem 1rem;
+  margin: .5rem;
+  cursor: pointer;
 }

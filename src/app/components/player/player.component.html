@@ -6,6 +6,7 @@
   <span class="episode_title">{{ episode['title'] }}</span>
 </div>
 <div id="controls" [ngClass]="(idleTime > 20 && !toggledEpisodes) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center">
+<!-- <div id="controls" fxLayout="row" fxLayoutAlign="start center"> -->
   <div id="toggle_play" fxflex="auto" fxFlexOffset="calc(.5rem + 1vw)" (click)="toggle_play()">
     <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
   </div>
@@ -17,26 +18,23 @@
   <div id="toggle_fullscreen" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggle_fullscreen()">
     <i class="material-icons">{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</i>
   </div>
-  <div id="toggle_subs" [ngClass]="showSubs ? 'on' : ''" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggleSubs()">
+
+  <div id="toggle_subs" [ngClass]="showSubs ? 'active' : ''" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggleSubs()">
     <i class="material-icons">textsms</i>
   </div>
+  <div id="subs_list" *ngIf="showSubs" >
+    <div class="subs" [class.active]="sub.mode == 'showing'" *ngFor="let sub of player.textTracks" (click)="selectSubs(sub)">{{ sub.label }}</div>
+  </div>
+
   <div id="open_folder" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="openFolder()">
     <i class="material-icons">folder_open</i>
   </div>
-  <div fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggleEpisodes()">
+
+  <div id="toggle_episodes" [class.active]="toggledEpisodes" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggleEpisodes()">
     <i class="material-icons">playlist_play</i>
   </div>
   <div id="episodes_list" *ngIf="toggleEpisodes" [ngClass]="toggledEpisodes ? 'on' : ''">
-    
-    <!-- <div *ngFor="let episode of show.Seasons[show.watching_season]">
-      <div class="menu_episode" fxLayout="row" fxLayoutAlign="center center" fxFlex [ngClass]="isCurrent_episode(episode.label) ? 'current_episode' : ''">
-         -->
-        <app-episode *ngFor="let episode of show.Seasons[show.watching_season]" (notify)="play_episode($event)" [episode]="episode" [show]="show" [format]="'compact'"></app-episode>
-         
-        <!-- <label fxFlex="30">{{ episode.label }}</label>
-        <label fxFlex="70">{{ episode.title }}</label>
-      </div>
-    </div> -->
-
+    <app-episode *ngFor="let episode of show.Seasons[show.watching_season]" (notify)="play_episode($event)" [episode]="episode" [show]="show" [format]="'compact'"></app-episode>
   </div>
+
 </div>
