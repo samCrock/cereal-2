@@ -48,15 +48,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
       const torrents = this.dbService.getPendingTorrents()
       .subscribe(_torrents => {
-            // if (torrents.length > 0) { console.log('Pending torrents', torrents); }
             _torrents.forEach(torrent => {
               // console.log('Pending torrent', torrent);
               const _torrent = this.wt_client.get(torrent['magnet']);
               if (_torrent && _torrent.progress === 1) {
-                console.log('Setting torrent to ready', _torrent);
+                // console.log('Setting torrent to ready', _torrent);
                 this.dbService.readyTorrent(_torrent.infoHash)
                 .subscribe(ep => {
-                  console.log('Setting episode to ready', ep);
+                  // console.log('Setting episode to ready', ep);
                   this.dbService.readyEpisode(ep)
                   .subscribe(show => {
                     Materialize.toast({

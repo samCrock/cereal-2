@@ -5,7 +5,8 @@ import * as webtorrent from 'webtorrent';
 
 const os = require('os');
 const { shell } = require('electron');
-const fs = require('fs-extra');
+const fsExtra = require('fs-extra');
+const fs = require('fs');
 const srt2vtt = require('srt-to-vtt');
 const zip = require('decompress-zip');
 const { exec } = require('child_process');
@@ -15,6 +16,7 @@ global['wt_client'] = new webtorrent();
 global['local_path'] = os.homedir();
 global['shell'] = shell;
 global['fs'] = fs;
+global['fsExtra'] = fsExtra;
 global['srt2vtt'] = srt2vtt;
 global['zip'] = zip;
 global['path'] = path;

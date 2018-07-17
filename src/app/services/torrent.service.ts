@@ -34,6 +34,7 @@ export class TorrentService {
   getTorrent(infoHash): Observable<any> {
     return new Observable(observer => {
       this.wt_client.torrents.forEach(t => {
+        // console.log(t);
         if (!t) { return observer.next(); }
         if (t['infoHash'] === infoHash) {
           return observer.next(t);

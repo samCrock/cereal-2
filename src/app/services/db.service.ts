@@ -338,7 +338,9 @@ export class DbService {
           s_request.result['Seasons'][Number(season)][Number(episode) - 1].dn = episode_torrent['dn'];
 
           const requestUpdate = s_objectStore.put(s_request.result);
-          requestUpdate.onerror = function() {};
+          requestUpdate.onerror = function(err) {
+            console.error('readyEpisode', err);
+          };
           requestUpdate.onsuccess = function() {
             console.log('Torrent is ready');
             return observer.next(s_request.result);

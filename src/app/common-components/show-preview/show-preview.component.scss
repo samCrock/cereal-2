@@ -1,7 +1,5 @@
 .show_header{
-	margin: 10vw;
-	margin-left: 4vw;
-	margin-right: 4vw;
+	margin: 6rem 2rem 0 2rem;
 }
 
 .poster_container {
@@ -18,7 +16,9 @@
 	background-color: transparent;
 	width: calc(18vw);
 	height: calc(18vw * 1.47);
-	background-size: calc(18vw) calc(18vw * 1.47);
+	max-width: 220px;
+  max-height: 330px;
+	background-size: cover;
 	border-radius: 4px;
 	background-repeat: no-repeat;
 	// background-position-x: -4px;
@@ -29,9 +29,9 @@
 
 #title {
 	font-family: 'Economica', sans-serif;
-	font-size: calc(1rem + 4vw);
-	line-height: calc(1rem + 4vw);
-	letter-spacing: 2px;
+	font-size: calc(2rem + 2vw);
+	line-height: calc(2rem + 2vw);
+	letter-spacing: .1rem;
 	font-weight: 800;
 	cursor: pointer;
 	transition: color .4s;
@@ -43,12 +43,12 @@
 
 .icon {
 	padding: 1rem;
-	font-size: calc(1rem + 2vw);
+	font-size: calc(1.4rem + 1vw);
 }
 
 #network {
 	margin: 0 0;
-	font-size: calc(1rem + 2vw);
+	font-size: calc(1.6rem + 1vw);
 }
 
 .genres {

@@ -9,7 +9,7 @@ import { ResponseContentType } from '@angular/http';
 export class SubsService {
 
   private local_path = this._electronService.remote.getGlobal('local_path');
-  private fs = this._electronService.remote.getGlobal('fs');
+  private fsExtra = this._electronService.remote.getGlobal('fsExtra');
   private zip = this._electronService.remote.getGlobal('zip');
   private app = this._electronService.remote.getGlobal('app');
   private path = this._electronService.remote.getGlobal('path');
@@ -38,8 +38,7 @@ export class SubsService {
                 lang = element.children[1].children[1].children[1].children[0].data.trim();
 
               const similarity = this.similarity(dn, sub_name);
-              // if (lang === 'English' && similarity > 0.7 && sub_name.indexOf(show) > -1) {
-              if (lang === 'English' && similarity > 0.5 && sub_name.indexOf(show) > -1 && sub_name.indexOf(ep_label) > -1) {
+              if (lang === 'English' && similarity > 0.5 && sub_name.indexOf(show.split(' ')[0]) > -1 && sub_name.indexOf(ep_label) > -1) {
                 console.log('Sub candidate', sub_name);
                 results.push({
                   dn: dn,
@@ -73,15 +72,17 @@ export class SubsService {
 
           return this.http.get(link, { responseType: 'arraybuffer' })
             .subscribe(__response => {
-              let _path = this.path.join(episode_path);
+              let _path = this.path.dirname(episode_path);
+              // let _path = this.path.join(episode_path);
+              console.log('_path', _path);
               const that = this;
-              this.fs.readdir(_path, function(err, files) {
+              this.fsExtra.readdir(_path, function(err, files) {
                 if (files && files.length > 0) {
                   _path = that.path.join(_path, files[0]);
                 }
               });
 
-              this.fs.appendFileSync(this.path.join(_path, subs['sub'] + '(' + subs['i'] + ')') + '.zip', new Buffer(__response), err => {
+              this.fsExtra.appendFileSync(this.path.join(_path, subs['sub'] + '(' + subs['i'] + ')') + '.zip', new Buffer(__response), err => {
                 if (err) {
                   console.log('Error creating zip file', err);
                 }
@@ -93,9 +94,9 @@ export class SubsService {
               unzipper.on('extract', function(log) {
                 console.log('Finished extracting', log);
                 // const srtPath = zip_path.substr(0,  zip_path.length - 7) + '.srt';
-                const srtPath = that.path.join(episode_path, log[0]['deflated']);
+                const srtPath = that.path.join(that.path.dirname(episode_path), log[0]['deflated']);
                 observer.next(srtPath);
-                that.fs.remove(zip_path, err => {
+                that.fsExtra.remove(zip_path, err => {
                   if (err) { console.log('Deleting zip:', zip_path, err); }
                 });
               });

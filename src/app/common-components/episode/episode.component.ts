@@ -25,7 +25,7 @@ export class EpisodeComponent implements OnChanges {
   public path = this.electronService.remote.getGlobal('path');
   public shell = this.electronService.remote.getGlobal('shell');
   public app = this.electronService.remote.getGlobal('app');
-  public fs = this.electronService.remote.getGlobal('fs');
+  public fsExtra = this.electronService.remote.getGlobal('fsExtra');
 
   public expanded = false;
   public ep_torrents = [];
@@ -98,7 +98,7 @@ export class EpisodeComponent implements OnChanges {
   }
 
   download_episode(episode) {
-    // this.loading = true;
+    this.loading = true;
     this.scrapingService.retrieveEpisode(this.show['title'], episode['label'])
       .subscribe(result => {
         if (this.selectedTorrent) { result = this.selectedTorrent; }
@@ -114,6 +114,9 @@ export class EpisodeComponent implements OnChanges {
           }).subscribe(() => {
             console.log('Torrent ready for download');
             // this.subsService.downloadSub(result['name'], this.path.join(this.show['title'], episode['label'])).subscribe();
+              episode.infoHash = magnet.decode(result['magnet']).infoHash;
+              episode.dn = result['name'];
+              this.play(episode, result['name']);
           });
           this.dbService.addTorrent({
             dn: result['name'],
@@ -127,10 +130,6 @@ export class EpisodeComponent implements OnChanges {
           }).subscribe(show => {
             console.log('Updated show', show);
             this.show = show;
-            this.getTorrentProgress(episode)
-            .subscribe(speed => {
-              this.play(episode, result['name']);
-            });
           });
 
         } else {
@@ -141,6 +140,7 @@ export class EpisodeComponent implements OnChanges {
   }
 
   play(episode, dn) {
+    this.loading = false;
     this.dbService.getShow(this.show['dashed_title'])
       .subscribe(show => {
         this.show = show;
@@ -148,24 +148,24 @@ export class EpisodeComponent implements OnChanges {
           e = episode['label'].substring(4, 6),
           fresh_ep = this.show['Seasons'][Number(s)][Number(e) - 1],
           path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], fresh_ep['label']
-          // this.fs.readdirSync(this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], fresh_ep['label']))[0]
+          // this.fsExtra.readdirSync(this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], fresh_ep['label']))[0]
         );
 
-        let video_path = path;
-        const that = this;
-        const files = this.fs.readdirSync(path);
-        files.map(file => {
-          const stats = that.fs.statSync(that.path.join(path, file));
-            if (stats.isDirectory()) {
-              video_path = that.path.join(path, file);
-              console.log('video path', video_path);
-            }
-        });
+        // let video_path = path;
+        // const that = this;
+        // const files = this.fsExtra.readdirSync(path);
+        // files.map(file => {
+        //   const stats = that.fsExtra.statSync(that.path.join(path, file));
+        //     if (stats.isDirectory()) {
+        //       video_path = that.path.join(path, file);
+        //       console.log('video path', video_path);
+        //     }
+        // });
 
         localStorage.setItem('play', JSON.stringify({
           show: this.show,
           episode: episode,
-          file_path: video_path,
+          // file_path: video_path,
           dn: dn
         }));
         if (this.format === 'extended') {
@@ -221,9 +221,9 @@ export class EpisodeComponent implements OnChanges {
     console.log('Torrent changed:', t);
     this.selectedTorrent = t;
     this.dbService.getTorrent(magnet.decode(t.magnet).infoHash)
-      .subscribe(_t => {
-        console.log(_t);
-      });
+    .subscribe(_t => {
+      console.log(_t);
+    });
   }
 
   deleteTorrent(episode) {

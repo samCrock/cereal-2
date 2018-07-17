@@ -15,7 +15,7 @@ export class ScrapingService {
   private exec = this.electronService.remote.getGlobal('exec');
   private path = this.electronService.remote.getGlobal('path');
   private app = this.electronService.remote.getGlobal('app');
-  private fs = this.electronService.remote.getGlobal('fs');
+  private fsExtra = this.electronService.remote.getGlobal('fsExtra');
   private curl = this.electronService.remote.getGlobal('curl');
 
   constructor(
@@ -231,7 +231,7 @@ export class ScrapingService {
   retrievePoster(dashed_title: string): Observable <any> {
     return Observable.create(observer => {
       const poster_path = this.path.join(this.app.getPath('appData'), 'Cereal', 'posters', dashed_title + '.jpg');
-      if (this.fs.pathExistsSync(poster_path)) {
+      if (this.fsExtra.pathExistsSync(poster_path)) {
         return observer.next(this.normalizePath(poster_path));
       } else {
         this.dbService.getShow(dashed_title)
@@ -291,9 +291,9 @@ export class ScrapingService {
 
         console.log(dashed_title, poster);
         let path = this.path.join(this.app.getPath('appData'), 'Cereal', 'posters');
-        this.fs.mkdirsSync(path);
+        this.fsExtra.mkdirsSync(path);
         path = this.path.join(path, dashed_title + '.jpg');
-        if (!this.fs.pathExistsSync(path)) {
+        if (!this.fsExtra.pathExistsSync(path)) {
 
         const that = this;
         this.curl.request({
@@ -301,7 +301,7 @@ export class ScrapingService {
           encoding: null
         }, function (err, data) {
             if (err) { console.error('err', err); }
-            that.fs.outputFileSync(path, data);
+            that.fsExtra.outputFileSync(path, data);
             path = that.normalizePath(path);
             return observer.next(path);
         });
@@ -326,9 +326,9 @@ export class ScrapingService {
 
           console.log(dashed_title, wallpaper);
           let path = this.path.join(this.app.getPath('appData'), 'Cereal', 'wallpapers');
-          this.fs.mkdirsSync(path);
+          this.fsExtra.mkdirsSync(path);
           path = this.path.join(path, dashed_title + '.jpg');
-          if (!this.fs.pathExistsSync(path)) {
+          if (!this.fsExtra.pathExistsSync(path)) {
 
 
             const that = this;
@@ -337,7 +337,7 @@ export class ScrapingService {
               encoding: null
             }, function (err, data) {
                 if (err) { console.error('err', err); }
-                that.fs.outputFileSync(path, data);
+                that.fsExtra.outputFileSync(path, data);
                 path = that.normalizePath(path);
                 return observer.next(path);
             });

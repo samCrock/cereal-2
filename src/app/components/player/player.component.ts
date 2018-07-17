@@ -1,9 +1,11 @@
 import { Component, OnChanges, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { TorrentService, SubsService } from '../../services';
+import { TorrentService, SubsService, DbService } from '../../services';
 import { ElectronService } from 'ngx-electron';
 import { Router } from '@angular/router';
 import { TweenMax } from 'gsap';
 import * as Draggable from 'gsap/Draggable';
+import { Subscription } from 'rxjs/Subscription';
+import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 
 @Component({
   selector: 'app-player',
@@ -17,10 +19,11 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   public show: Object;
   public episode: Object;
   public file_path: string;
-
+  public app = this.electronService.remote.getGlobal('app');
   public shell = this.electronService.remote.getGlobal('shell');
   public loading = true;
   public path = this.electronService.remote.getGlobal('path');
+  public fsExtra = this.electronService.remote.getGlobal('fsExtra');
   public fs = this.electronService.remote.getGlobal('fs');
   public srt2vtt = this.electronService.remote.getGlobal('srt2vtt');
 
@@ -36,9 +39,14 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   public showSubs = false;
   public toggledEpisodes = false;
   public dn;
+  public infoHash;
+  public torrent;
+  private progress;
+  private progressSubscription: Subscription;
 
   constructor(
     public torrentService: TorrentService,
+    public dbService: DbService,
     public subsService: SubsService,
     public electronService: ElectronService,
     public router: Router,
@@ -53,44 +61,89 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     this.init();
   }
 
+  checkVideoPath(file_path) {
+    console.log('checkVideoPath', file_path);
+    this.fsExtra.readdir(file_path, (err, files) => {
+      if (files) {
+        let found = false;
+        files.forEach(file => {
+          const ext = file.substring(file.length - 3, file.length);
+          if (ext === 'mkv' || ext === 'mp4') {
+            found = true;
+            this.file_path = this.path.join(file_path, file);
+            console.log('Video found ->', this.file_path);
+            return this.file_path;
+          }
+        });
+        if (!found) {
+          this.fsExtra.readdir(file_path, (err, files) => {
+            files.forEach(file => {
+              if (this.fs.statSync(this.path.join(file_path, file)).isDirectory()) {
+                return this.checkVideoPath(this.path.join(file_path, file));
+              }
+            });
+          });
+        }
+      }
+    });
+  }
 
   init() {
     const play = JSON.parse(localStorage.getItem('play'));
     this.show = play.show;
     this.episode = play.episode;
-    this.file_path = play.file_path;
     this.dn = play.episode.dn;
+    this.infoHash = play.episode.infoHash;
+    this.progress = 0;
 
-    // console.log(this.show);
-    // console.log(this.episode);
-    console.log(this.dn);
+    // console.log('show', this.show);
+    // console.log('episode', this.episode);
+    // console.log('dn', this.dn);
+    // console.log('infoHash', this.infoHash);
     // console.log('file_path', this.file_path);
 
-    // Set this episode as last_seen ..
+      this.file_path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], this.episode['label']);
 
-    // Set video file path
-    this.fs.readdir(this.file_path, (err, files) => {
-      if (files) {
-        files.forEach(file => {
-          const ext = file.substring(file.length - 3, file.length);
-          if (ext === 'mkv' || ext === 'mp4') {
-            this.file_path = this.path.join(this.file_path, file);
-          }
-        });
-      }
-    });
+      // Set video file path (search recursively)
+      this.checkVideoPath(this.file_path);
 
-    // Add subs tracks
-    this.subsService.retrieveSubs(this.show['title'], this.episode['label'],  this.dn)
-    .subscribe(subs => {
-      subs.forEach(sub => {
-        this.subsService.downloadSub(sub, play.file_path).subscribe(subPath => {
-          console.log('subPath', subPath);
-          that.addSubs(subPath);
-        });
+      
+      // // Add subs tracks
+      // this.subsService.retrieveSubs(this.show['title'], this.episode['label'], this.dn)
+      // .subscribe(subs => {
+      //   console.log('retrieveSubs');
+      //   subs.forEach(sub => {
+      //     this.subsService.downloadSub(sub, this.file_path)
+      //     .subscribe(subPath => {
+      //       console.log('subPath', subPath);
+      //       that.addSubs(subPath);
+      //     });
+      //   });
+      // });
+
+      // Check if this episode is ready
+      this.dbService.getTorrent(this.infoHash)
+      .subscribe(t => {
+        console.log('t', t);
+        if (t['status'] === 'ready') {
+          this.setup();
+        } else {
+          // Wait for 20% completion before starting video setup
+          this.torrentService.getTorrent(this.infoHash)
+          .subscribe(t => {
+            this.torrent = t;
+            this.progressSubscription = IntervalObservable.create(1000)
+            .subscribe(() => {
+              this.progress = this.torrent.progress;
+              console.log('progressSubscription', this.torrent.progress);
+              if (this.torrent.progress > 0.2) {
+                this.setup();
+              }
+            });
+
+          });
+        }
       });
-      this.setup();
-    });
 
 
     const that = this;
@@ -113,11 +166,14 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   setup() {
+    console.log('SETUP');
+    if (this.progressSubscription) { this.progressSubscription.unsubscribe(); }
     this.player = document.getElementById('player');
     // Clean player
     while (this.player.firstChild) {
       this.player.firstChild.remove();
     }
+
     this.player.setAttribute('src', this.file_path);
     const track = document.createElement('track');
     track.kind = 'captions';
@@ -125,6 +181,20 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     track.srclang = 'en';
     track.label = '[ Disable ]';
     this.player.appendChild(track);
+
+
+    // Add subs tracks
+    this.subsService.retrieveSubs(this.show['title'], this.episode['label'], this.dn)
+    .subscribe(subs => {
+      console.log('retrieveSubs');
+      subs.forEach(sub => {
+        this.subsService.downloadSub(sub, this.file_path)
+        .subscribe(subPath => {
+          console.log('subPath', subPath);
+          that.addSubs(subPath);
+        });
+      });
+    });
 
     const that = this;
     const i = setInterval(function() {
@@ -203,15 +273,15 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   addSubs(file_path) {
-    if (this.fs.existsSync(file_path)) {
+    if (this.fsExtra.existsSync(file_path)) {
       const that = this;
       const track = document.createElement('track');
       track.kind = 'captions';
       track.label = 'English';
       track.srclang = 'en';
-      that.fs.createReadStream(file_path)
+      that.fsExtra.createReadStream(file_path)
       .pipe(that.srt2vtt())
-      .pipe(that.fs.createWriteStream(file_path.substring(0, file_path.length - 3) + 'vtt'));
+      .pipe(that.fsExtra.createWriteStream(file_path.substring(0, file_path.length - 3) + 'vtt'));
       setTimeout(function() {
         track.src = file_path.substring(0, file_path.length - 3) + 'vtt';
         track.label = that.path.normalize(track.src).split(that.path.sep)[that.path.normalize(track.src).split(that.path.sep).length - 1];
@@ -237,11 +307,11 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
           const cues = that.player.textTracks[1].cues;
           // console.log('cues', cues);
           Object.keys(cues).forEach(key => {
-            console.log(cues[key]);
+            // console.log(cues[key]);
             cues[key].snapToLines = false;
             cues[key].line = 90;
           });
-        }, 10);
+        }, 500);
 
       }, 10);
     }
