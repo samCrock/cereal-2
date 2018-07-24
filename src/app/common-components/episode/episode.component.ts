@@ -243,6 +243,12 @@ export class EpisodeComponent implements OnChanges {
     this.dbService.deleteEpisode(episode).subscribe(() => {
       this.setup(true);
     });
+
+    // // delete files
+    const folder_path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], episode['episode_label']);
+    this.fsExtra.remove(folder_path, err => {
+      if (err) { console.log('Deleting files:', folder_path, err); }
+    });
   }
 
 

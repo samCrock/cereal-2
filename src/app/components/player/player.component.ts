@@ -66,8 +66,10 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     this.fsExtra.readdir(file_path, (err, files) => {
       if (files) {
         let found = false;
+        console.log('files', files);
         files.forEach(file => {
           const ext = file.substring(file.length - 3, file.length);
+          console.log('file', file, 'ext', ext);
           if (ext === 'mkv' || ext === 'mp4') {
             found = true;
             this.file_path = this.path.join(file_path, file);
@@ -76,14 +78,19 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
           }
         });
         if (!found) {
-          this.fsExtra.readdir(file_path, (err, files) => {
-            files.forEach(file => {
+          this.fsExtra.readdir(file_path, (_err, _files) => {
+            _files.forEach(file => {
               if (this.fs.statSync(this.path.join(file_path, file)).isDirectory()) {
-                return this.checkVideoPath(this.path.join(file_path, file));
+               this.checkVideoPath(this.path.normalize(this.path.join(file_path, file)));
               }
             });
           });
         }
+      } else {
+        console.error('no files found');
+      }
+      if (err) {
+        console.error(err);
       }
     });
   }
@@ -93,8 +100,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     this.show = play.show;
     this.episode = play.episode;
     this.dn = play.episode.dn;
-    this.infoHash = play.episode.infoHash;
-    this.progress = 0;
+    this.infoHash = (play.episode && play.episode.infoHash) ? play.episode.infoHash : undefined;
 
     // console.log('show', this.show);
     // console.log('episode', this.episode);
@@ -102,48 +108,37 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     // console.log('infoHash', this.infoHash);
     // console.log('file_path', this.file_path);
 
-      this.file_path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], this.episode['label']);
+      // this.file_path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], this.episode['label']);
 
       // Set video file path (search recursively)
-      this.checkVideoPath(this.file_path);
-
-      
-      // // Add subs tracks
-      // this.subsService.retrieveSubs(this.show['title'], this.episode['label'], this.dn)
-      // .subscribe(subs => {
-      //   console.log('retrieveSubs');
-      //   subs.forEach(sub => {
-      //     this.subsService.downloadSub(sub, this.file_path)
-      //     .subscribe(subPath => {
-      //       console.log('subPath', subPath);
-      //       that.addSubs(subPath);
-      //     });
-      //   });
-      // });
-
-      // Check if this episode is ready
-      this.dbService.getTorrent(this.infoHash)
-      .subscribe(t => {
-        console.log('t', t);
-        if (t['status'] === 'ready') {
-          this.setup();
-        } else {
-          // Wait for 20% completion before starting video setup
-          this.torrentService.getTorrent(this.infoHash)
-          .subscribe(t => {
-            this.torrent = t;
-            this.progressSubscription = IntervalObservable.create(1000)
-            .subscribe(() => {
-              this.progress = this.torrent.progress;
-              console.log('progressSubscription', this.torrent.progress);
-              if (this.torrent.progress > 0.2) {
-                this.setup();
-              }
+      this.checkVideoPath(this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], this.episode['label']));
+  
+        
+      setTimeout(() => {
+        // Check if this episode is ready
+        this.dbService.getTorrent(this.infoHash)
+        .subscribe(t => {
+          console.log('t', t);
+          if (t['status'] === 'ready') {
+            this.setup();
+          } else {
+            // Wait for 20% completion before starting video setup
+            this.torrentService.getTorrent(this.infoHash)
+            .subscribe(t => {
+              this.torrent = t;
+              this.progressSubscription = IntervalObservable.create(1000)
+              .subscribe(() => {
+                console.log('progressSubscription', this.torrent.progress);
+                this.torrent.progress_label = Math.ceil(this.torrent.progress * 100) + '%';
+                this.torrent.speed_label = Math.round(this.torrent['downloadSpeed'] / 1048576 * 100) / 100 + 'Mb/s';
+                if (this.torrent.progress > 0.1) {
+                  this.setup();
+                }
+              });
             });
-
-          });
-        }
-      });
+          }
+        });
+      }, 1000);
 
 
     const that = this;
@@ -160,14 +155,13 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy() {
-    if (this.loopInterval) { clearInterval(this.loopInterval); }
-    window.onwheel = function() {};
-  }
-
   setup() {
-    console.log('SETUP');
-    if (this.progressSubscription) { this.progressSubscription.unsubscribe(); }
+    console.log('SETUP', this.file_path);
+    const that = this;
+
+    if (this.progressSubscription) { 
+      this.progressSubscription.unsubscribe();
+    }
     this.player = document.getElementById('player');
     // Clean player
     while (this.player.firstChild) {
@@ -175,6 +169,19 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     this.player.setAttribute('src', this.file_path);
+    this.loading = false;
+
+    // Restore progess
+    let isReady = true;
+    this.player.oncanplay = function() {
+      if (isReady) {
+        that.player.currentTime = that.episode['play_progress'] ?
+        (that.player.duration / 100) * that.episode['play_progress'] : 0;
+      }
+      isReady = false;
+    };
+
+    // Setup default subs
     const track = document.createElement('track');
     track.kind = 'captions';
     track.label = 'English';
@@ -182,21 +189,22 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     track.label = '[ Disable ]';
     this.player.appendChild(track);
 
-
     // Add subs tracks
-    this.subsService.retrieveSubs(this.show['title'], this.episode['label'], this.dn)
-    .subscribe(subs => {
-      console.log('retrieveSubs');
-      subs.forEach(sub => {
-        this.subsService.downloadSub(sub, this.file_path)
-        .subscribe(subPath => {
-          console.log('subPath', subPath);
-          that.addSubs(subPath);
+    if (!this.episode['play_progress'] && !this.torrent) {
+      console.log('DOWNLOADING SUBS');
+      this.subsService.retrieveSubs(this.show['title'], this.episode['label'], this.dn)
+      .subscribe(subs => {
+        console.log('retrieveSubs');
+        subs.forEach(sub => {
+          this.subsService.downloadSub(sub, this.file_path)
+          .subscribe(subPath => {
+            console.log('subPath', subPath);
+            that.addSubs(subPath);
+          });
         });
       });
-    });
+    }
 
-    const that = this;
     const i = setInterval(function() {
       if (this.player.readyState > 0) {
         clearInterval(i);
@@ -234,7 +242,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
         that.dragSetup();
 
       }
-    }, 10);
+    }, 20);
   }
 
   controlsLoop() {
@@ -425,6 +433,19 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     this.zone.run(() => {
       this.init();
     });
+  }
+
+  ngOnDestroy() {
+    if (this.loopInterval) { clearInterval(this.loopInterval); }
+    window.onwheel = function() {};
+    if (this.player) {
+      console.log('Seconds viewed on destroy:', this.player.currentTime);
+      const play_progress = Math.ceil((this.player.currentTime / this.player.duration) * 100 );
+      this.dbService.setEpisodeProgress(this.show['dashed_title'], this.episode['label'], play_progress)
+      .subscribe(show => {
+        console.log('Updated show', show);
+      });
+    }
   }
 
 

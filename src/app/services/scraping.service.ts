@@ -385,7 +385,7 @@ export class ScrapingService {
   //   });
   // }
 
-  // Kickass
+  // // Kickass
   retrieveEpisode(show: string, episode: string, custom?: number) {
     show = show.replace(/'/g, ' ');
     const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');

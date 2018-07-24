@@ -3,6 +3,9 @@
   <div class="progress" *ngIf="(getTorrentProgress(episode) | async); let progress;">
     <div class="determinate" [ngStyle]="{ 'width': progress + '%' }"></div>
   </div>
+  <div class="progress view" *ngIf="episode.play_progress">
+    <div class="determinate" [ngStyle]="{ 'width': episode.play_progress + '%' }"></div>
+  </div>
   <div fxLayout="column" fxLayoutAlign="space-evenly" class="episode">
 
     <div fxLayout="row" fxLayoutAlign="space-evenly" fxFill fxLayoutGap="1vw">
@@ -73,6 +76,5 @@
     </div>
 
   </div>
-
 
 </div>

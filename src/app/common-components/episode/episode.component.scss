@@ -20,6 +20,14 @@ label {
 	border-radius: 0;
 }
 
+.progress.view {
+	background-color: rgba(20, 20, 20, 0.6);
+	height: 2px;
+	.determinate {
+		background-color: #e6e682;
+	}
+}
+
 .right {
 	justify-content: flex-end !important;
 	text-align: right;
