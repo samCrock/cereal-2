@@ -5,7 +5,8 @@
   <span class="episode_label">{{ episode['label'] }}</span>
   <span class="episode_title">{{ episode['title'] }}</span>
 </div>
-<div id="controls" *ngIf="!loading" [ngClass]="(idleTime > 10 && !toggledEpisodes) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center">
+<!-- <div id="controls" *ngIf="!loading" [ngClass]="(idleTime > 10 && !toggledEpisodes) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center"> -->
+<div id="controls" [hidden]="loading" [ngClass]="(idleTime > 10 && !toggledEpisodes) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center">
   <div id="toggle_play" fxflex="auto" fxFlexOffset="calc(.5rem + 1vw)" (click)="toggle_play()">
     <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
   </div>
