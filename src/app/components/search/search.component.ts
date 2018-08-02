@@ -42,7 +42,7 @@ export class SearchComponent implements OnInit {
     }, 10);
 
     this.searchCtrlSub = this.searchControl.valueChanges
-      .debounceTime(500)
+      .debounceTime(1000)
       .subscribe(newValue => {
         if (newValue.length > 0) {
           if (tl.paused()) {
@@ -63,6 +63,7 @@ export class SearchComponent implements OnInit {
                     tl.seek(0);
                     tl.pause();
                     this.shows.push(show);
+                    // this.shows.reverse();
                     console.log('Search shows result:', show);
                   });
               }

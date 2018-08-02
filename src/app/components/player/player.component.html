@@ -1,36 +1,36 @@
-<video id="player" width="320" height="240" (click)="toggledEpisodes = false">Format not supported</video>
+<video id="player" width="320" height="240" (click)="toggledEpisodes = false; showSubs = false;">Format not supported</video>
 
-<div id="info" [ngClass]="(idleTime > 10 && !toggledEpisodes) ? 'hidden' : ''" fxLayoutAlign="start center">
+<div id="info" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? 'hidden' : ''" fxLayoutAlign="start center">
   <i class="material-icons back_icon" [routerLink]="['/show', show['dashed_title']]">arrow_back_ios</i><span class="show">{{ show['title'] }}</span>
   <span class="episode_label">{{ episode['label'] }}</span>
   <span class="episode_title">{{ episode['title'] }}</span>
 </div>
-<!-- <div id="controls" *ngIf="!loading" [ngClass]="(idleTime > 10 && !toggledEpisodes) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center"> -->
-<div id="controls" [hidden]="loading" [ngClass]="(idleTime > 10 && !toggledEpisodes) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center">
-  <div id="toggle_play" fxflex="auto" fxFlexOffset="calc(.5rem + 1vw)" (click)="toggle_play()">
+<div id="controls" *ngIf="!loading" fxLayout="row" fxLayoutAlign="start center">
+<!-- <div id="controls" [hidden]="loading" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center"> -->
+  <div id="toggle_play"  (click)="toggle_play()">
     <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
   </div>
-  <div id="duration" fxFlex="14" fxFlex.gt-xs="11">{{ currentTime }} / {{ totalTime }}</div>
-  <div id="timeline" fxFlex="44" fxFlex.gt-xs="54" fxFlexOffset="calc(.5rem + 1vw)">
+  <div id="duration" >{{ currentTime }} / {{ totalTime }}</div>
+  <div id="timeline" >
     <div class="timeline__drag"></div>
     <span class="timeline__progress"></span>
   </div>
-  <div id="toggle_fullscreen" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggle_fullscreen()">
+  <div id="toggle_fullscreen"  fxLayoutAlign="center center" (click)="toggle_fullscreen()">
     <i class="material-icons">{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</i>
   </div>
 
-  <div id="toggle_subs" [ngClass]="showSubs ? 'active' : ''" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggleSubs()">
+  <div id="toggle_subs" [ngClass]="showSubs ? 'active' : ''"  (click)="toggleSubs(); toggledEpisodes = false;">
     <i class="material-icons">textsms</i>
   </div>
   <div id="subs_list" *ngIf="showSubs" >
-    <div class="subs" [class.active]="sub.mode == 'showing'" *ngFor="let sub of player.textTracks" (click)="selectSubs(sub)">{{ sub.label }}</div>
+    <div class="subs" [class.active]="sub.mode == 'showing'" *ngFor="let sub of player.textTracks" (click)="selectSubs(sub);">{{ sub.label }}</div>
   </div>
 
-  <div id="open_folder" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="openFolder()">
+  <div id="open_folder"  (click)="openFolder()">
     <i class="material-icons">folder_open</i>
   </div>
 
-  <div id="toggle_episodes" [class.active]="toggledEpisodes" fxFlex="4" fxFlexOffset="calc(.5rem + 1vw)" fxLayoutAlign="center center" (click)="toggleEpisodes()">
+  <div id="toggle_episodes" [class.active]="toggledEpisodes"  (click)="toggleEpisodes(); showSubs = false;">
     <i class="material-icons">playlist_play</i>
   </div>
   <div id="episodes_list" *ngIf="toggleEpisodes" [ngClass]="toggledEpisodes ? 'on' : ''">

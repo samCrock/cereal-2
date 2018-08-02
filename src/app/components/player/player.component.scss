@@ -80,21 +80,21 @@ i {
 #toggle_subs {
   transition: color .4s ease-in;
   i {
-    font-size: calc(1rem + 1vw);
+    font-size: calc(.6rem + 2vw);
   }
 }
 
 #toggle_episodes {
   transition: color .4s ease-in;
   i {
-    font-size: calc(1.4rem + 1.4vw);
+    font-size: calc(1.3rem + 2vw);
   }
 }
 
 
 #open_folder {
   i {
-    font-size: calc(1rem + 1vw);
+    font-size: calc(.8rem + 2vw);
   }
 }
 
@@ -140,6 +140,7 @@ i {
 #duration {
   text-align: center;
   font-size: calc(.5rem + 1vw);
+  min-width: calc(5.5rem + 2vw);
 }
 
 #timeline {
