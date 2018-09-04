@@ -118,3 +118,11 @@ app-show {
 	position: absolute;
 	margin-top: 4rem;
 }
+
+#splash {
+	background-image: url('assets/background.jpg');
+	height: 100vh;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}

@@ -64,29 +64,32 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
 
   checkVideoPath(file_path): Observable < any > {
     return new Observable(observer => {
-      let files = this.fs.readdirSync(file_path);
-      files.forEach(file => {
-        let ext = file.substring(file.length - 3, file.length);
-        if (ext === 'mkv' || ext === 'mp4') {
-          this.file_path = this.path.join(file_path, file);
-          console.log('Video found ->', this.file_path);
-          observer.next(this.file_path);
-        }
-        if (this.fs.statSync(this.path.join(file_path, file)).isDirectory()) {
-          // console.log('folder found', file);
-          file_path = this.path.join(file_path, file);
-          files = this.fs.readdirSync(file_path);
-          // console.log('files', files);
-          files.forEach(_file => {
-            ext = _file.substring(_file.length - 3, _file.length);
-            if (ext === 'mkv' || ext === 'mp4') {
-              this.file_path = this.path.join(file_path, _file);
-              console.log('Video found ->', this.file_path);
-              observer.next(this.file_path);
-            }
-          });
-        }
+      const that = this;
+      const checkInterval = setInterval(function() {
+        let files = that.fs.readdirSync(file_path);
+        files.forEach(file => {
+          let ext = file.substring(file.length - 3, file.length);
+          if (ext === 'mkv' || ext === 'mp4') {
+            that.file_path = that.path.join(file_path, file);
+            console.log('Video found ->', that.file_path);
+            clearInterval(checkInterval);
+            observer.next(that.file_path);
+          }
+          if (that.fs.statSync(that.path.join(file_path, file)).isDirectory()) {
+            files = that.fs.readdirSync(that.path.join(file_path, file));
+            files.forEach(_file => {
+              ext = _file.substring(_file.length - 3, _file.length);
+              if (ext === 'mkv' || ext === 'mp4') {
+                that.file_path = that.path.join(file_path, file, _file);
+                console.log('Video found ->', that.file_path);
+                clearInterval(checkInterval);
+                observer.next(that.file_path);
+              }
+            });
+          }
+        }, 1000);
       });
+      // console.log('checkVideoPath files', files);
     });
   }
 

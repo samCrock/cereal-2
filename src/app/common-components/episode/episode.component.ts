@@ -101,6 +101,7 @@ export class EpisodeComponent implements OnChanges {
     this.loading = true;
     this.scrapingService.retrieveEpisode(this.show['title'], episode['label'])
       .subscribe(result => {
+        console.log('retrieveEpisode', result);
         if (this.selectedTorrent) { result = this.selectedTorrent; }
         if (result) {
           console.log('Found', result);
