@@ -126,7 +126,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
                     this.torrent = _t;
                     this.progressSubscription = IntervalObservable.create(1000)
                       .subscribe(() => {
-                        console.log('progressSubscription', this.torrent.progress);
+                        // console.log('progressSubscription', this.torrent.progress);
                         this.torrent.progress_label = Math.ceil(this.torrent.progress * 100) + '%';
                         this.torrent.speed_label = Math.round(this.torrent['downloadSpeed'] / 1048576 * 100) / 100 + 'Mb/s';
                         if (this.torrent.progress > 0.1) {
