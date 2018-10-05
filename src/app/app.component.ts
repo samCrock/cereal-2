@@ -23,7 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public path = this._electronService.remote.getGlobal('path');
   private alive: boolean;
   private update = this._electronService.remote.getGlobal('update');
-  private updateProgress: number;
+  public updateProgress: number;
   private updateReady: boolean;
 
   constructor(
