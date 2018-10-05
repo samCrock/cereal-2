@@ -60,3 +60,11 @@ a {
 #settings_dropdown.open {
 	right: 0;
 }
+
+.progress {
+  position: fixed;
+  margin: 0;
+}
+.progress.view {
+  z-index: 10;
+}

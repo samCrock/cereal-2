@@ -18,6 +18,11 @@
 		<i [ngClass]="isActive('settings') ? 'material-icons dropdown-trigger hoverable circle active' : 'material-icons dropdown-trigger hoverable circle'" data-target='settings_dropdown' (click)="settingsOpen = !settingsOpen" style="padding-top: 6px;">settings</i>
 	</div>
 </div>
+
+<div class="progress view" *ngIf="updateProgress">
+  <div class="determinate" [ngStyle]="{ 'width': updateProgress + '%' }"></div>
+</div>
+
 <ul id='settings_dropdown' [ngClass]="settingsOpen ? 'open' : ''">
 	<li>
 		<a fxLayout="row" fxLayoutAlign="center center" (click)="refresh()">

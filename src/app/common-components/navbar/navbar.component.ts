@@ -1,10 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { NavbarService, DbService } from '../../services';
-import * as moment from 'moment';
-import * as magnet from 'magnet-uri';
 import { Router, NavigationEnd } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { ElectronService } from 'ngx-electron';
 
@@ -21,6 +17,8 @@ export class NavbarComponent implements OnInit {
   public enabled = true;
   public currentRoute = '';
   public settingsOpen = false;
+
+  @Input() updateProgress: number;
 
   public remote = this.electronService.remote;
 

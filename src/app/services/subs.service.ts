@@ -82,7 +82,8 @@ export class SubsService {
                 }
               });
 
-              this.fsExtra.appendFileSync(this.path.join(_path, subs['sub'] + '(' + subs['i'] + ')') + '.zip', new Buffer(__response), err => {
+              this.fsExtra.appendFileSync(this.path.join(_path, subs['sub'] + '(' + subs['i'] + ')') + '.zip',
+                new Buffer(__response), err => {
                 if (err) {
                   console.log('Error creating zip file', err);
                 }

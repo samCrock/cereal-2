@@ -1,10 +1,10 @@
-import { app, BrowserWindow, screen, session, remote, ipcMain, protocol } from 'electron';
+import {app, BrowserWindow, screen, session, remote, ipcMain, protocol} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as webtorrent from 'webtorrent';
 
 const os = require('os');
-const { shell } = require('electron');
+const {shell} = require('electron');
 const fsExtra = require('fs-extra');
 const fs = require('fs');
 const srt2vtt = require('srt-to-vtt');
@@ -24,7 +24,41 @@ global['exec'] = exec;
 global['app'] = app;
 global['curl'] = curl;
 
+let remoteVersion;
 console.log('Local path:', os.homedir(), __dirname);
+console.log('Local version:', app.getVersion());
+
+function checkUpdates() {
+  return new Promise((resolve, reject) => {
+    const installer_path = path.join(app.getPath('appData'), 'Cereal', 'Update_installer.exe');
+    const update_installer = fs.readFileSync(installer_path);
+    if (update_installer) {
+      console.log('Executing updater..');
+      exec(installer_path, function(err) {
+        if (err) { reject(err); }
+        fs.unlinkSync(installer_path);
+        console.log('Done!');
+      });
+    } else {
+      curl.request({url: 'https://raw.githubusercontent.com/samCrock/cereal-2/master/package.json'},
+        function (err, data) {
+          if (err) {
+            resolve();
+          }
+          remoteVersion = JSON.parse(data).version;
+          console.log('Remote version:', remoteVersion);
+          if (remoteVersion !== app.getVersion()) {
+            global['update'] = true;
+          } else {
+            global['update'] = false;
+          }
+          resolve();
+        });
+
+    }
+  });
+
+}
 
 let win, serve;
 const args = process.argv.slice(1);
@@ -37,10 +71,8 @@ try {
 }
 
 function createWindow() {
-
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
-
   // Create the browser window.
   win = new BrowserWindow({
     x: 0,
@@ -57,8 +89,7 @@ function createWindow() {
   win.maximize();
 
   if (serve) {
-    require('electron-reload')(__dirname, {
-    });
+    require('electron-reload')(__dirname, {});
     win.loadURL('http://localhost:4200');
     win.openDevTools();
   } else {
@@ -69,24 +100,26 @@ function createWindow() {
     }));
   }
 
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on('closed', () => {
-    // Dereference the window object, usually you would store window
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     win = null;
   });
 }
 
 try {
-
-  // This method will be called when Electron has finished
-  // initialization and is ready to create browser windows.
-  // Some APIs can only be used after this event occurs.
-  app.on('ready', createWindow);
-
+  app.on('ready', () => {
+    if (serve) {
+      console.log('Dev mode. Skip updates');
+      createWindow();
+    } else {
+      checkUpdates().then(() => {
+        createWindow();
+      });
+    }
+    }
+  );
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
     // On OS X it is common for applications and their menu bar
@@ -95,7 +128,6 @@ try {
       app.quit();
     }
   });
-
   app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -103,7 +135,6 @@ try {
       createWindow();
     }
   });
-
 } catch (e) {
   // Catch Error
   // throw e;
