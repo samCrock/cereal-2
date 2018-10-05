@@ -1,14 +1,8 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ScrapingService, DbService, NavbarService } from '../../services';
-import * as moment from 'moment';
-import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute } from '@angular/router';
-import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
-import { Subscription } from 'rxjs/Subscription';
-import * as magnet from 'magnet-uri';
 import { ElectronService } from 'ngx-electron';
 import { DomSanitizer } from '@angular/platform-browser';
-import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-show',
@@ -23,16 +17,15 @@ export class ShowComponent implements OnInit, OnDestroy {
   public episodes = [];
   public current_season: number;
   public alive: boolean;
-  public minified = false;
   public sanitizedTrailer;
   public openedTrailer = false;
+  private isStored: boolean;
 
   constructor(
     public scrapingService: ScrapingService,
     public navbarService: NavbarService,
     public dbService: DbService,
     public route: ActivatedRoute,
-    public electronService: ElectronService,
     public sanitizer: DomSanitizer
     ) {
     this.alive = true;
@@ -50,14 +43,14 @@ export class ShowComponent implements OnInit, OnDestroy {
         this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
         .subscribe(lastSeason => {
           const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
-          // console.log('lastSeason.length', lastSeason.length, dbLastSeason.length);
+          console.log('lastSeason.length', lastSeason.length, dbLastSeason.length);
 
           if (lastSeason.length > dbLastSeason.length) {
             const missingEpisodes = lastSeason.length - dbLastSeason.length;
             for (let index = 0; index < missingEpisodes; index++) {
               dbLastSeason.push(lastSeason[dbLastSeason.length + index]);
+              console.log('Adding episode:', lastSeason[dbLastSeason.length + index]);
             }
-            console.log('Updated season:', dbLastSeason);
           }
         });
 

@@ -1,11 +1,11 @@
-import { Component, Input, Output, OnChanges, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import {Component, Input, Output, OnChanges, EventEmitter} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-import { DbService, SubsService, ScrapingService, TorrentService } from '../../services';
+import {DbService, SubsService, ScrapingService, TorrentService} from '../../services';
 import * as moment from 'moment';
-import { ElectronService } from 'ngx-electron';
+import {ElectronService} from 'ngx-electron';
 import * as magnet from 'magnet-uri';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-episode',
@@ -42,7 +42,8 @@ export class EpisodeComponent implements OnChanges {
     public torrentService: TorrentService,
     public electronService: ElectronService,
     public router: Router
-  ) { }
+  ) {
+  }
 
   ngOnChanges() {
     this.setup();
@@ -57,7 +58,9 @@ export class EpisodeComponent implements OnChanges {
           // console.log('this.show', this.show);
         });
     }
-    if (this.episode['episode_label']) { this.episode['label'] = this.episode['episode_label']; }
+    if (this.episode['episode_label']) {
+      this.episode['label'] = this.episode['episode_label'];
+    }
     // console.log(this.router.url);
     if (this.router.url === '/torrents') {
       this.titleAsButton = true;
@@ -66,8 +69,12 @@ export class EpisodeComponent implements OnChanges {
   }
 
   formatDate(date) {
-    if (date) { return moment(date, 'YYYY-MM-DD').fromNow(); }
-    if (!date) { return 'No air date'; }
+    if (date) {
+      return moment(date, 'YYYY-MM-DD').fromNow();
+    }
+    if (!date) {
+      return 'No air date';
+    }
   }
 
   downloadable(air_date) {
@@ -75,13 +82,19 @@ export class EpisodeComponent implements OnChanges {
   }
 
   getTorrentProgress(episode): Observable<any> {
-    const s = episode['label'].substring(1, 3),
-      e = episode['label'].substring(4, 6);
-    if (this.show['Seasons'][Number(s)]) {
-      if (this.show['Seasons'][Number(s)][Number(e) - 1].status === 'ready') {
-        return Observable.of(100);
+    if (episode) {
+      const s = episode['label'].substring(1, 3),
+        e = episode['label'].substring(4, 6);
+      if (this.show['Seasons'][Number(s)]) {
+        if (this.show['Seasons'][Number(s)][Number(e) - 1] && this.show['Seasons'][Number(s)][Number(e) - 1].status === 'ready') {
+          return Observable.of(100);
+        }
+        if (!this.show['Seasons'][Number(s)][Number(e) - 1]) {
+          return;
+        } else {
+          return this.dbService.getTorrentProgress(this.show['Seasons'][Number(s)][Number(e) - 1].infoHash);
+        }
       }
-      return this.dbService.getTorrentProgress(this.show['Seasons'][Number(s)][Number(e) - 1].infoHash);
     }
   }
 
@@ -89,10 +102,14 @@ export class EpisodeComponent implements OnChanges {
     const s = episode['label'].substring(1, 3),
       e = episode['label'].substring(4, 6);
     if (this.show['Seasons'][Number(s)]) {
-      if (this.show['Seasons'][Number(s)][Number(e) - 1].status === 'ready') {
+      if (this.show['Seasons'][Number(s)][Number(e) - 1] && this.show['Seasons'][Number(s)][Number(e) - 1].status === 'ready') {
         return Observable.of(true);
       } else {
-        return this.dbService.getTorrentDownloadSpeed(this.show['Seasons'][Number(s)][Number(e) - 1].infoHash);
+        if (!this.show['Seasons'][Number(s)][Number(e) - 1]) {
+          return;
+        } else {
+          return this.dbService.getTorrentDownloadSpeed(this.show['Seasons'][Number(s)][Number(e) - 1].infoHash);
+        }
       }
     }
   }
@@ -102,7 +119,9 @@ export class EpisodeComponent implements OnChanges {
     this.scrapingService.retrieveEpisode(this.show['title'], episode['label'])
       .subscribe(result => {
         console.log('retrieveEpisode', result);
-        if (this.selectedTorrent) { result = this.selectedTorrent; }
+        if (this.selectedTorrent) {
+          result = this.selectedTorrent;
+        }
         if (result) {
           console.log('Found', result);
           this.torrentService.addTorrent({
@@ -115,9 +134,9 @@ export class EpisodeComponent implements OnChanges {
           }).subscribe(() => {
             console.log('Torrent ready for download');
             // this.subsService.downloadSub(result['name'], this.path.join(this.show['title'], episode['label'])).subscribe();
-              episode.infoHash = magnet.decode(result['magnet']).infoHash;
-              episode.dn = result['name'];
-              this.play(episode, result['name']);
+            episode.infoHash = magnet.decode(result['magnet']).infoHash;
+            episode.dn = result['name'];
+            this.play(episode, result['name']);
           });
           this.dbService.addTorrent({
             dn: result['name'],
@@ -149,8 +168,8 @@ export class EpisodeComponent implements OnChanges {
           e = episode['label'].substring(4, 6),
           fresh_ep = this.show['Seasons'][Number(s)][Number(e) - 1],
           path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], fresh_ep['label']
-          // this.fsExtra.readdirSync(this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], fresh_ep['label']))[0]
-        );
+            // this.fsExtra.readdirSync(this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], fresh_ep['label']))[0]
+          );
 
         // let video_path = path;
         // const that = this;
@@ -201,20 +220,22 @@ export class EpisodeComponent implements OnChanges {
 
   retrieveTorrentsList(episode): Observable<any> {
     this.loading = true;
-    if (this.currentTorrentsListSub) { this.currentTorrentsListSub.unsubscribe(); }
+    // if (this.currentTorrentsListSub) {
+    //   this.currentTorrentsListSub.unsubscribe();
+    // }
     this.currentTorrentsListSub = this.scrapingService.retrieveTorrentsList(this.show['dashed_title'], episode.label)
-    .subscribe(result => {
-      if (result) {
-        this.hasResults = true;
-        this.loading = false;
-        this.ep_torrents.push(result);
-        console.log('this.ep_torrents', this.ep_torrents);
-        // currentTorrentsListSub.unsubscribe();
-      } else {
-        this.loading = false;
-        this.hasResults = false;
-      }
-    });
+      .subscribe(result => {
+        if (result) {
+          this.hasResults = true;
+          this.loading = false;
+          this.ep_torrents.push(result);
+          console.log('this.ep_torrents', this.ep_torrents);
+          // currentTorrentsListSub.unsubscribe();
+        } else {
+          this.loading = false;
+          this.hasResults = false;
+        }
+      });
     return this.currentTorrentsListSub;
   }
 
@@ -222,9 +243,9 @@ export class EpisodeComponent implements OnChanges {
     console.log('Torrent changed:', t);
     this.selectedTorrent = t;
     this.dbService.getTorrent(magnet.decode(t.magnet).infoHash)
-    .subscribe(_t => {
-      console.log(_t);
-    });
+      .subscribe(_t => {
+        console.log(_t);
+      });
   }
 
   deleteTorrent(episode) {
@@ -248,7 +269,9 @@ export class EpisodeComponent implements OnChanges {
     // // delete files
     const folder_path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], episode['episode_label']);
     this.fsExtra.remove(folder_path, err => {
-      if (err) { console.log('Deleting files:', folder_path, err); }
+      if (err) {
+        console.log('Deleting files:', folder_path, err);
+      }
     });
   }
 
