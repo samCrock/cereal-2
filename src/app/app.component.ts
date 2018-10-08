@@ -52,7 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
         classes: ''
       });
       console.log('A new version is ready to download..');
-      this.http.get('https://github.com/samCrock/cereal-2/raw/win-build/Cereal%20Setup.exe',
+      this.http.get('https://github.com/samCrock/cereal-2/raw/win-build/Cereal_Setup.exe',
         {responseType: 'arraybuffer', reportProgress: true, observe: 'events'}).subscribe((event: any) => {
         if (event.type === HttpEventType.DownloadProgress) {
           this.updateProgress = Math.round(event['loaded'] / event['total'] * 100);
