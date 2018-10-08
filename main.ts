@@ -31,8 +31,8 @@ console.log('Local version:', app.getVersion());
 function checkUpdates() {
   return new Promise((resolve, reject) => {
     const installer_path = path.join(app.getPath('appData'), 'Cereal', 'Update_installer.exe');
-    const update_installer = fs.readFileSync(installer_path);
-    if (update_installer) {
+    // const update_installer = fs.readFileSync(installer_path);
+    if (fs.existsSync(installer_path)) {
       console.log('Executing updater..');
       exec(installer_path, function(err) {
         if (err) { reject(err); }
