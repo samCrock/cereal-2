@@ -1,6 +1,9 @@
 <div class="navbar" fxLayout="row" fxLayoutGap="2vw" fxLayoutAlign="start center" *ngIf="enabled">
-	<div>
-		<i [ngClass]="isActive('home') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="">home</i>
+  <div>
+    <i [ngClass]="isActive('trending') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="trending" style="padding-top: 6px;">bolt</i>
+  </div>
+  <div>
+		<i [ngClass]="isActive('home') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="">calendar_today</i>
 	</div>
 	<div>
 		<i [ngClass]="isActive('library') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="library">video_library</i>
@@ -11,6 +14,7 @@
 	<div>
 		<i [ngClass]="isActive('search') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="search" style="padding-top: 6px;">search</i>
 	</div>
+
 	<div *ngIf="current_show">
 		<a class="btn" [ngClass]="isActive('show') ? 'active' : ''" [routerLink]="['show', current_show.dashed_title]">{{ current_show.title }}</a>
 	</div>

@@ -25,7 +25,6 @@ export class NavbarComponent implements OnInit {
   constructor(
     public navbarService: NavbarService,
     public router: Router,
-    public dbService: DbService,
     public electronService: ElectronService
     ) {
   }
@@ -46,7 +45,6 @@ export class NavbarComponent implements OnInit {
       }
     });
 
-    const that = this;
     document.addEventListener('keydown', function (e) {
       if (e.which === 116) {
         location.reload();
@@ -61,6 +59,7 @@ export class NavbarComponent implements OnInit {
     if (route_name === 'torrents' && this.currentRoute.indexOf('/torrents') > -1) { return true; }
     if (route_name === 'show' && this.currentRoute.indexOf('/show/') > -1) { return true; }
     if (route_name === 'search' && this.currentRoute.indexOf('/search') > -1) { return true; }
+    if (route_name === 'trending' && this.currentRoute.indexOf('/trending') > -1) { return true; }
     if (route_name === 'settings' && this.settingsOpen) { return true; }
     return false;
   }

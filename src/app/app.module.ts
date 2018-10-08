@@ -29,7 +29,7 @@ import { ElectronService } from './providers/electron.service';
 import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
-import { HomeComponent, ShowComponent, PlayerComponent, SearchComponent, LibraryComponent } from './components/index';
+import {HomeComponent, ShowComponent, PlayerComponent, SearchComponent, LibraryComponent, TrendingComponent} from './components/index';
 import { DialogComponent } from './common-components/index';
 
 // Services
@@ -62,7 +62,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     WebviewDirective,
     TorrentsComponent,
     SearchComponent,
-    LibraryComponent
+    LibraryComponent,
+    TrendingComponent
   ],
   imports: [
     BrowserModule,

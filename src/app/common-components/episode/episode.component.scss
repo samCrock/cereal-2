@@ -3,7 +3,7 @@ label {
 }
 
 [type="radio"]:checked + span {
-	font-size: calc(.6rem + 1vw);
+	font-size: calc(1rem + .5vw);
 }
 
 [type="radio"] + span {
@@ -94,7 +94,7 @@ label {
 }
 
 .torrent_extras {
-	font-size: calc(.8rem + .5vw);
+	font-size: calc(1rem + .5vw);
 	width: 100%;
 }
 
@@ -106,7 +106,7 @@ label {
 .extras_header div label {
 	opacity: 0;
 	color: rgba(255, 255, 255, .6);
-	font-size: calc(.6rem + .5vw);
+	font-size: calc(1rem + .5vw);
 	transition: all .4s linear;
 }
 
@@ -115,8 +115,8 @@ label {
 }
 
 #speed {
-	font-size: calc(.8rem + .5vw);
-	line-height: calc(.8rem + 1vw);
+	font-size: calc(1rem + .5vw);
+	line-height: calc(1rem + 1vw);
 	color: rgba(230, 230, 130, 1);
 	margin-right: .5rem;
 }
