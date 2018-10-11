@@ -1,9 +1,9 @@
 .container {
-	padding-top: 4rem !important;
+	margin-top: 5rem !important;
 	span {
-		position: absolute;
+		position: fixed;
 		width: 100%;
-		top: calc(50% - calc(1.5rem + 1.5vw));
+		top: calc(50% - 1.5rem + 1.5vw);
 		font-size: calc(1.5rem + 1.5vw);
 		text-align: center;
 		opacity: .6;
