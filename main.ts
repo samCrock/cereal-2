@@ -9,7 +9,7 @@ const fsExtra = require('fs-extra');
 const fs = require('fs');
 const srt2vtt = require('srt-to-vtt');
 const zip = require('decompress-zip');
-const { exec } = require('child_process');
+const {exec} = require('child_process');
 const curl = require('curlrequest');
 
 const args = process.argv.slice(1);
@@ -37,8 +37,10 @@ function checkUpdates() {
     // const update_installer = fs.readFileSync(installer_path);
     if (fs.existsSync(installer_path)) {
       console.log('Executing updater..');
-      exec(installer_path, function(err) {
-        if (err) { reject(err); }
+      exec(installer_path, function (err) {
+        if (err) {
+          reject(err);
+        }
         fs.unlinkSync(installer_path);
         console.log('Done!');
       });
@@ -107,14 +109,14 @@ function createWindow() {
 
 try {
   app.on('ready', () => {
-    if (serve) {
-      console.log('Dev mode. Skip updates');
-      createWindow();
-    } else {
-      checkUpdates().then(() => {
+      if (serve) {
+        console.log('Dev mode. Skip updates');
         createWindow();
-      });
-    }
+      } else {
+        checkUpdates().then(() => {
+          createWindow();
+        });
+      }
     }
   );
   // Quit when all windows are closed.
