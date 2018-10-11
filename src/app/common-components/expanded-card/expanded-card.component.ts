@@ -1,18 +1,14 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { DbService, SubsService, ScrapingService, TorrentService } from '../../services';
-import * as moment from 'moment';
 import { ElectronService } from 'ngx-electron';
-import * as magnet from 'magnet-uri';
 import { Router } from '@angular/router';
-import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-expanded-card',
   templateUrl: './expanded-card.component.html',
   styleUrls: ['./expanded-card.component.scss'],
   providers: [DbService, ScrapingService, SubsService, TorrentService]
-
 })
 export class ExpandedCardComponent implements OnChanges {
 
