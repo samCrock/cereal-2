@@ -10,6 +10,7 @@ const fs = require('fs');
 const srt2vtt = require('srt-to-vtt');
 const zip = require('decompress-zip');
 const {exec} = require('child_process');
+const {spawn} = require('child_process');
 const curl = require('curlrequest');
 
 const args = process.argv.slice(1);
@@ -37,18 +38,27 @@ function checkUpdates() {
     // const update_installer = fs.readFileSync(installer_path);
     if (fs.existsSync(installer_path)) {
       console.log('Executing updater..');
-      exec(installer_path, function (err) {
+      const child = spawn(installer_path, [process.argv], {
+        cwd: process.cwd(),
+        env: process.env,
+        detached: true
+      });
+      child.on('error', function(e) {
+        console.log('Updater error:', e);
+      });
+      child.on('exit', function (err) {
         if (err) {
           reject(err);
         }
         fs.unlinkSync(installer_path);
         console.log('Done!');
+        resolve(0);
       });
     } else {
       curl.request({url: 'https://raw.githubusercontent.com/samCrock/cereal-2/master/package.json'},
         function (err, data) {
           if (err) {
-            resolve();
+            resolve(1);
           }
           remoteVersion = JSON.parse(data).version;
           console.log('Remote version:', remoteVersion);
@@ -57,7 +67,7 @@ function checkUpdates() {
           } else {
             global['update'] = false;
           }
-          resolve();
+          resolve(1);
         });
 
     }
@@ -113,8 +123,12 @@ try {
         console.log('Dev mode. Skip updates');
         createWindow();
       } else {
-        checkUpdates().then(() => {
-          createWindow();
+        checkUpdates().then(code => {
+          if (code === 1) {
+            createWindow();
+          } else {
+            process.kill(process.pid);
+          }
         });
       }
     }
