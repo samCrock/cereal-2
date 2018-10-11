@@ -1,13 +1,11 @@
-import {Component, EventEmitter, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ElectronService} from 'ngx-electron';
 import {DbService, TorrentService} from './services';
 import {TranslateService} from '@ngx-translate/core';
 import {IntervalObservable} from 'rxjs/observable/IntervalObservable';
 import * as magnet from 'magnet-uri';
 import * as Materialize from 'materialize-css';
-import {Http, ResponseContentType} from '@angular/http';
-import {HttpClient, HttpEvent, HttpEventType} from '@angular/common/http';
-import {HttpResponse} from 'selenium-webdriver/http';
+import {HttpClient, HttpEventType} from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -76,19 +74,16 @@ export class AppComponent implements OnInit, OnDestroy {
       });
     }
 
+    // Restore pending torrents
     IntervalObservable.create(1000)
       .subscribe(() => {
-
-        const torrents = this.dbService.getPendingTorrents()
+        this.dbService.getPendingTorrents()
           .subscribe(_torrents => {
             _torrents.forEach(torrent => {
-              // console.log('Pending torrent', torrent);
               const _torrent = this.wt_client.get(torrent['magnet']);
               if (_torrent && _torrent.progress === 1) {
-                // console.log('Setting torrent to ready', _torrent);
                 this.dbService.readyTorrent(_torrent.infoHash)
                   .subscribe(ep => {
-                    // console.log('Setting episode to ready', ep);
                     this.dbService.readyEpisode(ep)
                       .subscribe(show => {
                         Materialize.toast({
