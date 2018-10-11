@@ -5,3 +5,6 @@
 		<app-expanded-card [show]="show"></app-expanded-card>
 	</div>
 </div>
+<div class="container" *ngIf="library && library.length === 0;" fxLayoutAlign="center center" flex>
+  <span>This is your library. Here you'll find the shows you watched</span>
+</div>

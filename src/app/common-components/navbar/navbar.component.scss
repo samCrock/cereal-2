@@ -64,6 +64,7 @@ a {
 .progress {
   position: fixed;
   margin: 0;
+  top: 0;
 }
 .progress.view {
   z-index: 10;
