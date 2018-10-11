@@ -14,12 +14,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { MatButtonModule, MatCheckboxModule, MatIconModule, MatDialogModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-// import 'materialize-css';
-// import { MaterializeModule } from 'angular2-materialize';
-
 import { NgxElectronModule } from 'ngx-electron';
 
-// NG Translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
@@ -29,7 +25,7 @@ import { ElectronService } from './providers/electron.service';
 import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
-import {HomeComponent, ShowComponent, PlayerComponent, SearchComponent, LibraryComponent, TrendingComponent} from './components/index';
+import {CalendarComponent, ShowComponent, PlayerComponent, SearchComponent, LibraryComponent, TrendingComponent} from './components/index';
 import { DialogComponent } from './common-components/index';
 
 // Services
@@ -38,7 +34,6 @@ import { ScrapingService, TorrentService, DbService, SubsService, NavbarService 
 import { TorrentsComponent } from './components/torrents/torrents.component';
 
 import { CommonComponentsModule } from './common-components/common-components.module';
-
 
 const materialDependencies = [
   MatButtonModule,
@@ -55,7 +50,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
+    CalendarComponent,
     ShowComponent,
     PlayerComponent,
     SearchComponent,
@@ -69,7 +64,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserModule,
     NgxElectronModule,
     materialDependencies,
-    // MaterializeModule,
     FlexLayoutModule,
     HttpClientJsonpModule,
     FormsModule,
