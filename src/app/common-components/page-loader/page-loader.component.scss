@@ -1,0 +1,64 @@
+.bigbox {
+  width: 50px;
+  height: 50px;
+  background-color: var(--fore-color);
+  color: steelblue;
+  position: absolute;
+  left: calc(50% - 13px);
+  top: calc(50% - 13px);
+  transform: translate(calc(-50% + 25px), -50%);
+  animation:
+    rotate 1s ease-in-out infinite;
+  /*camelion 60s infinite;*/
+}
+
+.bigbox::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 6px;
+  top: calc(50% - 3px);
+  background-color: var(--bg-color);
+}
+.bigbox::before {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 100%;
+  left: calc(50% - 3px);
+  background-color: var(--bg-color);
+}
+
+.littelbox {
+  width: 25px;
+  height: 25px;
+  background-color: var(--bg-color);
+  color: steelblue;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  animation:
+    rotate 1s linear infinite;
+}
+
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes camelion {
+  0% {
+    background-color: steelblue;
+  }
+  50% {
+    background-color: forestgreen;
+  }
+  100% {
+    background-color: steelblue;
+  }
+}

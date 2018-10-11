@@ -1,19 +1,19 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { RouterModule, Routes } from '@angular/router';
-import { EpisodeComponent, NavbarComponent, ShowPreviewComponent, ExpandedCardComponent, DialogComponent } from '.';
-import { MatDialogModule } from '@angular/material';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FlexLayoutModule} from '@angular/flex-layout';
+import {RouterModule} from '@angular/router';
+import {EpisodeComponent, NavbarComponent, ShowPreviewComponent, ExpandedCardComponent, DialogComponent, PageLoaderComponent} from '.';
+import {MatDialogModule} from '@angular/material';
 // Pipes
-import { SortPipe, TrimPipe } from '../pipes';
+import {SortPipe, TrimPipe} from '../pipes';
 
 const COMMON_COMPONENTS = [
   EpisodeComponent,
   NavbarComponent,
   ShowPreviewComponent,
   ExpandedCardComponent,
-  DialogComponent
+  DialogComponent,
+  PageLoaderComponent
 ];
 
 @NgModule({
@@ -35,4 +35,5 @@ const COMMON_COMPONENTS = [
   ],
   // entryComponents: [DialogComponent]
 })
-export class CommonComponentsModule { }
+export class CommonComponentsModule {
+}
