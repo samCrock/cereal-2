@@ -55,7 +55,6 @@ export class ShowComponent implements OnInit, OnDestroy {
             }
           }
           this.loading = false;
-
         });
 
         this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
@@ -79,6 +78,7 @@ export class ShowComponent implements OnInit, OnDestroy {
   retrieveSeason() {
     if (this.show['Seasons'][this.current_season]) {
       console.log('Local', this.show['Seasons'][this.current_season]);
+      this.loading = false;
       return this.episodes = this.show['Seasons'][this.current_season];
     }
     this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.current_season)
@@ -89,6 +89,7 @@ export class ShowComponent implements OnInit, OnDestroy {
       .subscribe(show => {
         console.log('Season', this.current_season, 'saved');
         this.show = show;
+        this.loading = false;
       });
     });
   }
