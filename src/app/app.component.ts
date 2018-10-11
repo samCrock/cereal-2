@@ -103,4 +103,8 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
+  onActivate(event) {
+    window.scroll(0, 0);
+  }
+
 }
