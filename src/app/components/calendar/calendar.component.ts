@@ -15,6 +15,7 @@ export class CalendarComponent implements OnInit {
 
   public calendar = [];
   public hovering_episode = {};
+  public loading: boolean;
 
   formatFromNowDate(date) {
     let d = moment(date, 'DD-MM-YYYY').from(moment().startOf('day'));
@@ -35,11 +36,13 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit() {
     console.log('Retrieve calendar..');
+    this.loading = true;
     this.scrapingService.retrieveCalendar()
     .subscribe(
       result => {
         console.log('calendar', result);
         this.calendar = result.reverse();
+        this.loading = false;
       },
       error => {
         console.log('Cannot load calendar', error);

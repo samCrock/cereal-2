@@ -11,7 +11,7 @@ import {fade} from '../../animations/fade';
 export class TrendingComponent implements OnInit {
 
   public trending = [];
-  private loading: boolean;
+  public loading: boolean;
 
   constructor(
     public scrapingService: ScrapingService

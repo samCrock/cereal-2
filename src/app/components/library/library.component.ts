@@ -11,13 +11,17 @@ import {fade} from '../../animations/fade';
 export class LibraryComponent implements OnInit {
 
   public library;
+  public loading: boolean;
+
   constructor(public dbService: DbService) {}
 
   ngOnInit() {
+    this.loading = true;
     this.dbService.getLibrary()
       .subscribe(library => {
         this.library = library.filter(show => show['watching_season']);
         console.log('Library:', this.library);
+        this.loading = false;
       });
   }
 

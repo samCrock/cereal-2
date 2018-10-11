@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ScrapingService, DbService, NavbarService } from '../../services';
 import { ActivatedRoute } from '@angular/router';
-import { ElectronService } from 'ngx-electron';
 import { DomSanitizer } from '@angular/platform-browser';
 import {fade} from '../../animations/fade';
 
@@ -21,7 +20,7 @@ export class ShowComponent implements OnInit, OnDestroy {
   public alive: boolean;
   public sanitizedTrailer;
   public openedTrailer = false;
-  private isStored: boolean;
+  public loading: boolean;
 
   constructor(
     public scrapingService: ScrapingService,
@@ -35,6 +34,7 @@ export class ShowComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     window.scrollTo(0, 0);
+    this.loading = true;
     this.route.params.subscribe(params => {
       this.title = params['title'];
       this.dbService.getShow(this.title)
@@ -54,6 +54,8 @@ export class ShowComponent implements OnInit, OnDestroy {
               console.log('Adding episode:', lastSeason[dbLastSeason.length + index]);
             }
           }
+          this.loading = false;
+
         });
 
         this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];

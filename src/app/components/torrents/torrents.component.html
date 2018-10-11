@@ -1,3 +1,4 @@
+<app-page-loader [display]="loading"></app-page-loader>
 <div class="container" *ngIf="torrents">
 	<div *ngFor="let t of torrents | sort:'date'">
 		<app-episode (emit)="episodeDeleted()" [episode]="t"></app-episode>

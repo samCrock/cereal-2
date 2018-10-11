@@ -1,3 +1,4 @@
+<app-page-loader [display]="loading"></app-page-loader>
 
 <div *ngIf="calendar && calendar.length" fxLayout="column" class="home-main">
 	<div *ngFor="let day of calendar; let day_i = index;" fxLayout="column">

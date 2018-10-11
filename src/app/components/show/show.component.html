@@ -1,5 +1,6 @@
-<app-show-preview [show]="show"></app-show-preview>
+<app-page-loader [display]="loading"></app-page-loader>
 
+<app-show-preview [show]="show"></app-show-preview>
 <div class="container" @fadeItems *ngIf="show">
   <h5 class="center-align">Season {{ current_season }}</h5>
   <div fxLayout="row" fxLayoutAlign="center center" class="navigation_row">

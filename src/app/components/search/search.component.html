@@ -1,10 +1,12 @@
+
 <div fxLayout="column" fxFlex="90" style="margin: auto;">
 	<div fxLayout="column" id="input_container">
 		<input type="text" id="search_input" [value]="show_input" [formControl]="searchControl">
-		<div id="progress"></div>
 	</div>
 
-	<div fxLayout="column" id="results_container">
+  <app-page-loader [display]="loading"></app-page-loader>
+
+  <div fxLayout="column" id="results_container">
 		<div fxLayout="row" *ngFor="let show of shows.slice().reverse();">
 			<app-show-preview [show]="show"></app-show-preview>
 		</div>

@@ -11,6 +11,7 @@ import * as moment from 'moment';
 export class TorrentsComponent implements OnInit {
 
   public torrents;
+  public loading: boolean;
 
   constructor(
     public torrentService: TorrentService,
@@ -22,10 +23,12 @@ export class TorrentsComponent implements OnInit {
   }
 
   setup() {
+    this.loading = true;
     this.dbService.getPendingTorrents()
       .subscribe(torrents => {
         console.log(torrents);
         this.torrents = torrents;
+        this.loading = false;
       });
   }
 
