@@ -12,6 +12,10 @@ const zip = require('decompress-zip');
 const { exec } = require('child_process');
 const curl = require('curlrequest');
 
+const args = process.argv.slice(1);
+let remoteVersion, win, serve;
+serve = args.some(val => val === '--serve');
+
 global['wt_client'] = new webtorrent();
 global['local_path'] = os.homedir();
 global['shell'] = shell;
@@ -24,7 +28,6 @@ global['exec'] = exec;
 global['app'] = app;
 global['curl'] = curl;
 
-let remoteVersion;
 console.log('Local path:', os.homedir(), __dirname);
 console.log('Local version:', app.getVersion());
 
@@ -59,10 +62,6 @@ function checkUpdates() {
   });
 
 }
-
-let win, serve;
-const args = process.argv.slice(1);
-serve = args.some(val => val === '--serve');
 
 try {
   require('dotenv').config();
@@ -99,8 +98,6 @@ function createWindow() {
       slashes: true
     }));
   }
-
-  // win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on('closed', () => {

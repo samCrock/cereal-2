@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { DbService } from '../../services/index';
-import { isDefined } from '@angular/compiler/src/util';
+import {fade} from '../../animations/fade';
 
 @Component({
   selector: 'app-library',
   templateUrl: './library.component.html',
-  styleUrls: ['./library.component.scss']
+  styleUrls: ['./library.component.scss'],
+  animations: [ fade ]
 })
 export class LibraryComponent implements OnInit {
 
@@ -16,7 +17,7 @@ export class LibraryComponent implements OnInit {
     this.dbService.getLibrary()
       .subscribe(library => {
         this.library = library.filter(show => show['watching_season']);
-        console.log('Library:', library);
+        console.log('Library:', this.library);
       });
   }
 

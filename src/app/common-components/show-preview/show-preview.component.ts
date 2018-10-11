@@ -1,15 +1,17 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ScrapingService, DbService } from '../../services/index';
 import { Router } from '@angular/router';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 import * as Materialize from 'materialize-css';
+import {fade} from '../../animations/fade';
 
 @Component({
   selector: 'app-show-preview',
   templateUrl: './show-preview.component.html',
-  styleUrls: ['./show-preview.component.scss']
+  styleUrls: ['./show-preview.component.scss'],
+  animations: [fade]
 })
 export class ShowPreviewComponent implements OnChanges {
 

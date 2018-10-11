@@ -1,5 +1,7 @@
+<!--<app-page-loader [display]="!loading"></app-page-loader>-->
 <div fxLayout="row wrap" fxLayoutAlign="center center" class="container">
-  <div *ngFor="let show of trending | sort:'updated'" >
+  <div @fadeItems *ngFor="let show of trending | sort:'updated'" >
     <app-expanded-card [show]="show"></app-expanded-card>
   </div>
 </div>
+

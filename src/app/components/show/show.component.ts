@@ -3,12 +3,14 @@ import { ScrapingService, DbService, NavbarService } from '../../services';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { DomSanitizer } from '@angular/platform-browser';
+import {fade} from '../../animations/fade';
 
 @Component({
   selector: 'app-show',
   templateUrl: './show.component.html',
   styleUrls: ['./show.component.scss'],
-  providers: [ScrapingService, DbService]
+  providers: [ScrapingService, DbService],
+  animations: [ fade ]
 })
 export class ShowComponent implements OnInit, OnDestroy {
 
