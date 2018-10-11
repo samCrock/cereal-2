@@ -3,7 +3,8 @@
 // RESET
 
 html, body {
-	background-color: rgb(58, 70, 76);
+	//background-color: rgb(58, 70, 76);
+	background-color: var(--bg-color);
 	// background: url('assets/posters/blindspot.jpg');
 	background-size: cover;
 	user-select: none;
@@ -134,3 +135,21 @@ app-show {
     width: 85% !important;
   }
 }
+
+
+
+
+
+html {
+  --color1: steelblue;
+  --distance: 50px;
+  --bg-color: rgb(58, 70, 76);
+  --fore-color: #C0636A;
+}
+
+#body {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-color);
+}
+
