@@ -54,7 +54,7 @@ export class NavbarComponent implements OnInit {
   }
 
   isActive(route_name) {
-    if (route_name === 'home' && this.currentRoute === '/') { return true; }
+    if (route_name === 'calendar' && this.currentRoute === '/calendar') { return true; }
     if (route_name === 'library' && this.currentRoute === '/library') { return true; }
     if (route_name === 'torrents' && this.currentRoute.indexOf('/torrents') > -1) { return true; }
     if (route_name === 'show' && this.currentRoute.indexOf('/show/') > -1) { return true; }

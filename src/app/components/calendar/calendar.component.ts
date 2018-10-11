@@ -1,16 +1,17 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { ScrapingService } from '../../services';
 import * as moment from 'moment';
-import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
+import {fade} from '../../animations/fade';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  providers: [ScrapingService]
+  selector: 'app-calendar',
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.scss'],
+  providers: [ScrapingService],
+  animations: [ fade ]
 })
-export class HomeComponent implements OnInit {
+export class CalendarComponent implements OnInit {
 
   public calendar = [];
   public hovering_episode = {};

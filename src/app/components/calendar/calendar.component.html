@@ -1,5 +1,4 @@
 
-<!-- <div *ngIf="calendar && calendar.length" fxLayout="column" class="blue-grey darken-3"> -->
 <div *ngIf="calendar && calendar.length" fxLayout="column" class="home-main">
 	<div *ngFor="let day of calendar; let day_i = index;" fxLayout="column">
 
@@ -11,9 +10,9 @@
 			<span class="date_fromnow valign-wrapper">{{ formatFromNowDate(day.date) }}</span>
 		</div>
 
-		<div fxLayout="column">
+		<div @fadeItems fxLayout="column">
 			<div fxLayout="row wrap" fxLayoutAlign="center center" class="show-day" id="day_{{ day_i }}">
-				<div fxLayout="column" class="show" *ngFor="let show of day.shows; let show_i = index;">
+				<div fxLayout="column" class="show" *ngFor="let show of day.shows">
 
 					<app-expanded-card [show]="show"></app-expanded-card>
 					
