@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ElectronService } from 'ngx-electron';
-import { HttpClient } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {ElectronService} from 'ngx-electron';
+import {HttpClient} from '@angular/common/http';
 import * as cheerio from 'cheerio';
-import { ResponseContentType } from '@angular/http';
+import {ResponseContentType} from '@angular/http';
 
 @Injectable()
 export class SubsService {
@@ -22,12 +22,77 @@ export class SubsService {
     // console.log('local_path', this.local_path);
   }
 
+  convertNumberToOrdinal(n) {
+    switch (n) {
+      case 1:
+        return 'First';
+      case 2:
+        return 'Second';
+      case 3:
+        return 'Third';
+      case 4:
+        return 'Fourth';
+      case 5:
+        return 'Fifth';
+      case 6:
+        return 'Sixth';
+      case 7:
+        return 'Seventh';
+      case 8:
+        return 'Eighth';
+      case 9:
+        return 'Ninth';
+      case 10:
+        return 'Tenth';
+      case 11:
+        return  'Eleventh';
+      case 12:
+        return 'Twelfth';
+      case 13:
+        return 'Thirteenth';
+      case 14:
+        return 'Fourteenth';
+      case 15:
+        return 'Fifteenth';
+      case 16:
+        return  'Sixteenth';
+      case 17:
+        return 'Seventeenth';
+      case 18:
+        return  'Eighteenth';
+      case 19:
+        return 'Nineteenth';
+      case 20:
+        return 'Twentieth';
+      case 21:
+        return 'Twenty-First';
+      case 22:
+        return 'Twenty-Second';
+      case 23:
+        return 'Twenty-Third';
+      case 24:
+        return 'Twenty-Fourth';
+      case 25:
+        return 'Twenty-Fifth';
+      case 26:
+        return 'Twenty-Sixth';
+      case 27:
+        return 'Twenty-Seventh';
+      case 28:
+        return 'Twenty-Eighth';
+      case 29:
+        return 'Twenty-Ninth';
+      case 30:
+        return 'Thirtieth';
+    }
+  }
+
   retrieveSubs(show, ep_label, dn) {
     return Observable.create(observer => {
       dn = dn.replace(/'/g, ' ');
       const url = 'https://subscene.com/subtitles/release?q=' + dn;
       console.log(url);
-      return this.http.get < any[] > (url, { responseType: 'text' as 'json' })
+      return this.http.get <any[]>(url, {responseType: 'text' as 'json'})
         .subscribe(response => {
           const $ = cheerio.load(response);
           const results = [];
@@ -52,7 +117,9 @@ export class SubsService {
             }
           });
           const subs = results.sort(this.compare).slice(-1).pop();
-          if (!subs) { return; }
+          if (!subs) {
+            return;
+          }
           // console.log('results', results);
           observer.next(results);
         });
@@ -60,23 +127,23 @@ export class SubsService {
   }
 
 
-  downloadSub(subs, episode_path): Observable < any > {
+  downloadSub(subs, episode_path): Observable<any> {
     return Observable.create(observer => {
       const download_url = 'https://subscene.com' + subs['link'];
-      return this.http.get < any[] > (download_url, {
-          responseType: 'text' as 'json'
-        })
+      return this.http.get <any[]>(download_url, {
+        responseType: 'text' as 'json'
+      })
         .subscribe(_response => {
           const _$ = cheerio.load(_response);
           const link = 'https://subscene.com' + _$('.download')['0'].children[1]['attribs'].href;
 
-          return this.http.get(link, { responseType: 'arraybuffer' })
+          return this.http.get(link, {responseType: 'arraybuffer'})
             .subscribe(__response => {
               let _path = this.path.dirname(episode_path);
               // let _path = this.path.join(episode_path);
               console.log('_path', _path);
               const that = this;
-              this.fsExtra.readdir(_path, function(err, files) {
+              this.fsExtra.readdir(_path, function (err, files) {
                 if (files && files.length > 0) {
                   _path = that.path.join(_path, files[0]);
                 }
@@ -84,25 +151,27 @@ export class SubsService {
 
               this.fsExtra.appendFileSync(this.path.join(_path, subs['sub'] + '(' + subs['i'] + ')') + '.zip',
                 new Buffer(__response), err => {
-                if (err) {
-                  console.log('Error creating zip file', err);
-                }
-              });
+                  if (err) {
+                    console.log('Error creating zip file', err);
+                  }
+                });
 
               const zip_path = this.path.join(_path, subs['sub'] + '(' + subs['i'] + ')') + '.zip';
               const unzipper = new this.zip(zip_path);
 
-              unzipper.on('extract', function(log) {
+              unzipper.on('extract', function (log) {
                 console.log('Finished extracting', log);
                 // const srtPath = zip_path.substr(0,  zip_path.length - 7) + '.srt';
                 const srtPath = that.path.join(that.path.dirname(episode_path), log[0]['deflated']);
                 observer.next(srtPath);
                 that.fsExtra.remove(zip_path, err => {
-                  if (err) { console.log('Deleting zip:', zip_path, err); }
+                  if (err) {
+                    console.log('Deleting zip:', zip_path, err);
+                  }
                 });
               });
 
-              unzipper.on('error', function(err) {
+              unzipper.on('error', function (err) {
                 console.log('Caught an error', err);
               });
 
