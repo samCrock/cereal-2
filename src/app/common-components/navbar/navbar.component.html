@@ -1,18 +1,18 @@
-<div class="navbar" fxLayout="row" fxLayoutGap="2vw" fxLayoutAlign="start center" *ngIf="enabled">
+<div class="navbar" fxLayout="row" fxLayoutGap="calc(1rem + 1vw)" fxLayoutAlign="start center" *ngIf="enabled">
   <div>
-    <i [ngClass]="isActive('trending') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="trending" style="padding-top: 6px;">bolt</i>
+    <app-icon [name]="'power'" [isActive]="isActive('trending')" routerLink="trending"></app-icon>
   </div>
   <div>
-		<i [ngClass]="isActive('calendar') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="calendar">calendar_today</i>
+    <app-icon [name]="'calendar'" [isActive]="isActive('calendar')" routerLink="calendar"></app-icon>
 	</div>
 	<div>
-		<i [ngClass]="isActive('library') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="library">favorite</i>
+    <app-icon [name]="'heart'" [isActive]="isActive('library')" routerLink="library"></app-icon>
 	</div>
-	<div>
-		<i [ngClass]="isActive('torrents') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="torrents" style="padding-top: 6px;">file_download</i>
+  <div>
+    <app-icon [name]="'download2'" [isActive]="isActive('torrents')" routerLink="torrents"></app-icon>
 	</div>
-	<div>
-		<i [ngClass]="isActive('search') ? 'material-icons hoverable circle active' : 'material-icons hoverable circle'" routerLink="search" style="padding-top: 6px;">search</i>
+  <div>
+    <app-icon [name]="'search'" [isActive]="isActive('search')" routerLink="search"></app-icon>
 	</div>
 
 	<div *ngIf="current_show">

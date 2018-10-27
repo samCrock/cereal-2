@@ -1,0 +1,11 @@
+@import "../../../globals.scss";
+
+i {
+  cursor: pointer;
+  font-size: calc(1rem + 1vw);
+  height: auto;
+  transition: color 1s ease;
+}
+i.active {
+  color: $primary;
+}

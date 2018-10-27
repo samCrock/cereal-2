@@ -1,20 +1,23 @@
 @import "~materialize-css/sass/materialize";
-
+@import "assets/style.css";
+@import "globals.scss";
 // RESET
 
+html {
+  --color1: steelblue;
+  --distance: 50px;
+  --bg-color: rgb(58, 70, 76);
+  --fore-color: #e6e682 ;
+}
+
 html, body {
-	//background-color: rgb(58, 70, 76);
 	background-color: var(--bg-color);
-	// background: url('assets/posters/blindspot.jpg');
 	background-size: cover;
 	user-select: none;
 	margin: 0;
 	height: 100%;
 	padding: 0;
-	// @extend .blue-grey, .darken-3;
 	color: white;
-	// font-family: 'Abel', sans-serif;
-	font-family: 'Economica', sans-serif;
 	font-family: 'Economica', sans-serif;
 	text-rendering: optimizeLegibility;
 	overflow-x: hidden;
@@ -24,11 +27,7 @@ body {
 	background-color: transparent;
 }
 
-.bg-container {
-	position: relative;
-	transition: all .6 ease-in;
-	// height: 100%;
-}
+.bg-container {}
 
 .bg-container::after {
   content: "";
@@ -69,11 +68,9 @@ input {
 
 
 .btn {
-	// border-color: #2bbbad !important;
 	border-style: solid !important;
 	border-width: 1px !important;
 	background: transparent !important;
-	// color: #2bbbad !important;
 	font-size: calc(1rem + 1vw) !important;
 	transition: all .4s;
 }
@@ -140,16 +137,4 @@ app-show {
 
 
 
-html {
-  --color1: steelblue;
-  --distance: 50px;
-  --bg-color: rgb(58, 70, 76);
-  --fore-color: #e6e682 ;
-}
-
-#body {
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--bg-color);
-}
 

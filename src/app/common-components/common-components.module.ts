@@ -6,6 +6,7 @@ import {EpisodeComponent, NavbarComponent, ShowPreviewComponent, ExpandedCardCom
 import {MatDialogModule} from '@angular/material';
 // Pipes
 import {SortPipe, TrimPipe} from '../pipes';
+import { IconComponent } from './icon/icon.component';
 
 const COMMON_COMPONENTS = [
   EpisodeComponent,
@@ -13,7 +14,8 @@ const COMMON_COMPONENTS = [
   ShowPreviewComponent,
   ExpandedCardComponent,
   DialogComponent,
-  PageLoaderComponent
+  PageLoaderComponent,
+  IconComponent
 ];
 
 @NgModule({

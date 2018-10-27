@@ -25,103 +25,106 @@ export class SubsService {
   convertNumberToOrdinal(n) {
     switch (n) {
       case 1:
-        return 'First';
+        return 'first';
       case 2:
-        return 'Second';
+        return 'second';
       case 3:
-        return 'Third';
+        return 'third';
       case 4:
-        return 'Fourth';
+        return 'fourth';
       case 5:
-        return 'Fifth';
+        return 'fifth';
       case 6:
-        return 'Sixth';
+        return 'sixth';
       case 7:
-        return 'Seventh';
+        return 'seventh';
       case 8:
-        return 'Eighth';
+        return 'eighth';
       case 9:
-        return 'Ninth';
+        return 'ninth';
       case 10:
-        return 'Tenth';
+        return 'tenth';
       case 11:
-        return  'Eleventh';
+        return 'eleventh';
       case 12:
-        return 'Twelfth';
+        return 'twelfth';
       case 13:
-        return 'Thirteenth';
+        return 'thirteenth';
       case 14:
-        return 'Fourteenth';
+        return 'fourteenth';
       case 15:
-        return 'Fifteenth';
+        return 'fifteenth';
       case 16:
-        return  'Sixteenth';
+        return 'sixteenth';
       case 17:
-        return 'Seventeenth';
+        return 'seventeenth';
       case 18:
-        return  'Eighteenth';
+        return 'eighteenth';
       case 19:
-        return 'Nineteenth';
+        return 'nineteenth';
       case 20:
-        return 'Twentieth';
+        return 'twentieth';
       case 21:
-        return 'Twenty-First';
+        return 'twenty-first';
       case 22:
-        return 'Twenty-Second';
+        return 'twenty-second';
       case 23:
-        return 'Twenty-Third';
+        return 'twenty-third';
       case 24:
-        return 'Twenty-Fourth';
+        return 'twenty-fourth';
       case 25:
-        return 'Twenty-Fifth';
+        return 'twenty-fifth';
       case 26:
-        return 'Twenty-Sixth';
+        return 'twenty-sixth';
       case 27:
-        return 'Twenty-Seventh';
+        return 'twenty-seventh';
       case 28:
-        return 'Twenty-Eighth';
+        return 'twenty-eighth';
       case 29:
-        return 'Twenty-Ninth';
+        return 'twenty-ninth';
       case 30:
-        return 'Thirtieth';
+        return 'thirtieth';
     }
   }
 
   retrieveSubs(show, ep_label, dn) {
     return Observable.create(observer => {
       dn = dn.replace(/'/g, ' ');
-      const url = 'https://subscene.com/subtitles/release?q=' + dn;
-      console.log(url);
+      const season = parseInt(ep_label.substring(1, 3), 10);
+      const url = 'https://subscene.com/subtitles/title?q=' + show + '-' + this.convertNumberToOrdinal(season) + '-season';
       return this.http.get <any[]>(url, {responseType: 'text' as 'json'})
         .subscribe(response => {
           const $ = cheerio.load(response);
           const results = [];
-          $('tr').map((i, element) => {
-            if (i > 0) {
-              const sub_name = element.children[1].children[1].children[3].children[0].data.trim(),
-                link = element.children[1].children[1].attribs.href,
-                lang = element.children[1].children[1].children[1].children[0].data.trim();
+          return this.http.get <any[]>('https://subscene.com' + $('.title')[0].children[1].attribs.href, {responseType: 'text' as 'json'})
+            .subscribe(response2 => {
+              const _$ = cheerio.load(response2);
+              _$('.a1').map((i, element) => {
+                const sub_name = element.children[1].children[3].children[0].data.trim(),
+                  link = element.children[1].attribs.href,
+                  lang = element.children[1].children[1].children[0].data.trim();
 
-              const similarity = this.similarity(dn, sub_name);
-              if (lang === 'English' && similarity > 0.5 && sub_name.indexOf(show.split(' ')[0]) > -1 && sub_name.indexOf(ep_label) > -1) {
-                console.log('Sub candidate', sub_name);
-                results.push({
-                  dn: dn,
-                  i: i.toString(),
-                  sub: sub_name,
-                  link: link,
-                  lang: lang,
-                  similarity: similarity
-                });
+                const similarity = this.similarity(dn, sub_name);
+                if (results.length < 6 && lang === 'English' && similarity > 0.7 && sub_name.indexOf(ep_label) > -1) {
+                  // console.log('Sub candidate', sub_name);
+                  results.push({
+                    dn: dn,
+                    i: i.toString(),
+                    sub: sub_name,
+                    link: link,
+                    lang: lang,
+                    similarity: similarity
+                  });
+                }
+              });
+              const subs = results.sort(this.compare).slice(-1).pop();
+              if (!subs) {
+                return;
               }
-            }
-          });
-          const subs = results.sort(this.compare).slice(-1).pop();
-          if (!subs) {
-            return;
-          }
-          // console.log('results', results);
-          observer.next(results);
+              // console.log('results', results);
+              observer.next(results);
+            });
+
         });
     });
   }
@@ -160,7 +163,7 @@ export class SubsService {
               const unzipper = new this.zip(zip_path);
 
               unzipper.on('extract', function (log) {
-                console.log('Finished extracting', log);
+                // console.log('Finished extracting', log);
                 // const srtPath = zip_path.substr(0,  zip_path.length - 7) + '.srt';
                 const srtPath = that.path.join(that.path.dirname(episode_path), log[0]['deflated']);
                 observer.next(srtPath);

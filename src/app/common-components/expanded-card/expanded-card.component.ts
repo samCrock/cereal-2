@@ -103,7 +103,7 @@ export class ExpandedCardComponent implements OnChanges {
 
       exp_card.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1.5rem + 1vw)';
       exp_card.getElementsByClassName('card-episode')[0]['style']['font-size'] = 'calc(1rem + 1vw)';
-      exp_card.getElementsByClassName('card-title')[0]['style']['line-height'] = 'calc(1rem + 1vw)';
+      exp_card.getElementsByClassName('card-title')[0]['style']['line-height'] = 'calc(1.2rem + 1vw)';
     }, 10);
 
     document.onmousemove = handleMouseMove;

@@ -1,12 +1,12 @@
-import { Component, OnChanges, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { TorrentService, SubsService, DbService } from '../../services';
-import { ElectronService } from 'ngx-electron';
-import { Router } from '@angular/router';
-import { TweenMax } from 'gsap';
+import {Component, OnChanges, OnInit, OnDestroy, NgZone} from '@angular/core';
+import {TorrentService, SubsService, DbService} from '../../services';
+import {ElectronService} from 'ngx-electron';
+import {Router} from '@angular/router';
+import {TweenMax} from 'gsap';
 import * as Draggable from 'gsap/Draggable';
-import { Subscription } from 'rxjs/Subscription';
-import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
-import { Observable } from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
+import {IntervalObservable} from 'rxjs/observable/IntervalObservable';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-player',
@@ -52,7 +52,8 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     public electronService: ElectronService,
     public router: Router,
     private zone: NgZone
-  ) {}
+  ) {
+  }
 
   ngOnChanges() {
     console.log('ngOnChanges');
@@ -62,10 +63,10 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     this.init();
   }
 
-  checkVideoPath(file_path): Observable < any > {
+  checkVideoPath(file_path): Observable<any> {
     return new Observable(observer => {
       const that = this;
-      const checkInterval = setInterval(function() {
+      const checkInterval = setInterval(function () {
         let files = that.fs.readdirSync(file_path);
         files.forEach(file => {
           let ext = file.substring(file.length - 3, file.length);
@@ -103,7 +104,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     // console.log('show', this.show);
     // console.log('episode', this.episode);
     // console.log('dn', this.dn);
-    // console.log('infoHash', this.infoHash);
+    console.log('infoHash', this.infoHash);
     // console.log('file_path', this.file_path);
 
     // Set video file path (search recursively)
@@ -143,22 +144,40 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
 
 
     const that = this;
-    document.body.onkeyup = function(e) {
+    document.body.onkeyup = function (e) {
       if (e.keyCode === 32) {
         that.toggle_play();
       }
     };
     document.getElementById('player')
-      .addEventListener('dblclick', function() {
+      .addEventListener('dblclick', function () {
         that.toggle_fullscreen();
       });
 
 
   }
 
+  downloadSubs() {
+    // Add subs tracks
+    console.log('DOWNLOADING SUBS');
+    this.subsService.retrieveSubs(this.show['dashed_title'], this.episode['label'], this.dn)
+      .subscribe(subs => {
+        // console.log('retrieveSubs');
+        subs.forEach(sub => {
+          this.subsService.downloadSub(sub, this.file_path)
+            .subscribe(subPath => {
+              console.log('subPath', subPath);
+              this.addSubs(subPath);
+            });
+        });
+      });
+  }
+
   setup() {
     console.log('SETUP', this.file_path);
     const that = this;
+
+    this.downloadSubs();
 
     if (this.progressSubscription) {
       this.progressSubscription.unsubscribe();
@@ -175,7 +194,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
 
     // Restore progess
     let isReady = true;
-    this.player.oncanplay = function() {
+    this.player.oncanplay = function () {
       if (isReady) {
         that.player.currentTime = that.episode['play_progress'] ?
           (that.player.duration / 100) * that.episode['play_progress'] : 0;
@@ -191,23 +210,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     track.label = '[ Disable ]';
     this.player.appendChild(track);
 
-    // Add subs tracks
-    if (true) {
-      console.log('DOWNLOADING SUBS');
-      this.subsService.retrieveSubs(this.show['title'], this.episode['label'], this.dn)
-        .subscribe(subs => {
-          console.log('retrieveSubs');
-          subs.forEach(sub => {
-            this.subsService.downloadSub(sub, this.file_path)
-              .subscribe(subPath => {
-                console.log('subPath', subPath);
-                that.addSubs(subPath);
-              });
-          });
-        });
-    }
-
-    const i = setInterval(function() {
+    const i = setInterval(function () {
       if (this.player.readyState > 0) {
         clearInterval(i);
         const duration = +this.player.duration;
@@ -217,21 +220,21 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
           '0' + Math.floor(duration % 60).toString() : Math.floor(duration % 60).toString();
         that.totalTime = minutes + ':' + seconds;
 
-        document.addEventListener('mousemove', function() {
+        document.addEventListener('mousemove', function () {
           that.lastMove = Date.now();
         }, false);
 
-        document.addEventListener('dragenter', function(e) {
+        document.addEventListener('dragenter', function (e) {
           e.stopPropagation();
           e.preventDefault();
         }, false);
 
-        document.addEventListener('dragover', function(e) {
+        document.addEventListener('dragover', function (e) {
           e.stopPropagation();
           e.preventDefault();
         }, false);
 
-        document.addEventListener('drop', function(e) {
+        document.addEventListener('drop', function (e) {
           e.stopPropagation();
           e.preventDefault();
           const dt = e.dataTransfer,
@@ -293,36 +296,42 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
         .pipe(that.srt2vtt())
         .pipe(that.fsExtra.createWriteStream(file_path.substring(0, file_path.length - 3) + 'vtt'));
       // setTimeout(function() {
-        track.src = file_path.substring(0, file_path.length - 3) + 'vtt';
-        track.label = that.path.normalize(track.src).split(that.path.sep)[that.path.normalize(track.src).split(that.path.sep).length - 1];
-        track.label = track.label.substring(0, track.label.length - 4);
-        track.label = decodeURI(track.label);
-        let duplicate = false;
+      track.src = file_path.substring(0, file_path.length - 3) + 'vtt';
+      track.label = that.path.normalize(track.src).split(that.path.sep)[that.path.normalize(track.src).split(that.path.sep).length - 1];
+      track.label = track.label.substring(0, track.label.length - 4);
+      track.label = decodeURI(track.label);
+      let duplicate = false;
+      for (const key in that.player.textTracks) {
+        if (that.player.textTracks.hasOwnProperty(key)) {
+          const trackElement = that.player.textTracks[key];
+          trackElement.mode = 'hidden';
+          if (trackElement.label === track.label) {
+            duplicate = true;
+          }
+        }
+      }
+      if (that.player.textTracks['1']) {
+        that.player.textTracks['1'].mode = 'showing';
+      }
+      if (!duplicate) {
+        that.player.appendChild(track);
+      }
+
+      setTimeout(function () {
+        const cues = that.player.textTracks[1].cues;
+        Object.keys(cues).forEach(key => {
+          cues[key].snapToLines = false;
+          cues[key].line = 90;
+        });
         for (const key in that.player.textTracks) {
           if (that.player.textTracks.hasOwnProperty(key)) {
-            const trackElement = that.player.textTracks[key];
-            trackElement.mode = 'hidden';
-            if (trackElement.label === track.label) { duplicate = true; }
+            that.player.textTracks[key].mode = 'hidden';
           }
         }
-        if (that.player.textTracks['1']) { that.player.textTracks['1'].mode = 'showing'; }
-        if (!duplicate) {
-          that.player.appendChild(track);
+        if (that.player.textTracks['1']) {
+          that.player.textTracks['1'].mode = 'showing';
         }
-
-        setTimeout(function() {
-          const cues = that.player.textTracks[1].cues;
-          Object.keys(cues).forEach(key => {
-            cues[key].snapToLines = false;
-            cues[key].line = 90;
-          });
-          for (const key in that.player.textTracks) {
-            if (that.player.textTracks.hasOwnProperty(key)) {
-              that.player.textTracks[key].mode = 'hidden';
-            }
-          }
-          if (that.player.textTracks['1']) { that.player.textTracks['1'].mode = 'showing'; }
-        }, 100);
+      }, 100);
 
       // }, 1);
     }
@@ -386,13 +395,13 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
       timelineProgress = document.getElementsByClassName('timeline__progress')[0],
       drag = document.getElementsByClassName('timeline__drag')[0];
 
-    video.onplay = function() {
+    video.onplay = function () {
       TweenMax.ticker.addEventListener('tick', vidUpdate);
     };
-    video.onpause = function() {
+    video.onpause = function () {
       TweenMax.ticker.removeEventListener('tick', vidUpdate);
     };
-    video.onended = function() {
+    video.onended = function () {
       TweenMax.ticker.removeEventListener('tick', vidUpdate);
     };
 
@@ -411,7 +420,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
       type: 'x',
       trigger: timeline,
       bounds: timeline,
-      onPress: function(e) {
+      onPress: function (e) {
         video.currentTime = this.x / this.maxX * video.duration;
         TweenMax.set(this.target, {
           x: this.pointerX - timeline.getBoundingClientRect().left
@@ -422,14 +431,14 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
           scaleX: progress
         });
       },
-      onDrag: function() {
+      onDrag: function () {
         video.currentTime = this.x / this.maxX * video.duration;
         const progress = this.x / timeline.offsetWidth;
         TweenMax.set(timelineProgress, {
           scaleX: progress
         });
       },
-      onRelease: function(e) {
+      onRelease: function (e) {
         e.preventDefault();
       }
     });
@@ -442,8 +451,11 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.loopInterval) { clearInterval(this.loopInterval); }
-    window.onwheel = function() {};
+    if (this.loopInterval) {
+      clearInterval(this.loopInterval);
+    }
+    window.onwheel = function () {
+    };
     if (this.player) {
       console.log('Seconds viewed on destroy:', this.player.currentTime);
       const play_progress = Math.ceil((this.player.currentTime / this.player.duration) * 100);
