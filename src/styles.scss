@@ -24,11 +24,11 @@ html, body {
 }
 
 body {
-	background-color: transparent;
-  height: calc(100vh - 4rem);
-  width: 100%;
-  top: 4rem;
   position: absolute;
+  background-color: transparent;
+  width: 100%;
+  height: calc(100vh - 4rem);
+  top: 4rem;
 }
 
 .bg-container {}
