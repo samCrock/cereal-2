@@ -105,7 +105,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     // console.log('episode', this.episode);
     // console.log('dn', this.dn);
     console.log('infoHash', this.infoHash);
-    // console.log('file_path', this.file_path);
+    console.log('file_path', this.file_path);
 
     // Set video file path (search recursively)
     this.checkVideoPath(this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], this.episode['label']))

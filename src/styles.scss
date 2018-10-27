@@ -8,6 +8,7 @@ html {
   --distance: 50px;
   --bg-color: rgb(58, 70, 76);
   --fore-color: #e6e682 ;
+  height: 100%;
 }
 
 html, body {
@@ -15,7 +16,6 @@ html, body {
 	background-size: cover;
 	user-select: none;
 	margin: 0;
-	height: 100%;
 	padding: 0;
 	color: white;
 	font-family: 'Economica', sans-serif;
@@ -25,6 +25,10 @@ html, body {
 
 body {
 	background-color: transparent;
+  height: calc(100vh - 4rem);
+  width: 100%;
+  top: 4rem;
+  position: absolute;
 }
 
 .bg-container {}
@@ -64,6 +68,7 @@ input {
 
 .container {
 	margin-top: 4rem;
+  margin-bottom: 2rem;
 }
 
 
@@ -114,14 +119,13 @@ input {
 }
 
 app-show {
-	position: absolute;
 	margin-top: 4rem;
   width: 100%;
 }
 
 #splash {
 	background-image: url('assets/cereal-bkg.png');
-	height: 100vh;
+	height: calc(100vh - 4rem);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
