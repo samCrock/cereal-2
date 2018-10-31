@@ -70,7 +70,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
         let files = that.fs.readdirSync(file_path);
         files.forEach(file => {
           let ext = file.substring(file.length - 3, file.length);
-          if (ext === 'mkv' || ext === 'mp4') {
+          if (ext === 'mkv' || ext === 'mp4' || ext === 'avi') {
             that.file_path = that.path.join(file_path, file);
             console.log('Video found ->', that.file_path);
             clearInterval(checkInterval);
@@ -280,7 +280,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
       document.webkitExitFullscreen();
       this.isFullscreen = false;
     } else {
-      this.player.webkitRequestFullscreen();
+      document.getElementById('player').webkitRequestFullscreen();
       this.isFullscreen = true;
     }
   }
