@@ -2,8 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/observable/of';
-import {mergeMap, catchError} from 'rxjs/operators';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
 import {DbService} from './db.service';
@@ -12,7 +11,6 @@ import {ElectronService} from 'ngx-electron';
 @Injectable()
 export class ScrapingService {
 
-  private exec = this.electronService.remote.getGlobal('exec');
   private path = this.electronService.remote.getGlobal('path');
   private app = this.electronService.remote.getGlobal('app');
   private fsExtra = this.electronService.remote.getGlobal('fsExtra');
@@ -23,6 +21,12 @@ export class ScrapingService {
     private dbService: DbService,
     public electronService: ElectronService
   ) {
+  }
+
+  normalizePath(path) {
+    path = this.path.normalize(path);
+    path = path.replace(/\\/g, '/');
+    return path;
   }
 
   retrieveShow(show: string): Observable<any> {
@@ -262,38 +266,6 @@ export class ScrapingService {
     });
   }
 
-  retrieveAlternatePoster(dashed_title: string, observer) {
-    // console.log('Retrieving poster for', dashed_title);
-    return this.http.get('http://www.imdb.com/find?ref_=nv_sr_fn&q=' + dashed_title + '&s=all', {responseType: 'text' as 'json'})
-      .subscribe(response => {
-        const $ = cheerio.load(response),
-          results = $('.primary_photo');
-        if (results[0]) {
-          const small_img = results[0].children[1].children[0].attribs.src;
-          let large_img = small_img.replace('V1_UX32_CR0,0,32,44_AL_', 'V1_UY268_CR1,0,182,268_AL_');
-
-          if (small_img.indexOf('V1_UX32_CR0,0,32,44_AL_') < 0) {
-            large_img = small_img.replace('V1_UY44_CR0,0,32,44_AL_', 'V1_UY182_CR0,0,182,268_AL_');
-            if (small_img.indexOf('V1_UY44_CR1,0,32,44_AL_') > -1) {
-              large_img = small_img.replace('V1_UY44_CR1,0,32,44_AL_', 'V1_UY268_CR12,0,182,268_AL_');
-            }
-            if (small_img.indexOf('V1_UY44_CR13,0,32,44_AL_') > -1) {
-              large_img = small_img.replace('V1_UY44_CR13,0,32,44_AL_', 'V1_UY268_CR87,0,182,268_AL_');
-            }
-          }
-          return observer.next(large_img);
-        } else {
-          return observer.next('');
-        }
-      });
-  }
-
-  normalizePath(path) {
-    path = this.path.normalize(path);
-    path = path.replace(/\\/g, '/');
-    return path;
-  }
-
   retrieveRemotePoster(dashed_title: string, observer) {
     console.log('Retrieving poster for', dashed_title);
     return this.http.get('https://trakt.tv/shows/' + dashed_title, {responseType: 'text'})
@@ -368,71 +340,71 @@ export class ScrapingService {
     });
   }
 
-  // PB proxy
-  retrieveEpisode(show: string, episode: string, custom?: number) {
-    show = show.replace(/'/g, ' ');
-    const url = encodeURI('https://baypirateproxy.org/s/?q=' + show + ' ' + episode);
-    console.log('Downloading episode', show, episode);
-    // console.log('url', url);
-    return Observable.create(observer => {
-      return this.http.get<any[]>(url, {responseType: 'text' as 'json'})
-        .subscribe(response => {
-          const $ = cheerio.load(response);
-          const _custom = custom ? custom : 1;
-          if ($('tr')[_custom]) {
-            const nested_url = $('tr')[_custom].children[2].children[3].attribs.href;
-            const name = $('tr')[_custom].children[2].children[1].children[1].children[0].data;
-            const seeds = $('tr')[_custom].children[4].children[0].data;
-            console.log(nested_url);
-
-            return this.http.get<any[]>('https://baypirateproxy.org' + nested_url, {responseType: 'text' as 'json'})
-              .subscribe(nested_response => {
-                const _$ = cheerio.load(nested_response);
-                const magnet = _$('.download')[0].children[1].attribs.href;
-                return observer.next({
-                  name: name.trim(),
-                  seeds: seeds,
-                  magnet: magnet
-                });
-              });
-          } else {
-            return observer.next();
-          }
-        });
-    });
-  }
-
-  // // Kickass
+  // // PB proxy
   // retrieveEpisode(show: string, episode: string, custom?: number) {
   //   show = show.replace(/'/g, ' ');
-  //   const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');
+  //   const url = encodeURI('https://baypirateproxy.org/s/?q=' + show + ' ' + episode);
   //   console.log('Downloading episode', show, episode);
   //   // console.log('url', url);
   //   return Observable.create(observer => {
-  //     return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+  //     return this.http.get<any[]>(url, {responseType: 'text' as 'json'})
   //       .subscribe(response => {
   //         const $ = cheerio.load(response);
   //         const _custom = custom ? custom : 1;
-  //         if ($('#torrent_latest_torrents')[_custom]) {
-  //           const t_row = $('#torrent_latest_torrents')[_custom];
-  //           console.log(t_row);
-  //           const name = t_row.children[1].children[3].children[5].children[1].children[0].data;
-  //           const magnet_link = t_row.children[1].children[1].children[5].attribs['href'];
-  //           const size = t_row.children[3].children[0].data;
-  //           const seeds = t_row.children[7].children[0].data;
-  //           const magnet = decodeURIComponent(magnet_link.split('https://mylink.lol/?url=')[1]);
-  //           return observer.next({
-  //             name: name.trim(),
-  //             seeds: seeds,
-  //             size: size,
-  //             magnet: magnet
-  //           });
+  //         if ($('tr')[_custom]) {
+  //           const nested_url = $('tr')[_custom].children[2].children[3].attribs.href;
+  //           const name = $('tr')[_custom].children[2].children[1].children[1].children[0].data;
+  //           const seeds = $('tr')[_custom].children[4].children[0].data;
+  //           console.log(nested_url);
+  //
+  //           return this.http.get<any[]>('https://baypirateproxy.org' + nested_url, {responseType: 'text' as 'json'})
+  //             .subscribe(nested_response => {
+  //               const _$ = cheerio.load(nested_response);
+  //               const magnet = _$('.download')[0].children[1].attribs.href;
+  //               return observer.next({
+  //                 name: name.trim(),
+  //                 seeds: seeds,
+  //                 magnet: magnet
+  //               });
+  //             });
   //         } else {
   //           return observer.next();
   //         }
   //       });
   //   });
   // }
+
+  // Kickass
+  retrieveEpisode(show: string, episode: string, custom?: number) {
+    show = show.replace(/'/g, ' ');
+    const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');
+    console.log('Downloading episode', show, episode);
+    // console.log('url', url);
+    return Observable.create(observer => {
+      return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+        .subscribe(response => {
+          const $ = cheerio.load(response);
+          const _custom = custom ? custom : 1;
+          if ($('#torrent_latest_torrents')[_custom]) {
+            const t_row = $('#torrent_latest_torrents')[_custom];
+            console.log(t_row);
+            const name = t_row.children[1].children[3].children[5].children[1].children[0].data;
+            const magnet_link = t_row.children[1].children[1].children[5].attribs['href'];
+            const size = t_row.children[3].children[0].data;
+            const seeds = t_row.children[7].children[0].data;
+            const magnet = decodeURIComponent(magnet_link.split('https://mylink.me.uk/?url=')[1]);
+            return observer.next({
+              name: name.trim(),
+              seeds: seeds,
+              size: size,
+              magnet: magnet
+            });
+          } else {
+            return observer.next();
+          }
+        });
+    });
+  }
 
   retrieveTorrentsList(show: string, episode: string) {
     show = show.replace(/'/g, ' ');
