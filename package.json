@@ -20,6 +20,7 @@
     "postinstall": "npx electron-builder install-app-deps",
     "ng": "ng",
     "start": "node hooks/environments/set_profile.js && npm-run-all -p ng:serve electron:serve",
+    "pre-deploy": "npm version patch && git push --tags origin master",
     "build": "node hooks/environments/set_profile.js && ng build && npm run electron:tsc",
     "build:prod": "node hooks/environments/set_profile.js && ng build --prod && npm run electron:tsc",
     "ng:serve": "ng serve",
