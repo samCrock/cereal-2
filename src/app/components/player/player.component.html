@@ -7,7 +7,7 @@
 </div>
 <div id="controls" [hidden]="loading" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center">
 <!--<div id="controls" [hidden]="loading" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? '' : ''" fxLayout="row" fxLayoutAlign="start center">-->
-  <div id="toggle_play"  (click)="toggle_play()">
+  <div id="toggle_play" *ngIf="!showProgress()" (click)="toggle_play()">
     <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
   </div>
   <div id="duration" >{{ currentTime }} / {{ totalTime }}</div>
@@ -15,30 +15,34 @@
     <div class="timeline__drag"></div>
     <span class="timeline__progress"></span>
   </div>
-  <div id="toggle_fullscreen"  fxLayoutAlign="center center" (click)="toggle_fullscreen()">
-    <i class="material-icons">{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</i>
+
+  <div id="toggle_fullscreen" fxLayoutAlign="center center" (click)="toggle_fullscreen()">
+    <app-icon [name]="isFullscreen ? 'shrink2' : 'enlarge2'"></app-icon>
   </div>
 
   <div id="toggle_subs" [ngClass]="showSubs ? 'active' : ''"  (click)="toggleSubs(); toggledEpisodes = false;">
     <i class="material-icons">textsms</i>
   </div>
+
   <div id="subs_list" *ngIf="showSubs" >
     <div class="subs" [class.active]="sub.mode == 'showing'" *ngFor="let sub of player.textTracks" (click)="selectSubs(sub);">{{ sub.label }}</div>
   </div>
 
   <div id="open_folder"  (click)="openFolder()">
-    <i class="material-icons">folder_open</i>
+    <app-icon [name]="'folder-open'"></app-icon>
   </div>
 
   <div id="toggle_episodes" [class.active]="toggledEpisodes"  (click)="toggleEpisodes(); showSubs = false;">
-    <i class="material-icons">playlist_play</i>
+    <app-icon [name]="toggledEpisodes ? 'menu3' : 'menu4'"></app-icon>
   </div>
+
   <div id="episodes_list" *ngIf="toggleEpisodes" [ngClass]="toggledEpisodes ? 'on' : ''">
-    <app-episode *ngFor="let episode of show.Seasons[show.watching_season]" (notify)="play_episode($event)" [episode]="episode" [show]="show" [format]="'compact'"></app-episode>
+    <app-episode *ngFor="let episode of show['Seasons'][show['watching_season']]" (notify)="play_episode($event)" [episode]="episode" [show]="show" [format]="'compact'"></app-episode>
   </div>
+
 </div>
 
-<div id="progress_widget" *ngIf="torrent && this.torrent.progress < 0.1" fxLayout="column" fxLayoutAlign="start center">
+<div id="progress_widget" *ngIf="showProgress()" fxLayout="column" fxLayoutAlign="start center">
   <span>{{ torrent.progress_label }}</span>
   <span>{{ torrent.speed_label }}</span>
 </div>

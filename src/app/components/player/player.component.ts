@@ -466,4 +466,8 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  showProgress() {
+    return this.torrent && this.torrent.progress < 0.1;
+  }
+
 }
