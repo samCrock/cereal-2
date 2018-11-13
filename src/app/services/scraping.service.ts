@@ -14,7 +14,7 @@ export class ScrapingService {
   private path = this.electronService.remote.getGlobal('path');
   private app = this.electronService.remote.getGlobal('app');
   private fsExtra = this.electronService.remote.getGlobal('fsExtra');
-  private curl = this.electronService.remote.getGlobal('curl');
+  private request = this.electronService.remote.getGlobal('request');
 
   constructor(
     private http: HttpClient,
@@ -281,14 +281,14 @@ export class ScrapingService {
         if (!this.fsExtra.pathExistsSync(path)) {
 
           const that = this;
-          this.curl.request({
+          this.request({
             url: poster,
             encoding: null
           }, function (err, data) {
             if (err) {
               console.error('err', err);
             }
-            that.fsExtra.outputFileSync(path, data);
+            that.fsExtra.outputFileSync(path, data.body);
             path = that.normalizePath(path);
             return observer.next(path);
           });
@@ -316,17 +316,15 @@ export class ScrapingService {
           this.fsExtra.mkdirsSync(path);
           path = this.path.join(path, dashed_title + '.jpg');
           if (!this.fsExtra.pathExistsSync(path)) {
-
-
             const that = this;
-            this.curl.request({
+            that.request({
               url: wallpaper,
               encoding: null
             }, function (err, data) {
               if (err) {
                 console.error('err', err);
               }
-              that.fsExtra.outputFileSync(path, data);
+              that.fsExtra.outputFileSync(path, data.body);
               path = that.normalizePath(path);
               return observer.next(path);
             });
