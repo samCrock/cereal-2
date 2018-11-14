@@ -56,9 +56,10 @@ function checkUpdates() {
         if (err) {
           reject(err);
         }
-        fs.unlinkSync(installer_path);
-        console.log('Done!');
-        resolve(0);
+        fs.unlink(installer_path, function(d) {
+          console.log('Done!');
+          resolve(0);
+        });
       });
     } else {
       try {
@@ -77,7 +78,7 @@ function checkUpdates() {
             resolve(1);
           });
       } catch (e) {
-        console.log(e);
+        console.log('Cannot perform request', e);
         resolve(0);
       }
 
@@ -124,19 +125,16 @@ function createWindow() {
 
 try {
   app.on('ready', () => {
-      if (serve) {
-        console.log('Dev mode. Skip updates');
-        createWindow();
-      } else {
+      // if (serve) {
+      //   console.log('Dev mode. Skip updates');
+      //   createWindow();
+      // } else {
          console.log('Check updates');
          checkUpdates().then(code => {
-          if (code === 1) {
+           console.log('Exit code:', code);
             createWindow();
-          } else {
-            process.kill(process.pid);
-          }
          });
-      }
+      // }
     }
   );
   // Quit when all windows are closed.
