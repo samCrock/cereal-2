@@ -39,8 +39,10 @@ export class ShowPreviewComponent implements OnChanges {
       .subscribe(path => {
         this.wallpaper = path;
         const bgContainer = document.getElementsByClassName('bg-container')[0];
-        document.documentElement['style'].background = 'linear-gradient(to bottom, rgba(58, 70, 76, .8), rgba(58, 70, 76, .8)),' +
-        'url(' + path + ') no-repeat center fixed ';
+        document.documentElement['style'].background = '' +
+          'linear-gradient(to bottom, rgba(58, 70, 76, .8), rgba(58, 70, 76, .8)),' +
+        'url(' + path + ') no-repeat center fixed';
+        document.documentElement['style'].backgroundSize = 'cover';
       });
     }
   }
