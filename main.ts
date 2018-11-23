@@ -48,6 +48,7 @@ function checkUpdates() {
         env: process.env,
         detached: true
       });
+      app.quit();
       child.on('error', function(e) {
         console.log('Updater error:', e);
         reject(e);
@@ -133,6 +134,8 @@ try {
          checkUpdates().then(code => {
            console.log('Exit code:', code);
             createWindow();
+         }, error => {
+           console.log('Updater error:', error);
          });
       // }
     }
