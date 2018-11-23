@@ -10,13 +10,10 @@ body {
 
 app-icon {
   padding: 4px;
-  i {
-    font-size: 30px !important;
-  }
 }
 
 i {
-  font-size: 30px;
+  font-size: calc(1rem + 1vw);
   cursor: pointer;
   vertical-align: middle;
 }
@@ -83,7 +80,7 @@ i {
 #toggle_play {
   margin-left: 20px;
   i {
-    font-size: calc(1rem + 1vw);
+    font-size: calc(1.4rem + 1vw);
   }
 }
 
@@ -91,7 +88,7 @@ i {
   margin-left: 10px;
   app-icon {
     i {
-      font-size: 20px;
+      font-size: calc(1rem + 1vw);
     }
   }
 }

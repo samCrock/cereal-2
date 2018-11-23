@@ -17,7 +17,7 @@
   </div>
 
   <div id="toggle_fullscreen" fxLayoutAlign="center center" (click)="toggle_fullscreen()">
-    <app-icon [name]="isFullscreen ? 'shrink2' : 'enlarge2'"></app-icon>
+    <i class="material-icons">{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</i>
   </div>
 
   <div id="toggle_subs" [ngClass]="showSubs ? 'active' : ''"  (click)="toggleSubs(); toggledEpisodes = false;">
@@ -29,11 +29,13 @@
   </div>
 
   <div id="open_folder"  (click)="openFolder()">
-    <app-icon [name]="'folder-open'"></app-icon>
+    <!--<app-icon [name]="'folder-open'"></app-icon>-->
+    <i class="material-icons">airplay</i>
   </div>
 
   <div id="toggle_episodes" [class.active]="toggledEpisodes"  (click)="toggleEpisodes(); showSubs = false;">
-    <app-icon [name]="toggledEpisodes ? 'menu3' : 'menu4'"></app-icon>
+    <!--<app-icon [name]="toggledEpisodes ? 'menu3' : 'menu4'"></app-icon>-->
+    <i class="material-icons">{{ toggledEpisodes ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</i>
   </div>
 
   <div id="episodes_list" *ngIf="toggleEpisodes" [ngClass]="toggledEpisodes ? 'on' : ''">

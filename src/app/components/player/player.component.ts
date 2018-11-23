@@ -185,7 +185,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     this.player = document.getElementById('player');
 
     // Clean player
-    while (this.player.firstChild) {
+    while (this.player && this.player.firstChild) {
       this.player.firstChild.remove();
     }
 
@@ -319,10 +319,12 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
 
       setTimeout(function () {
         const cues = that.player.textTracks[1].cues;
-        Object.keys(cues).forEach(key => {
-          cues[key].snapToLines = false;
-          cues[key].line = 90;
-        });
+        if (cues) {
+          Object.keys(cues).forEach(key => {
+            cues[key].snapToLines = false;
+            cues[key].line = 90;
+          });
+        }
         for (const key in that.player.textTracks) {
           if (that.player.textTracks.hasOwnProperty(key)) {
             that.player.textTracks[key].mode = 'hidden';
