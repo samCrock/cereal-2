@@ -48,7 +48,7 @@ function checkUpdates() {
         env: process.env,
         detached: true
       });
-      app.quit();
+      process.exit();
       child.on('error', function(e) {
         console.log('Updater error:', e);
         reject(e);
