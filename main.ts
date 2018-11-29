@@ -48,7 +48,6 @@ function checkUpdates() {
         env: process.env,
         detached: true
       });
-      process.exit();
       child.on('error', function(e) {
         console.log('Updater error:', e);
         reject(e);
@@ -62,6 +61,7 @@ function checkUpdates() {
           resolve(0);
         });
       });
+      process.exit();
     } else {
       try {
         request({url: 'https://raw.githubusercontent.com/samCrock/cereal-2/master/package.json'},
@@ -71,11 +71,7 @@ function checkUpdates() {
             }
             remoteVersion = JSON.parse(data.body).version;
             console.log('Remote version:', remoteVersion);
-            if (remoteVersion !== app.getVersion()) {
-              global['update'] = true;
-            } else {
-              global['update'] = false;
-            }
+            global['update'] = remoteVersion !== app.getVersion();
             resolve(1);
           });
       } catch (e) {
