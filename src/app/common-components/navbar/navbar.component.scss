@@ -13,6 +13,10 @@ a {
 	i {
 		font-size: calc(1rem + 1vw);
 	}
+	div {
+		-webkit-app-region: no-drag;
+		cursor: pointer;
+	}
 }
 
 .active {
@@ -21,16 +25,21 @@ a {
 }
 
 .options {
-	position: absolute;
-	right: 1rem;
+	// position: absolute;
+	// right: 1rem;
+	i {
+		font-size: calc(1rem + 1vw);
+		padding: 0 !important;
+	}
+    height: auto;
 	transition: transform .4s ease-in;
 }
 
-.rotate {
-	transform: rotate(180deg);
-	-ms-transform: rotate(180deg);
-	-webkit-transform: rotate(180deg);
-}
+// .rotate {
+// 	transform: rotate(180deg);
+// 	-ms-transform: rotate(180deg);
+// 	-webkit-transform: rotate(180deg);
+// }
 
 #settings_dropdown {
 	position: fixed;
@@ -60,6 +69,12 @@ a {
 #settings_dropdown.open {
 	right: 0;
 }
+
+.quit_btn {
+	position: absolute;
+	right: 0;
+	margin-right: calc(.5rem + .5vw);
+}  
 
 .progress {
   position: fixed;

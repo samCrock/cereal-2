@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NavbarService, DbService } from '../../services';
+import { NavbarService } from '../../services';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { ElectronService } from 'ngx-electron';
@@ -82,5 +82,8 @@ export class NavbarComponent implements OnInit {
     folder_input.click();
   }
 
+  quit() {
+    this.remote.getCurrentWindow().close();
+  }
 
 }

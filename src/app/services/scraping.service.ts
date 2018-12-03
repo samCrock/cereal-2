@@ -404,8 +404,16 @@ export class ScrapingService {
     });
   }
 
-  retrieveTorrentsList(show: string, episode: string) {
+  cleanShowTitle(show) {
+    const year_regex = /[-]\d{4}(?!\d)/g;
     show = show.replace(/'/g, ' ');
+    show = show.replace(year_regex, '');
+    return show;
+  }
+
+  retrieveTorrentsList(show: string, episode: string) {
+    show = this.cleanShowTitle(show);
+
     const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');
     console.log('Downloading episode', show, episode);
     // console.log('url', url);

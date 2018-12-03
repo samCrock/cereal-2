@@ -1,4 +1,4 @@
-<div class="navbar" fxLayout="row" fxLayoutGap="calc(1rem + 1vw)" fxLayoutAlign="start center" *ngIf="enabled">
+<div class="navbar" fxLayout="row" fxLayoutGap="calc(1rem + 1vw)" fxLayoutAlign="start center" *ngIf="enabled" style="-webkit-app-region: drag">
   <div>
     <app-icon [name]="'power'" [isActive]="isActive('trending')" routerLink="trending"></app-icon>
   </div>
@@ -14,12 +14,39 @@
   <div>
     <app-icon [name]="'search'" [isActive]="isActive('search')" routerLink="search"></app-icon>
 	</div>
+	<div>
+	<div [ngClass]="settingsOpen ? 'options rotate' : 'options'">
+		<i [ngClass]="isActive('settings') ? 'material-icons dropdown-trigger hoverable circle active' : 'material-icons dropdown-trigger hoverable circle'" data-target='settings_dropdown' (click)="settingsOpen = !settingsOpen" style="padding-top: 6px;">settings</i>
+	</div>
+
+	<ul id='settings_dropdown' [ngClass]="settingsOpen ? 'open' : ''">
+			<li>
+				<a fxLayout="row" fxLayoutAlign="center center" (click)="refresh()">
+					<i fxFlex="30px" class="material-icons">refresh</i>
+					<span fxFlex="grow">Refresh</span>
+				</a>
+			</li>
+			<!-- <li>
+				<a fxLayout="row" fxLayoutAlign="center center" (click)="chooseFolder()">
+					<i fxFlex="30px" class="material-icons">folder_open</i>
+					<span fxFlex="grow">Set download folder</span>
+					<input id="folder_input" type="file" style="display: none" webkitdirectory/>
+				</a>
+			</li> -->
+		<!-- 	<li>
+				<a fxLayout="row" fxLayoutAlign="center center">
+					<i fxFlex="30px" class="material-icons">delete_outline</i>
+					<span fxFlex="grow">Dump db</span>
+				</a>
+			</li> -->
+		</ul>
+	</div>
 
 	<div *ngIf="current_show">
 		<a class="btn" [ngClass]="isActive('show') ? 'active' : ''" [routerLink]="['show', current_show.dashed_title]">{{ current_show.title }}</a>
 	</div>
-	<div [ngClass]="settingsOpen ? 'options rotate' : 'options'">
-		<i [ngClass]="isActive('settings') ? 'material-icons dropdown-trigger hoverable circle active' : 'material-icons dropdown-trigger hoverable circle'" data-target='settings_dropdown' (click)="settingsOpen = !settingsOpen" style="padding-top: 6px;">settings</i>
+	<div class="quit_btn">
+		<i class="material-icons" (click)="quit()">clear</i>
 	</div>
 </div>
 
@@ -48,3 +75,4 @@
 		</a>
 	</li> -->
 </ul>
+

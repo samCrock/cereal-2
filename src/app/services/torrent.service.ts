@@ -32,7 +32,7 @@ export class TorrentService {
     return new Observable(observer => {
       this.wt_client.torrents.forEach(t => {
         // console.log(t);
-        if (!t) { return observer.next(); }
+        if (!t || !t['infoHash']) { return observer.next(); }
         if (t['infoHash'] === infoHash) {
           return observer.next(t);
         }

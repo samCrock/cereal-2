@@ -136,7 +136,7 @@ export class EpisodeComponent implements OnChanges {
             // this.subsService.downloadSub(result['name'], this.path.join(this.show['title'], episode['label'])).subscribe();
             episode.infoHash = magnet.decode(result['magnet']).infoHash;
             episode.dn = result['name'];
-            this.play(episode, result['name']);
+            // this.play(episode, result['name']);
           });
           this.dbService.addTorrent({
             dn: result['name'],
@@ -229,7 +229,7 @@ export class EpisodeComponent implements OnChanges {
           this.hasResults = true;
           this.loading = false;
           this.ep_torrents.push(result);
-          console.log('this.ep_torrents', this.ep_torrents);
+          // console.log('this.ep_torrents', this.ep_torrents);
           // currentTorrentsListSub.unsubscribe();
         } else {
           this.loading = false;

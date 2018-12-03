@@ -3,11 +3,11 @@
 }
 
 .poster_container {
-	//margin: auto;
+	margin: auto;
 	padding-right: 2vw;
 	border-radius: 4px;
 	background-size: cover;
-  margin: 0 0 0 3rem;
+//   margin: 0 0 0 3rem;
 }
 
 .card {
@@ -53,7 +53,7 @@
 }
 
 .genres {
-	color: rgba(230, 230, 130, 1);
+	color: var(--fore-color);
 	text-transform: uppercase;
 	font-size: calc(.6rem + 1vw);
 	padding-right: .5rem;

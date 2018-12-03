@@ -7,7 +7,8 @@ html {
   --color1: steelblue;
   --distance: 50px;
   --bg-color: rgb(58, 70, 76);
-  --fore-color: #e6e682 ;
+	// --fore-color: #e6e682 ;
+	--fore-color: #ffe000 ;
   height: 100%;
 }
 
@@ -128,12 +129,18 @@ app-show {
 	height: calc(100vh - 4rem);
 	background-position: center;
 	background-repeat: no-repeat;
-	background-size: cover;
+	background-size: contain;
 }
 
 @media only screen and (min-width: 993px) {
   .container {
     width: 85% !important;
+  }
+}
+
+@media only screen and (max-width: 993px) {
+  .container {
+    width: 95% !important;
   }
 }
 

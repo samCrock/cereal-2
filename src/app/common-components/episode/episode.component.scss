@@ -24,7 +24,7 @@ label {
 	background-color: rgba(20, 20, 20, 0.6);
 	height: 2px;
 	.determinate {
-		background-color: #e6e682;
+		background-color: var(--fore-color);
 	}
 }
 
@@ -45,7 +45,7 @@ label {
 }
 
 .active {
-	color: rgba(230, 230, 130, 1);
+	color: var(--fore-color);
 }
 
 .material-icons {
@@ -111,13 +111,13 @@ label {
 }
 
 .seeds {
-	color: rgba(230, 230, 130, 1);
+	color: var(--fore-color);
 }
 
 #speed {
 	font-size: calc(1rem + .5vw);
 	line-height: calc(1rem + 1vw);
-	color: rgba(230, 230, 130, 1);
+	color: var(--fore-color);
 	margin-right: .5rem;
 }
 

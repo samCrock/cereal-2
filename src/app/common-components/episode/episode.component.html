@@ -15,7 +15,7 @@
       <div fxFlex="15" fxLayoutAlign="end center" *ngIf="format == 'extended'">{{ formatDate(episode.date) }}</div>
 
       <div fxFlex="20" fxLayoutAlign="end center" *ngIf="(getTorrentDownloadSpeed(episode) | async); let speed;">
-        <span id="speed" *ngIf="speed != true">{{ speed }} Mb/s</span>
+        <span id="speed" *ngIf="speed !== true">{{ speed }} Mb/s</span>
         <i *ngIf="speed" class="material-icons download_btn hoverable circle"
         [class.active]="isCurrent()"
         data-target="trailer_modal" (click)="play(episode)">play_arrow</i>

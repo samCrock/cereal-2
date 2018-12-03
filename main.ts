@@ -12,6 +12,7 @@ const zip = require('decompress-zip');
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const request = require('request');
+const kill = require('tree-kill');
 
 const args = process.argv.slice(1);
 let remoteVersion, win, serve;
@@ -61,7 +62,7 @@ function checkUpdates() {
           resolve(0);
         });
       });
-      process.exit();
+      kill(process.pid);
     } else {
       try {
         request({url: 'https://raw.githubusercontent.com/samCrock/cereal-2/master/package.json'},
@@ -93,6 +94,9 @@ function createWindow() {
     y: 0,
     width: size.width,
     height: size.height,
+    frame: false,
+    titleBarStyle: 'hiddenInset',
+    transparent: true,
     webPreferences: {
       webSecurity: false,
       allowRunningInsecureContent: true
