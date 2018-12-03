@@ -95,8 +95,7 @@ function createWindow() {
     width: size.width,
     height: size.height,
     frame: false,
-    titleBarStyle: 'hiddenInset',
-    transparent: true,
+    // titleBarStyle: 'hiddenInset',
     webPreferences: {
       webSecurity: false,
       allowRunningInsecureContent: true
