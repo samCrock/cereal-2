@@ -1,10 +1,10 @@
-import {app, BrowserWindow, screen, session, remote, ipcMain, protocol} from 'electron';
+import { app, BrowserWindow, screen, session, remote, ipcMain, protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as webtorrent from 'webtorrent';
 
 const os = require('os');
-const {shell} = require('electron');
+const { shell } = require('electron');
 const fsExtra = require('fs-extra');
 const fs = require('fs');
 const srt2vtt = require('srt-to-vtt');
@@ -33,6 +33,9 @@ global['request'] = request;
 console.log('Local path:', os.homedir(), __dirname);
 console.log('Local version:', app.getVersion());
 
+const installer_path = path.join(app.getPath('appData'), 'Cereal', 'Update_installer.exe');
+const update_check_path = path.join(app.getPath('appData'), 'Cereal', '_updating');
+
 try {
   require('dotenv').config();
 } catch {
@@ -41,31 +44,35 @@ try {
 
 function checkUpdates() {
   return new Promise((resolve, reject) => {
-    const installer_path = path.join(app.getPath('appData'), 'Cereal', 'Update_installer.exe');
+
     if (fs.existsSync(installer_path)) {
       console.log('Executing updater..');
       const child = spawn(installer_path, [process.argv], {
         cwd: process.cwd(),
         env: process.env,
-        detached: true
+        detached: true,
+        stdio: 'ignore'
       });
-      child.on('error', function(e) {
-        console.log('Updater error:', e);
-        reject(e);
+      fs.writeFile(update_check_path, '', function (err) {
+        process.kill(process.pid);
       });
-      child.on('exit', function (err) {
-        if (err) {
-          reject(err);
-        }
-        fs.unlink(installer_path, function(d) {
-          console.log('Done!');
-          resolve(0);
-        });
-      });
-      kill(process.pid);
+      // child.on('error', function(e) {
+      //   console.log('Updater error:', e);
+      //   reject(e);
+      // });
+      // child.on('exit', function (err) {
+      //   console.log('Updater exit');
+      //   if (err) {
+      //     reject(err);
+      //   }
+      //   fs.unlink(installer_path, function(d) {
+      //     console.log('Done!');
+      //     resolve(0);
+      //   });
+      // });
     } else {
       try {
-        request({url: 'https://raw.githubusercontent.com/samCrock/cereal-2/master/package.json'},
+        request({ url: 'https://raw.githubusercontent.com/samCrock/cereal-2/master/package.json' },
           function (err, data) {
             if (err) {
               resolve(1);
@@ -125,19 +132,22 @@ function createWindow() {
 
 try {
   app.on('ready', () => {
-      // if (serve) {
-      //   console.log('Dev mode. Skip updates');
-      //   createWindow();
-      // } else {
-         console.log('Check updates');
-         checkUpdates().then(code => {
-           console.log('Exit code:', code);
-            createWindow();
-         }, error => {
-           console.log('Updater error:', error);
-         });
-      // }
+    if (fs.existsSync(update_check_path)) {
+      fs.unlinkSync(update_check_path);
+      fs.unlink(installer_path, function (d) {
+        console.log('Done!');
+        createWindow();
+      });
+    } else {
+      console.log('Check updates');
+      checkUpdates().then(code => {
+        console.log('Exit code:', code);
+        createWindow();
+      }, error => {
+        console.log('Updater error:', error);
+      });
     }
+  }
   );
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {

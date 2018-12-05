@@ -9,6 +9,9 @@
       "nsis"
     ]
   },
+  "nsis" : {
+    "runAfterFinish": true
+  },
   "mac": {
     "icon": "dist/favicon",
     "target": [
