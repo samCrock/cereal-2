@@ -47,7 +47,7 @@ function checkUpdates() {
 
     if (fs.existsSync(installer_path)) {
       console.log('Executing updater..');
-      const child = spawn(installer_path, [process.argv], {
+      spawn(installer_path, [process.argv], {
         cwd: process.cwd(),
         env: process.env,
         detached: true,
@@ -56,20 +56,6 @@ function checkUpdates() {
       fs.writeFile(update_check_path, '', function (err) {
         process.kill(process.pid);
       });
-      // child.on('error', function(e) {
-      //   console.log('Updater error:', e);
-      //   reject(e);
-      // });
-      // child.on('exit', function (err) {
-      //   console.log('Updater exit');
-      //   if (err) {
-      //     reject(err);
-      //   }
-      //   fs.unlink(installer_path, function(d) {
-      //     console.log('Done!');
-      //     resolve(0);
-      //   });
-      // });
     } else {
       try {
         request({ url: 'https://raw.githubusercontent.com/samCrock/cereal-2/master/package.json' },
@@ -135,11 +121,11 @@ try {
     if (fs.existsSync(update_check_path)) {
       fs.unlinkSync(update_check_path);
       fs.unlink(installer_path, function (d) {
-        console.log('Done!');
+        console.log('Update completed!');
         createWindow();
       });
     } else {
-      console.log('Check updates');
+      console.log('Checking updates..');
       checkUpdates().then(code => {
         console.log('Exit code:', code);
         createWindow();
