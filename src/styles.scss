@@ -1,14 +1,12 @@
 @import "~materialize-css/sass/materialize";
 @import "assets/style.css";
-@import "globals.scss";
-// RESET
 
+// RESET
 html {
-  --color1: steelblue;
   --distance: 50px;
   --bg-color: rgb(58, 70, 76);
-	// --fore-color: #e6e682 ;
-	--fore-color: #ffe000 ;
+	--fore-color: #ffe000;
+	--primary: #2bbbad;
   height: 100%;
 }
 

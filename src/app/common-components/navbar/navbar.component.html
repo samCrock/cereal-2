@@ -15,9 +15,9 @@
     <app-icon [name]="'search'" [isActive]="isActive('search')" routerLink="search"></app-icon>
 	</div>
 	<div>
-	<div [ngClass]="settingsOpen ? 'options rotate' : 'options'">
+	<!-- <div [ngClass]="settingsOpen ? 'options rotate' : 'options'">
 		<i [ngClass]="isActive('settings') ? 'material-icons dropdown-trigger hoverable circle active' : 'material-icons dropdown-trigger hoverable circle'" data-target='settings_dropdown' (click)="settingsOpen = !settingsOpen" style="padding-top: 6px;">settings</i>
-	</div>
+	</div> -->
 
 	<ul id='settings_dropdown' [ngClass]="settingsOpen ? 'open' : ''">
 			<li>
