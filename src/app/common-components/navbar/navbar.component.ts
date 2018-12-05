@@ -86,4 +86,8 @@ export class NavbarComponent implements OnInit {
     this.remote.getCurrentWindow().close();
   }
 
+  minimize() {
+    this.remote.getCurrentWindow().minimize();
+  }
+
 }

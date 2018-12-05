@@ -32,8 +32,6 @@ body {
   top: 4rem;
 }
 
-.bg-container {}
-
 .bg-container::after {
   content: "";
   opacity: 0.5;

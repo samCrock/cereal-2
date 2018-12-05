@@ -70,11 +70,15 @@ a {
 	right: 0;
 }
 
-.quit_btn {
-	position: absolute;
+.semaphore_btn {
+	position: relative;
 	right: 0;
-	margin-right: calc(.5rem + .5vw);
-}  
+	// margin-right: calc(.5rem + .5vw);
+}
+
+.semaphore_btn.first {
+	margin-left: auto;
+}
 
 .progress {
   position: fixed;

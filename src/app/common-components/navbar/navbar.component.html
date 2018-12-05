@@ -45,7 +45,10 @@
 	<div *ngIf="current_show">
 		<a class="btn" [ngClass]="isActive('show') ? 'active' : ''" [routerLink]="['show', current_show.dashed_title]">{{ current_show.title }}</a>
 	</div>
-	<div class="quit_btn">
+	<div class="semaphore_btn first">
+		<i class="material-icons" (click)="minimize()">remove</i>
+	</div>
+	<div class="semaphore_btn">
 		<i class="material-icons" (click)="quit()">clear</i>
 	</div>
 </div>
