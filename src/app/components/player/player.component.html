@@ -4,6 +4,12 @@
   <i class="material-icons back_icon" [routerLink]="['/show', show['dashed_title']]">arrow_back_ios</i><span class="show">{{ show['title'] }}</span>
   <span class="episode_label">{{ episode['label'] }}</span>
   <span class="episode_title">{{ episode['title'] }}</span>
+  <div class="semaphore_btn first">
+		<i class="material-icons" (click)="minimize()">remove</i>
+	</div>
+	<div class="semaphore_btn">
+		<i class="material-icons" (click)="quit()">clear</i>
+	</div>
 </div>
 <div id="controls" [hidden]="loading" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center">
 <!--<div id="controls" [hidden]="loading" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? '' : ''" fxLayout="row" fxLayoutAlign="start center">-->

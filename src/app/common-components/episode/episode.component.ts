@@ -266,7 +266,7 @@ export class EpisodeComponent implements OnChanges {
       this.setup(true);
     });
 
-    // // delete files
+    // delete files
     const folder_path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], episode['episode_label']);
     this.fsExtra.remove(folder_path, err => {
       if (err) {

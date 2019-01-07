@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {ElectronService} from 'ngx-electron';
-import {HttpClient} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { ElectronService } from 'ngx-electron';
+import { HttpClient } from '@angular/common/http';
 import * as cheerio from 'cheerio';
-import {ResponseContentType} from '@angular/http';
+import { ResponseContentType } from '@angular/http';
 
 @Injectable()
 export class SubsService {
@@ -91,22 +91,32 @@ export class SubsService {
     return Observable.create(observer => {
       dn = dn.replace(/'/g, ' ');
       const season = parseInt(ep_label.substring(1, 3), 10);
-      const url = 'https://subscene.com/subtitles/title?q=' + show + '-' + this.convertNumberToOrdinal(season) + '-season';
-      return this.http.get <any[]>(url, {responseType: 'text' as 'json'})
+      const url = 'https://subscene.com/subtitles/title?q=' + show['dashed_title'];
+      return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
           const results = [];
-          return this.http.get <any[]>('https://subscene.com' + $('.title')[0].children[1].attribs.href, {responseType: 'text' as 'json'})
+          let show_index;
+          $('.title').filter(t => {
+            const s_title = $('.title')[t].children[1].children[0].data.split('-')[0].trim();
+            const s_season = $('.title')[t].children[1].children[0].data.split('-')[1].split('Season')[0].trim();
+            if (s_title === show['title'] && s_season.toLowerCase() === this.convertNumberToOrdinal(season)) {
+              show_index = t;
+            }
+          });
+          return this.http.get<any[]>('https://subscene.com' + $('.title')[show_index].children[1].attribs.href,
+          { responseType: 'text' as 'json' })
             .subscribe(response2 => {
               const _$ = cheerio.load(response2);
               _$('.a1').map((i, element) => {
                 const sub_name = element.children[1].children[3].children[0].data.trim(),
-                  link = element.children[1].attribs.href,
-                  lang = element.children[1].children[1].children[0].data.trim();
+                link = element.children[1].attribs.href,
+                lang = element.children[1].children[1].children[0].data.trim();
 
+                // console.log(sub_name, lang, ep_label);
                 const similarity = this.similarity(dn, sub_name);
                 if (results.length < 6 && lang === 'English' && similarity > 0.7 && sub_name.indexOf(ep_label) > -1) {
-                  // console.log('Sub candidate', sub_name);
+                  console.log('Sub candidate', sub_name);
                   results.push({
                     dn: dn,
                     i: i.toString(),
@@ -133,14 +143,14 @@ export class SubsService {
   downloadSub(subs, episode_path): Observable<any> {
     return Observable.create(observer => {
       const download_url = 'https://subscene.com' + subs['link'];
-      return this.http.get <any[]>(download_url, {
+      return this.http.get<any[]>(download_url, {
         responseType: 'text' as 'json'
       })
         .subscribe(_response => {
           const _$ = cheerio.load(_response);
           const link = 'https://subscene.com' + _$('.download')['0'].children[1]['attribs'].href;
 
-          return this.http.get(link, {responseType: 'arraybuffer'})
+          return this.http.get(link, { responseType: 'arraybuffer' })
             .subscribe(__response => {
               let _path = this.path.dirname(episode_path);
               // let _path = this.path.join(episode_path);
@@ -222,8 +232,7 @@ export class SubsService {
       for (let j = 0; j <= s2.length; j++) {
         if (i === 0) {
           costs[j] = j;
-        }
-        else {
+        } else {
           if (j > 0) {
             let newValue = costs[j - 1];
             if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {

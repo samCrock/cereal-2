@@ -15,7 +15,7 @@ import {Observable} from 'rxjs/Observable';
   providers: [TorrentService]
 
 })
-export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
+export class PlayerComponent implements OnInit, OnDestroy {
 
   public show: Object;
   public episode: Object;
@@ -27,6 +27,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   public fsExtra = this.electronService.remote.getGlobal('fsExtra');
   public fs = this.electronService.remote.getGlobal('fs');
   public srt2vtt = this.electronService.remote.getGlobal('srt2vtt');
+  public remote = this.electronService.remote;
 
   public isPlaying = true;
   public isFullscreen = false;
@@ -42,7 +43,6 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   public dn;
   public infoHash;
   public torrent;
-  private progress;
   private progressSubscription: Subscription;
 
   constructor(
@@ -55,12 +55,24 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
   ) {
   }
 
-  ngOnChanges() {
-    console.log('ngOnChanges');
-  }
-
   ngOnInit() {
     this.init();
+  }
+
+  ngOnDestroy() {
+    if (this.loopInterval) {
+      clearInterval(this.loopInterval);
+    }
+    window.onwheel = function () {
+    };
+    if (this.player) {
+      console.log('Seconds viewed on destroy:', this.player.currentTime);
+      const play_progress = Math.ceil((this.player.currentTime / this.player.duration) * 100);
+      this.dbService.setEpisodeProgress(this.show['dashed_title'], this.episode['label'], play_progress)
+        .subscribe(show => {
+          console.log('Updated show', show);
+        });
+    }
   }
 
   checkVideoPath(file_path): Observable<any> {
@@ -157,22 +169,6 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
 
   }
 
-  downloadSubs() {
-    // Add subs tracks
-    console.log('DOWNLOADING SUBS');
-    this.subsService.retrieveSubs(this.show['dashed_title'], this.episode['label'], this.dn)
-      .subscribe(subs => {
-        // console.log('retrieveSubs');
-        subs.forEach(sub => {
-          this.subsService.downloadSub(sub, this.file_path)
-            .subscribe(subPath => {
-              console.log('subPath', subPath);
-              this.addSubs(subPath);
-            });
-        });
-      });
-  }
-
   setup() {
     console.log('SETUP', this.file_path);
     const that = this;
@@ -211,7 +207,7 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     this.player.appendChild(track);
 
     const i = setInterval(function () {
-      if (this.player.readyState > 0) {
+      if (this.player && this.player.readyState > 0) {
         clearInterval(i);
         const duration = +this.player.duration;
         const minutes = Math.floor(duration / 60).toString().length === 1 ?
@@ -250,39 +246,21 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     }, 20);
   }
 
-  controlsLoop() {
-    const that = this;
-    this.loopInterval = setInterval(() => {
-      const currentTime = +that.player.currentTime;
-      const totalTime = +that.player.duration;
-      const minutes = Math.floor(currentTime / 60).toString().length === 1 ?
-        '0' + Math.floor(currentTime / 60).toString() : Math.floor(currentTime / 60).toString();
-      const seconds = Math.floor(that.player.currentTime % 60).toString().length === 1 ?
-        '0' + Math.floor(currentTime % 60).toString() : Math.floor(currentTime % 60).toString();
-      that.currentTime = minutes + ':' + seconds;
-      that.idleTime = Math.floor(Date.now() / 100) - Math.floor(that.lastMove / 100);
-    }, 100);
-  }
-
-  toggle_play() {
-    this.lastMove = Date.now();
-    if (this.isPlaying) {
-      this.player.pause();
-      this.isPlaying = false;
-    } else {
-      this.player.play();
-      this.isPlaying = true;
-    }
-  }
-
-  toggle_fullscreen() {
-    if (this.isFullscreen) {
-      document.webkitExitFullscreen();
-      this.isFullscreen = false;
-    } else {
-      document.getElementById('player').webkitRequestFullscreen();
-      this.isFullscreen = true;
-    }
+  // SUbtitles
+  downloadSubs() {
+    // Add subs tracks
+    console.log('DOWNLOADING SUBS');
+    this.subsService.retrieveSubs(this.show, this.episode['label'], this.dn)
+      .subscribe(subs => {
+        console.log('retrieveSubs result', subs);
+        subs.forEach(sub => {
+          this.subsService.downloadSub(sub, this.file_path)
+            .subscribe(subPath => {
+              console.log('subPath', subPath);
+              this.addSubs(subPath);
+            });
+        });
+      });
   }
 
   addSubs(file_path) {
@@ -356,6 +334,43 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     setTimeout(() => {
       this.showSubs = false;
     }, 200);
+  }
+
+
+  // Controls
+  controlsLoop() {
+    const that = this;
+    this.loopInterval = setInterval(() => {
+      const currentTime = +that.player.currentTime;
+      const totalTime = +that.player.duration;
+      const minutes = Math.floor(currentTime / 60).toString().length === 1 ?
+        '0' + Math.floor(currentTime / 60).toString() : Math.floor(currentTime / 60).toString();
+      const seconds = Math.floor(that.player.currentTime % 60).toString().length === 1 ?
+        '0' + Math.floor(currentTime % 60).toString() : Math.floor(currentTime % 60).toString();
+      that.currentTime = minutes + ':' + seconds;
+      that.idleTime = Math.floor(Date.now() / 100) - Math.floor(that.lastMove / 100);
+    }, 100);
+  }
+
+  toggle_play() {
+    this.lastMove = Date.now();
+    if (this.isPlaying) {
+      this.player.pause();
+      this.isPlaying = false;
+    } else {
+      this.player.play();
+      this.isPlaying = true;
+    }
+  }
+
+  toggle_fullscreen() {
+    if (this.isFullscreen) {
+      document.webkitExitFullscreen();
+      this.isFullscreen = false;
+    } else {
+      document.getElementById('player').webkitRequestFullscreen();
+      this.isFullscreen = true;
+    }
   }
 
   handleScroll(e) {
@@ -452,24 +467,17 @@ export class PlayerComponent implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    if (this.loopInterval) {
-      clearInterval(this.loopInterval);
-    }
-    window.onwheel = function () {
-    };
-    if (this.player) {
-      console.log('Seconds viewed on destroy:', this.player.currentTime);
-      const play_progress = Math.ceil((this.player.currentTime / this.player.duration) * 100);
-      this.dbService.setEpisodeProgress(this.show['dashed_title'], this.episode['label'], play_progress)
-        .subscribe(show => {
-          console.log('Updated show', show);
-        });
-    }
-  }
-
   showProgress() {
     return this.torrent && this.torrent.progress < 0.1;
+  }
+
+  // Navbar clone
+  quit() {
+    this.remote.getCurrentWindow().close();
+  }
+
+  minimize() {
+    this.remote.getCurrentWindow().minimize();
   }
 
 }

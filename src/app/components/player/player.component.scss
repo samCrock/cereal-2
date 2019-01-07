@@ -28,7 +28,7 @@ i {
   background-color: rgba(20, 20, 20, .7);
   transition: all .4s ease-in;
   padding: calc(1rem + 1vw);
-  z-index: 10000000000;
+  z-index: 10;
   .show {
     font-size: calc(1.5rem + 3vw);
     line-height: calc(1.5rem + 3vw);
@@ -247,3 +247,13 @@ video::cue {
     font-size: calc(2rem + 1vw);
   }
 }
+
+.semaphore_btn {
+	position: relative;
+	right: 0;
+}
+
+.semaphore_btn.first {
+	margin-left: auto;
+}
+

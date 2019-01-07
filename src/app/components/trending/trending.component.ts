@@ -25,8 +25,8 @@ export class TrendingComponent implements OnInit {
     this.loading = true;
     this.scrapingService.retrieveTrending().subscribe(shows => {
       console.log('Retrieved trending', shows);
-      // this.trending = shows;
-      // this.loading = false;
+      this.trending = shows;
+      this.loading = false;
     });
   }
 

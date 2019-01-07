@@ -426,6 +426,7 @@ export class DbService {
     return new Observable(observer => {
       const sub = this.torrentService.getTorrent(infoHash);
       sub.subscribe(t => {
+        if (!t) { observer.next(false); }
         if (t.progress === 1) {
           return observer.next(true);
         } else {

@@ -31,10 +31,13 @@ export class TorrentService {
   getTorrent(infoHash): Observable<any> {
     return new Observable(observer => {
       this.wt_client.torrents.forEach(t => {
-        // console.log(t);
-        if (!t || !t['infoHash']) { return observer.next(); }
-        if (t['infoHash'] === infoHash) {
-          return observer.next(t);
+        try {
+            if (!t || !t['infoHash']) { return observer.next(); }
+            if (t['infoHash'] === infoHash) {
+              return observer.next(t);
+            }
+        } catch (e) {
+          // console.error('gettorrent', e);
         }
       });
     });
