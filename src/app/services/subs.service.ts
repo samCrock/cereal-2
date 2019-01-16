@@ -89,42 +89,48 @@ export class SubsService {
 
   retrieveSubs(show, ep_label, dn) {
     return Observable.create(observer => {
-      dn = dn.replace(/'/g, ' ');
+      // dn = dn.replace(/'/g, ' ');
       const season = parseInt(ep_label.substring(1, 3), 10);
-      const url = 'https://subscene.com/subtitles/title?q=' + show['dashed_title'];
+      const url = 'https://subscene.com/subtitles/title?q=' + encodeURI(show['title']);
+      console.log(url);
       return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
           const results = [];
           let show_index;
           $('.title').filter(t => {
-            const s_title = $('.title')[t].children[1].children[0].data.split('-')[0].trim();
-            const s_season = $('.title')[t].children[1].children[0].data.split('-')[1].split('Season')[0].trim();
-            if (s_title === show['title'] && s_season.toLowerCase() === this.convertNumberToOrdinal(season)) {
-              show_index = t;
+            if ($('.title')[t].children[1].children[0].data.indexOf(show['title'] + ' - ') > - 1) {
+              const s_season = $('.title')[t].children[1].children[0].data.split(show['title'] + ' - ')[1].trim().split(' Season')[0];
+              if (s_season.toLowerCase() === this.convertNumberToOrdinal(season)) {
+                show_index = t;
+              }
             }
           });
+          // console.log('Subs data', show_index, $('.title')[show_index]);
+          if (!show_index) { return; }
           return this.http.get<any[]>('https://subscene.com' + $('.title')[show_index].children[1].attribs.href,
-          { responseType: 'text' as 'json' })
+            { responseType: 'text' as 'json' })
             .subscribe(response2 => {
               const _$ = cheerio.load(response2);
               _$('.a1').map((i, element) => {
                 const sub_name = element.children[1].children[3].children[0].data.trim(),
-                link = element.children[1].attribs.href,
-                lang = element.children[1].children[1].children[0].data.trim();
+                  link = element.children[1].attribs.href,
+                  lang = element.children[1].children[1].children[0].data.trim();
 
-                // console.log(sub_name, lang, ep_label);
-                const similarity = this.similarity(dn, sub_name);
-                if (results.length < 6 && lang === 'English' && similarity > 0.7 && sub_name.indexOf(ep_label) > -1) {
-                  console.log('Sub candidate', sub_name);
-                  results.push({
-                    dn: dn,
-                    i: i.toString(),
-                    sub: sub_name,
-                    link: link,
-                    lang: lang,
-                    similarity: similarity
-                  });
+                if (results.length < 6 && lang === 'English' && sub_name.indexOf(ep_label) > -1) {
+                  // console.log(sub_name, lang, ep_label);
+                  const similarity = this.similarity(dn, sub_name);
+                  if (similarity > 0.7) {
+                    console.log('Sub candidate', sub_name);
+                    results.push({
+                      dn: dn,
+                      i: i.toString(),
+                      sub: sub_name,
+                      link: link,
+                      lang: lang,
+                      similarity: similarity
+                    });
+                  }
                 }
               });
               const subs = results.sort(this.compare).slice(-1).pop();

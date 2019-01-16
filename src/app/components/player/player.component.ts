@@ -1,12 +1,12 @@
-import {Component, OnChanges, OnInit, OnDestroy, NgZone} from '@angular/core';
-import {TorrentService, SubsService, DbService} from '../../services';
-import {ElectronService} from 'ngx-electron';
-import {Router} from '@angular/router';
-import {TweenMax} from 'gsap';
+import { Component, OnChanges, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { TorrentService, SubsService, DbService } from '../../services';
+import { ElectronService } from 'ngx-electron';
+import { Router } from '@angular/router';
+import { TweenMax } from 'gsap';
 import * as Draggable from 'gsap/Draggable';
-import {Subscription} from 'rxjs/Subscription';
-import {IntervalObservable} from 'rxjs/observable/IntervalObservable';
-import {Observable} from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-player',
@@ -112,7 +112,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.episode = play.episode;
     this.dn = play.episode.dn;
     this.infoHash = (play.episode && play.episode.infoHash) ? play.episode.infoHash : undefined;
-
     // console.log('show', this.show);
     // console.log('episode', this.episode);
     // console.log('dn', this.dn);
@@ -246,13 +245,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }, 20);
   }
 
-  // SUbtitles
+  // Subtitles
   downloadSubs() {
     // Add subs tracks
     console.log('DOWNLOADING SUBS');
-    this.subsService.retrieveSubs(this.show, this.episode['label'], this.dn)
+    let fileName = this.path.basename(this.file_path);
+    fileName = fileName.substring(0, fileName.length - 4);
+    const dn = this.dn ? this.dn : fileName;
+    this.subsService.retrieveSubs(this.show, this.episode['label'], dn)
       .subscribe(subs => {
-        console.log('retrieveSubs result', subs);
         subs.forEach(sub => {
           this.subsService.downloadSub(sub, this.file_path)
             .subscribe(subPath => {
