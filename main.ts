@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, session, remote, ipcMain, protocol } from 'electron';
+import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as webtorrent from 'webtorrent';
@@ -12,7 +12,6 @@ const zip = require('decompress-zip');
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const request = require('request');
-const kill = require('tree-kill');
 
 const args = process.argv.slice(1);
 let remoteVersion, win, serve;
