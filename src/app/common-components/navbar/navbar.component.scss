@@ -25,8 +25,6 @@ a {
 }
 
 .options {
-	// position: absolute;
-	// right: 1rem;
 	i {
 		font-size: calc(1rem + 1vw);
 		padding: 0 !important;
@@ -34,12 +32,6 @@ a {
     height: auto;
 	transition: transform .4s ease-in;
 }
-
-// .rotate {
-// 	transform: rotate(180deg);
-// 	-ms-transform: rotate(180deg);
-// 	-webkit-transform: rotate(180deg);
-// }
 
 #settings_dropdown {
 	position: fixed;
@@ -82,7 +74,8 @@ a {
 .progress {
   position: fixed;
   margin: 0;
-  top: 0;
+  top: 52px;
+  border-radius: 0;
 }
 .progress.view {
   z-index: 10;
