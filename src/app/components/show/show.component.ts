@@ -44,16 +44,9 @@ export class ShowComponent implements OnInit, OnDestroy {
 
         this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
         .subscribe(lastSeason => {
-          const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
-          console.log('lastSeason.length', lastSeason.length, dbLastSeason.length);
-
-          if (lastSeason.length > dbLastSeason.length) {
-            const missingEpisodes = lastSeason.length - dbLastSeason.length;
-            for (let index = 0; index < missingEpisodes; index++) {
-              dbLastSeason.push(lastSeason[dbLastSeason.length + index]);
-              console.log('Adding episode:', lastSeason[dbLastSeason.length + index]);
-            }
-          }
+          let dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
+          console.log('lastSeason', lastSeason);
+          dbLastSeason = Object.assign(lastSeason, dbLastSeason);
           this.loading = false;
         });
 

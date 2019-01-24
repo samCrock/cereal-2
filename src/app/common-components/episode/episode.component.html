@@ -1,4 +1,4 @@
-<div class="episode_row" *ngIf="show">
+<div class="episode_row" *ngIf="show && episode">
 
   <div class="progress" *ngIf="(getTorrentProgress(episode) | async); let progress;">
     <div class="determinate" [ngStyle]="{ 'width': progress + '%' }"></div>

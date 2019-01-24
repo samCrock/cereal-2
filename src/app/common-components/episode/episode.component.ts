@@ -1,11 +1,11 @@
-import {Component, Input, Output, OnChanges, EventEmitter} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import { Component, Input, Output, OnChanges, EventEmitter } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-import {DbService, SubsService, ScrapingService, TorrentService} from '../../services';
+import { DbService, SubsService, ScrapingService, TorrentService } from '../../services';
 import * as moment from 'moment';
-import {ElectronService} from 'ngx-electron';
+import { ElectronService } from 'ngx-electron';
 import * as magnet from 'magnet-uri';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-episode',
@@ -55,7 +55,8 @@ export class EpisodeComponent implements OnChanges {
       this.dbService.getShow(this.episode['dashed_title'])
         .subscribe(show => {
           this.show = show;
-          // console.log('this.show', this.show);
+          console.log('this.show', this.show);
+          console.log('this.episode', this.episode);
         });
     }
     if (this.episode['episode_label']) {
@@ -99,16 +100,18 @@ export class EpisodeComponent implements OnChanges {
   }
 
   getTorrentDownloadSpeed(episode): Observable<any> {
-    const s = episode['label'].substring(1, 3),
-      e = episode['label'].substring(4, 6);
-    if (this.show['Seasons'][Number(s)]) {
-      if (this.show['Seasons'][Number(s)][Number(e) - 1] && this.show['Seasons'][Number(s)][Number(e) - 1].status === 'ready') {
-        return Observable.of(true);
-      } else {
-        if (!this.show['Seasons'][Number(s)][Number(e) - 1]) {
-          return;
+    if (episode) {
+      const s = episode['label'].substring(1, 3),
+        e = episode['label'].substring(4, 6);
+      if (this.show['Seasons'][Number(s)]) {
+        if (this.show['Seasons'][Number(s)][Number(e) - 1] && this.show['Seasons'][Number(s)][Number(e) - 1].status === 'ready') {
+          return Observable.of(true);
         } else {
-          return this.dbService.getTorrentDownloadSpeed(this.show['Seasons'][Number(s)][Number(e) - 1].infoHash);
+          if (!this.show['Seasons'][Number(s)][Number(e) - 1]) {
+            return;
+          } else {
+            return this.dbService.getTorrentDownloadSpeed(this.show['Seasons'][Number(s)][Number(e) - 1].infoHash);
+          }
         }
       }
     }
