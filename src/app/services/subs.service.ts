@@ -84,6 +84,8 @@ export class SubsService {
         return 'twenty-ninth';
       case 30:
         return 'thirtieth';
+      case 31:
+        return 'thirty-first';
     }
   }
 
@@ -107,7 +109,7 @@ export class SubsService {
             }
           });
           // console.log('Subs data', show_index, $('.title')[show_index]);
-          if (!show_index) { return; }
+          if (show_index === undefined) { return; }
           return this.http.get<any[]>('https://subscene.com' + $('.title')[show_index].children[1].attribs.href,
             { responseType: 'text' as 'json' })
             .subscribe(response2 => {
@@ -117,8 +119,9 @@ export class SubsService {
                   link = element.children[1].attribs.href,
                   lang = element.children[1].children[1].children[0].data.trim();
 
+
                 if (results.length < 6 && lang === 'English' && sub_name.indexOf(ep_label) > -1) {
-                  // console.log(sub_name, lang, ep_label);
+                  console.log(sub_name, lang, ep_label);
                   const similarity = this.similarity(dn, sub_name);
                   if (similarity > 0.7) {
                     console.log('Sub candidate', sub_name);
