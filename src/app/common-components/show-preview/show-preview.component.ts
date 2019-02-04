@@ -22,7 +22,7 @@ export class ShowPreviewComponent implements OnChanges {
   public openedTrailer = false;
   public sanitizedTrailer;
   public wallpaper;
-  public showDelete;
+  public showMore;
   constructor(
     public sanitizer: DomSanitizer,
     public scrapingService: ScrapingService,
@@ -32,9 +32,9 @@ export class ShowPreviewComponent implements OnChanges {
   ) {}
 
   ngOnChanges() {
-    this.showDelete = false;
+    this.showMore = false;
     if (this.show && this.router.url !== '/search') {
-      this.showDelete = true;
+      this.showMore = true;
       this.scrapingService.retrieveRemoteWallpaper(this.show['dashed_title'])
       .subscribe(path => {
         this.wallpaper = path;
