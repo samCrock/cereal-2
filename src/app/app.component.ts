@@ -1,11 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ElectronService} from 'ngx-electron';
-import {DbService, TorrentService} from './services';
-import {TranslateService} from '@ngx-translate/core';
-import {IntervalObservable} from 'rxjs/observable/IntervalObservable';
-import * as magnet from 'magnet-uri';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ElectronService } from 'ngx-electron';
+import { DbService, TorrentService } from './services';
+import { TranslateService } from '@ngx-translate/core';
 import * as Materialize from 'materialize-css';
-import {HttpClient, HttpEventType} from '@angular/common/http';
+import { HttpClient, HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -19,13 +17,13 @@ export class AppComponent implements OnInit, OnDestroy {
   public fs = this._electronService.remote.getGlobal('fs');
   public app = this._electronService.remote.getGlobal('app');
   public path = this._electronService.remote.getGlobal('path');
-  private alive: boolean;
+  public alive: boolean;
   private update = this._electronService.remote.getGlobal('update');
   public updateProgress: number;
-  private updateReady: boolean;
+  public updateReady: boolean;
 
   constructor(
-    private translate: TranslateService,
+    public translate: TranslateService,
     private _electronService: ElectronService,
     private torrentService: TorrentService,
     private dbService: DbService,
@@ -51,15 +49,15 @@ export class AppComponent implements OnInit, OnDestroy {
       });
       console.log('A new version is ready to download..');
       this.http.get('https://github.com/samCrock/cereal-2/raw/win-build/Cereal_Setup.exe',
-        {responseType: 'arraybuffer', reportProgress: true, observe: 'events'}).subscribe((event: any) => {
-        if (event.type === HttpEventType.DownloadProgress) {
-          this.updateProgress = Math.round(event['loaded'] / event['total'] * 100);
-        }
-        if (event.body) {
-          const installer_path = this.path.join(this.app.getPath('appData'), 'Cereal', 'Update_installer.exe');
-          console.log('File is ready:', installer_path);
+        { responseType: 'arraybuffer', reportProgress: true, observe: 'events' }).subscribe((event: any) => {
+          if (event.type === HttpEventType.DownloadProgress) {
+            this.updateProgress = Math.round(event['loaded'] / event['total'] * 100);
+          }
+          if (event.body) {
+            const installer_path = this.path.join(this.app.getPath('appData'), 'Cereal', 'Update_installer.exe');
+            console.log('File is ready:', installer_path);
 
-          this.fs.appendFileSync(installer_path, new Buffer(event.body));
+            this.fs.appendFileSync(installer_path, new Buffer(event.body));
 
             this.updateReady = true;
             delete this.updateProgress;
@@ -70,37 +68,37 @@ export class AppComponent implements OnInit, OnDestroy {
               outDuration: 400,
               classes: ''
             });
-        }
-      });
+          }
+        });
     }
 
     // Restore pending torrents
-    IntervalObservable.create(1000)
-      .subscribe(() => {
-        this.dbService.getPendingTorrents()
-          .subscribe(_torrents => {
-            _torrents.forEach(torrent => {
-              const _torrent = this.wt_client.get(torrent['magnet']);
-              if (_torrent && _torrent.progress === 1) {
-                this.dbService.readyTorrent(_torrent.infoHash)
-                  .subscribe(ep => {
-                    this.dbService.readyEpisode(ep)
-                      .subscribe(show => {
-                        Materialize.toast({
-                          html: show['title'] + ' ' + ep['episode_label'] + ' is ready',
-                          displayLength: 2000,
-                          inDuration: 600,
-                          outDuration: 400,
-                          classes: ''
-                        });
-                        console.log('Episode set to ready!');
+    setTimeout(() => {
+      this.dbService.getPendingTorrents()
+        .subscribe(_torrents => {
+          _torrents.forEach(torrent => {
+            const _torrent = this.wt_client.get(torrent['magnet']);
+            if (_torrent && _torrent.progress === 1) {
+              this.dbService.readyTorrent(_torrent.infoHash)
+                .subscribe(ep => {
+                  this.dbService.readyEpisode(ep)
+                    .subscribe(show => {
+                      Materialize.toast({
+                        html: show['title'] + ' ' + ep['episode_label'] + ' is ready',
+                        displayLength: 2000,
+                        inDuration: 600,
+                        outDuration: 400,
+                        classes: ''
                       });
-                  });
-              }
-              this.torrentService.addTorrent(torrent);
-            });
+                      console.log('Episode set to ready!');
+                    });
+                });
+            }
+            this.torrentService.addTorrent(torrent);
           });
-      });
+        });
+    }, 1000);
+
   }
 
   onActivate(event) {
