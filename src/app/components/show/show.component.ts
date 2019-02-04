@@ -2,14 +2,14 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ScrapingService, DbService, NavbarService } from '../../services';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
-import {fade} from '../../animations/fade';
+import { fade } from '../../animations/fade';
 
 @Component({
   selector: 'app-show',
   templateUrl: './show.component.html',
   styleUrls: ['./show.component.scss'],
   providers: [ScrapingService, DbService],
-  animations: [ fade ]
+  animations: [fade]
 })
 export class ShowComponent implements OnInit, OnDestroy {
 
@@ -28,7 +28,7 @@ export class ShowComponent implements OnInit, OnDestroy {
     public dbService: DbService,
     public route: ActivatedRoute,
     public sanitizer: DomSanitizer
-    ) {
+  ) {
     this.alive = true;
   }
 
@@ -38,31 +38,34 @@ export class ShowComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.title = params['title'];
       this.dbService.getShow(this.title)
-      .subscribe(show => {
-        this.show = show;
-        this.navbarService.setShow(show);
-
-        this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
-        .subscribe(lastSeason => {
-          let dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
-          console.log('lastSeason', lastSeason);
-          dbLastSeason = Object.assign(lastSeason, dbLastSeason);
-          this.loading = false;
-        });
-
-        this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
-        this.retrieveSeason();
-      }, () => {
-        this.scrapingService.retrieveShow(this.title)
         .subscribe(show => {
           this.show = show;
           this.navbarService.setShow(show);
-          console.log('show from remote', show);
-          this.dbService.addShow(this.show);
+
+          this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
+            .subscribe(lastSeason => {
+              let dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
+              console.log('REMOTE lastSeason', lastSeason);
+              console.log('LOCAL lastSeason', dbLastSeason);
+              this.episodes = Object.assign(lastSeason, dbLastSeason);
+              this.dbService.addSeason(this.show['dashed_title'], this.current_season, this.episodes)
+                .subscribe();
+              this.loading = false;
+            });
+
           this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
           this.retrieveSeason();
+        }, () => {
+          this.scrapingService.retrieveShow(this.title)
+            .subscribe(show => {
+              this.show = show;
+              this.navbarService.setShow(show);
+              console.log('show from remote', show);
+              this.dbService.addShow(this.show);
+              this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
+              this.retrieveSeason();
+            });
         });
-      });
     });
   }
 
@@ -75,16 +78,16 @@ export class ShowComponent implements OnInit, OnDestroy {
       return this.episodes = this.show['Seasons'][this.current_season];
     }
     this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.current_season)
-    .subscribe(episodes => {
-      console.log('Scraped season', this.current_season, episodes);
-      this.episodes = episodes;
-      this.dbService.addSeason(this.show['dashed_title'], this.current_season, episodes)
-      .subscribe(show => {
-        console.log('Season', this.current_season, 'saved');
-        this.show = show;
-        this.loading = false;
+      .subscribe(episodes => {
+        console.log('Scraped season', this.current_season, episodes);
+        this.episodes = episodes;
+        this.dbService.addSeason(this.show['dashed_title'], this.current_season, episodes)
+          .subscribe(show => {
+            console.log('Season', this.current_season, 'saved');
+            this.show = show;
+            this.loading = false;
+          });
       });
-    });
   }
 
   play_trailer() {
