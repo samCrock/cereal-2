@@ -154,6 +154,69 @@ export class DbService {
     });
   }
 
+  setEpisode(episode) {
+    return new Observable(observer => {
+      this.openDb().subscribe(db => {
+        db = event.target['result'];
+        const objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
+        const request = objectStore.get(episode.dashed_title);
+        request.oncomplete = function (event) {
+          console.log('All done!');
+        };
+        request.onerror = function (event) {
+        };
+
+        request.onsuccess = function (event) {
+          const s = parseInt(episode.label.substring(1, 3), 10);
+          const e = parseInt(episode.label.substring(4), 10) - 1;
+          if (request.result) {
+            let Seasons = request.result.Seasons;
+            if (!Seasons) {
+              Seasons = {};
+            }
+            request.result['watching_season'] = s;
+            request.result.Seasons[s][e].magnetURI = episode.magnetURI;
+            request.result.Seasons[s][e].dn = episode.dn;
+            const requestUpdate = objectStore.put(request.result);
+            requestUpdate.onerror = function () {
+              return observer.error();
+            };
+            requestUpdate.onsuccess = function () {
+              return observer.next(request.result.Seasons[s][e]);
+            };
+          }
+        };
+      });
+    });
+  }
+
+  getEpisode(dashed_title, ep_label) {
+    return new Observable(observer => {
+      this.openDb().subscribe(db => {
+        db = event.target['result'];
+        const objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
+        const request = objectStore.get(dashed_title);
+        request.oncomplete = function (event) {
+          console.log('All done!');
+        };
+        request.onerror = function (event) {
+        };
+
+        request.onsuccess = function (event) {
+          const s = parseInt(ep_label.substring(1, 3), 10);
+          const e = parseInt(ep_label.substring(4), 10) - 1;
+          if (request.result) {
+            let Seasons = request.result.Seasons;
+            if (!Seasons) {
+              Seasons = {};
+            }
+            observer.next(request.result.Seasons[s][e]);
+          }
+        };
+      });
+    });
+  }
+
   setEpisodeProgress(dashed_title, ep_label, play_progress) {
     return new Observable(observer => {
       this.openDb().subscribe(db => {

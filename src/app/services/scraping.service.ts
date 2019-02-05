@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/observable/of';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
-import {DbService} from './db.service';
-import {ElectronService} from 'ngx-electron';
+import { DbService } from './db.service';
+import { ElectronService } from 'ngx-electron';
 
 @Injectable()
 export class ScrapingService {
@@ -32,7 +32,7 @@ export class ScrapingService {
   retrieveShow(show: string): Observable<any> {
     const _show = show;
     return Observable.create(observer => {
-      return this.http.get <any[]>('https://trakt.tv/shows/' + _show, {responseType: 'text' as 'json'})
+      return this.http.get<any[]>('https://trakt.tv/shows/' + _show, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response),
             dashed_title = _show;
@@ -47,7 +47,7 @@ export class ScrapingService {
             genres = $('#overview')['0'].children[2].children[0].children[0].children[6] ?
               $('#overview')['0'].children[2].children[0].children[0].children[6].children : [],
             premiered = $('#overview')['0'] && $('#overview')['0'].children[2].children[0].children[1].children[2] &&
-            $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs ?
+              $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs ?
               $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs.content : '',
             overview = $('#overview')[1].children[0] ? $('#overview')[1].children[0].children[0].data : '',
             trailer = $('.affiliate-links')['0'].children[0] ? $('.affiliate-links')['0'].children[0].children[1].attribs.href : '',
@@ -88,7 +88,7 @@ export class ScrapingService {
 
   retrieveShowSeason(show, season): Observable<any> {
     return Observable.create(observer => {
-      return this.http.get <any[]>('https://trakt.tv/shows/' + show + '/seasons/' + season, {responseType: 'text' as 'json'})
+      return this.http.get<any[]>('https://trakt.tv/shows/' + show + '/seasons/' + season, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
           const episodes = [];
@@ -145,7 +145,7 @@ export class ScrapingService {
 
   retrieveRemoteCalendar(observer: any) {
     const lastWeek = moment().subtract(6, 'days').format('YYYY-MM-DD');
-    return this.http.get <any[]>('https://trakt.tv/calendars/shows/' + lastWeek, {responseType: 'text' as 'json'})
+    return this.http.get<any[]>('https://trakt.tv/calendars/shows/' + lastWeek, { responseType: 'text' as 'json' })
       .subscribe(response => {
         const $ = cheerio.load(response);
         const week = [];
@@ -268,7 +268,7 @@ export class ScrapingService {
 
   retrieveRemotePoster(dashed_title: string, observer) {
     console.log('Retrieving poster for', dashed_title);
-    return this.http.get('https://trakt.tv/shows/' + dashed_title, {responseType: 'text'})
+    return this.http.get('https://trakt.tv/shows/' + dashed_title, { responseType: 'text' })
       .subscribe(response => {
         const $ = cheerio.load(response),
           results = $('.poster');
@@ -305,7 +305,7 @@ export class ScrapingService {
   retrieveRemoteWallpaper(dashed_title: string): Observable<any> {
     return Observable.create(observer => {
       console.log('Retrieving poster for', dashed_title);
-      this.http.get('https://trakt.tv/shows/' + dashed_title, {responseType: 'text'})
+      this.http.get('https://trakt.tv/shows/' + dashed_title, { responseType: 'text' })
         .subscribe(response => {
           const $ = cheerio.load(response),
             results = $('#summary-wrapper')['0'].attribs['data-fanart'];
@@ -338,64 +338,32 @@ export class ScrapingService {
     });
   }
 
-  // // PB proxy
-  // retrieveEpisode(show: string, episode: string, custom?: number) {
-  //   show = show.replace(/'/g, ' ');
-  //   const url = encodeURI('https://baypirateproxy.org/s/?q=' + show + ' ' + episode);
-  //   console.log('Downloading episode', show, episode);
-  //   // console.log('url', url);
-  //   return Observable.create(observer => {
-  //     return this.http.get<any[]>(url, {responseType: 'text' as 'json'})
-  //       .subscribe(response => {
-  //         const $ = cheerio.load(response);
-  //         const _custom = custom ? custom : 1;
-  //         if ($('tr')[_custom]) {
-  //           const nested_url = $('tr')[_custom].children[2].children[3].attribs.href;
-  //           const name = $('tr')[_custom].children[2].children[1].children[1].children[0].data;
-  //           const seeds = $('tr')[_custom].children[4].children[0].data;
-  //           console.log(nested_url);
-  //
-  //           return this.http.get<any[]>('https://baypirateproxy.org' + nested_url, {responseType: 'text' as 'json'})
-  //             .subscribe(nested_response => {
-  //               const _$ = cheerio.load(nested_response);
-  //               const magnet = _$('.download')[0].children[1].attribs.href;
-  //               return observer.next({
-  //                 name: name.trim(),
-  //                 seeds: seeds,
-  //                 magnet: magnet
-  //               });
-  //             });
-  //         } else {
-  //           return observer.next();
-  //         }
-  //       });
-  //   });
-  // }
-
-  // Kickass
-  retrieveEpisode(show: string, episode: string, custom?: number) {
+  // PB proxy
+  retrieveEpisode(show: string, episode: string, custom?: number): Observable<any> {
     show = show.replace(/'/g, ' ');
-    const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');
-    console.log('Downloading episode', show, episode);
+    const url = encodeURI('https://thepiratebay10.org/search/' + show + ' ' + episode + '/1/99/0');
+    // console.log('Downloading episode', show, episode, custom);
     // console.log('url', url);
     return Observable.create(observer => {
       return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
           const _custom = custom ? custom : 1;
-          if ($('#torrent_latest_torrents')[_custom]) {
-            const t_row = $('#torrent_latest_torrents')[_custom];
-            console.log(t_row);
-            const name = t_row.children[1].children[3].children[5].children[1].children[0].data;
-            const magnet_link = t_row.children[1].children[1].children[5].attribs['href'];
-            const size = t_row.children[3].children[0].data;
-            const seeds = t_row.children[7].children[0].data;
-            const magnet = decodeURIComponent(magnet_link.split('https://mylink.me.uk/?url=')[1]);
-            return observer.next({
-              name: name.trim(),
+          if ($('tr')[_custom]) {
+            const dn = $('tr')[_custom].children[3].children[1].children[1].children[0].data;
+            const magnetURI = $('tr')[_custom].children[3].children[3].attribs.href;
+            const seeds = $('tr')[_custom].children[5].children[0].data;
+            let size = $('tr')[_custom].children[3].children[7].children[0].data;
+            size = size ? size.substring(
+              size.lastIndexOf('Size ') + 5,
+              size.lastIndexOf('iB')
+            ) : '';
+            size += 'b';
+            observer.next({
+              dn: dn.trim(),
               seeds: seeds,
               size: size,
-              magnet: magnet
+              magnetURI: magnetURI
             });
           } else {
             return observer.next();
@@ -403,6 +371,38 @@ export class ScrapingService {
         });
     });
   }
+
+  // Kickass
+  // retrieveEpisode(show: string, episode: string, custom?: number) {
+  //   show = show.replace(/'/g, ' ');
+  //   const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');
+  //   console.log('Downloading episode', show, episode);
+  //   // console.log('url', url);
+  //   return Observable.create(observer => {
+  //     return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+  //       .subscribe(response => {
+  //         const $ = cheerio.load(response);
+  //         const _custom = custom ? custom : 1;
+  //         if ($('#torrent_latest_torrents')[_custom]) {
+  //           const t_row = $('#torrent_latest_torrents')[_custom];
+  //           console.log(t_row);
+  //           const name = t_row.children[1].children[3].children[5].children[1].children[0].data;
+  //           const magnet_link = t_row.children[1].children[1].children[5].attribs['href'];
+  //           const size = t_row.children[3].children[0].data;
+  //           const seeds = t_row.children[7].children[0].data;
+  //           const magnet = decodeURIComponent(magnet_link.split('https://mylink.me.uk/?url=')[1]);
+  //           return observer.next({
+  //             name: name.trim(),
+  //             seeds: seeds,
+  //             size: size,
+  //             magnet: magnet
+  //           });
+  //         } else {
+  //           return observer.next();
+  //         }
+  //       });
+  //   });
+  // }
 
   cleanShowTitle(show) {
     const year_regex = /[-]\d{4}(?!\d)/g;
@@ -412,102 +412,49 @@ export class ScrapingService {
   }
 
   retrieveTorrentsList(show: string, episode: string) {
-    show = this.cleanShowTitle(show);
-
-    const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');
-    console.log('Downloading episode', show, episode);
-    // console.log('url', url);
+    show = show.replace(/'/g, ' ');
+    const url = encodeURI('https://thepiratebay10.org/search/' + show + ' ' + episode + '/1/99/0');
+    console.log('Retrieving episode', show, episode);
+    console.log('url', url);
     return Observable.create(observer => {
-      return this.http.get<any[]>(url, {responseType: 'text' as 'json'})
+      return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
-          for (let index = 0; index < 3; index++) {
-            if ($('#torrent_latest_torrents')[index]) {
-              const t_row = $('#torrent_latest_torrents')[index];
-              // console.log(t_row);
-              const name = t_row.children[1].children[3].children[5].children[1].children[0].data;
-              const magnet_link = t_row.children[1].children[1].children[5].attribs['href'];
-              const size = t_row.children[3].children[0].data;
-              const seeds = t_row.children[7].children[0].data;
-              const magnet = decodeURIComponent(magnet_link.split('https://mylink.lol/?url=')[1]);
+          if ($('tr').length === 0) {
+            console.log('No results');
+            return observer.next();
+          }
+          for (let i = 1; i < 4; i++) {
+            if ($('tr')[i]) {
+              const name = $('tr')[i].children[3].children[1].children[1].children[0].data;
+              const magnetURI = $('tr')[i].children[3].children[3].attribs.href;
+              const seeds = $('tr')[i].children[5].children[0].data;
+              let size = $('tr')[i].children[3].children[7].children[0].data;
+              size = size ? size.substring(
+                size.lastIndexOf('Size ') + 5,
+                size.lastIndexOf('iB')
+              ) : '';
+              size += 'b';
+
               observer.next({
                 name: name.trim(),
                 seeds: seeds,
                 size: size,
-                magnet: magnet
+                magnetURI: magnetURI
               });
-            } else {
-              return observer.next();
             }
           }
+
+        }, reason => {
+          console.error('Not found', reason);
+          observer.next();
         });
     });
   }
 
-  // retrieveTorrentsList(show: string, episode: string) {
-  //   show = show.replace(/'/g, ' ');
-  //   const url = encodeURI('https://indiaproxy.in/s/?q=' + show + ' ' + episode);
-  //   console.log('Retrieving episode', show, episode);
-  //   // console.log('url', url);
-  //   return Observable.create(observer => {
-  //     return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
-  //       .subscribe(response => {
-  //         const $ = cheerio.load(response);
-  //         if ($('tr').length === 0) {
-  //           console.log('No results');
-  //           return observer.next();
-  //         }
-  //         for (let i = 1; i < 4; i++) {
-  //           if ($('tr')[i]) {
-  //             const nested_url = $('tr')[i].children[2].children[3].attribs.href;
-  //             const name = $('tr')[i].children[2].children[1].children[1].children[0].data;
-  //             const seeds = $('tr')[i].children[4].children[0].data;
-  //             let size = '';
-
-  //             // console.log($('tr')[i].children[2].children);
-
-  //             switch ($('tr')[i].children[2].children.length) {
-  //               case 10:
-  //               size = $('tr')[i].children[2].children[8].children[0].data;
-  //               break;
-  //               case 9:
-  //               size = $('tr')[i].children[2].children[7].children[0].data;
-  //               break;
-  //               case 8:
-  //               size = $('tr')[i].children[2].children[6].children[0].data;
-  //               break;
-  //             }
-  //             // console.log('size', size);
-  //             size = size ? size.substring(
-  //               size.lastIndexOf('Size ') + 5,
-  //               size.lastIndexOf('iB')
-  //             ) : '';
-  //             size += 'b';
-
-  //             const sub = this.http.get<any[]>('https://proxytpb.pw' + nested_url, { responseType: 'text' as 'json' })
-  //             .subscribe(nested_response => {
-  //               const _$ = cheerio.load(nested_response);
-  //               const magnet = _$('.download')[0].children[1].attribs.href;
-  //               // sub.unsubscribe();
-  //               return observer.next({
-  //                 name: name.trim(),
-  //                 seeds: seeds,
-  //                 size: size,
-  //                 magnet: magnet
-  //               });
-  //             });
-  //           }}
-
-  //       }, reason => {
-  //         console.error('Not found', reason);
-  //         observer.next();
-  //       });
-  //   });
-  // }
-
   searchShows(show_string: string): Observable<any> {
     return Observable.create(observer => {
-      return this.http.get <any[]>('https://trakt.tv/search/shows?query=' + show_string, {responseType: 'text' as 'json'})
+      return this.http.get<any[]>('https://trakt.tv/search/shows?query=' + show_string, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
           let hasResults = false;
@@ -536,7 +483,7 @@ export class ScrapingService {
 
   retrieveTrending(): Observable<any> {
     return Observable.create(observer => {
-      return this.http.get <any[]>('https://trakt.tv/shows/trending', {responseType: 'text' as 'json'})
+      return this.http.get<any[]>('https://trakt.tv/shows/trending', { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
           const shows = [];

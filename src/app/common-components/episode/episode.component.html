@@ -50,7 +50,7 @@
           <div fxLayout="row" fxLayoutAlign="space-evenly" *ngFor="let t of ep_torrents; let idx = index;" class="torrent_extras">
             <div fxFlex="76">
               <label>
-							<input name="group1" type="radio" [checked]="idx === 0" [value]="t.name" (change)="onTorrentChange(t)"/>
+							<input name="group1" type="radio" [checked]="idx === 0" [value]="t.name" (change)="onTorrentChange(episode, t)"/>
 							<span>{{ t.name | trim }}</span>
 						</label>
             </div>

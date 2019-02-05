@@ -13,12 +13,12 @@ export class TorrentService {
 
   addTorrent(episode_torrent: Object): Observable<number> {
     return new Observable(observer => {
-      if (!this.wt_client.get(episode_torrent['magnet'])) {
-        this.wt_client.add(episode_torrent['magnet'], {
+      if (!this.wt_client.get(episode_torrent['magnetURI'])) {
+        this.wt_client.add(episode_torrent['magnetURI'], {
           path: this.local_path + '\\Downloads\\Cereal\\' + episode_torrent['show'] + '\\' + episode_torrent['episode']
         });
         console.log('Adding torrent', episode_torrent);
-        this.wt_client.get(episode_torrent['magnet']).on('ready', function() {
+        this.wt_client.get(episode_torrent['magnetURI']).on('ready', function() {
           observer.next(1);
         });
       } else {
