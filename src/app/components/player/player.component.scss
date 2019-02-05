@@ -1,6 +1,6 @@
-::-webkit-media-controls {
-  display: none !important;
-}
+// ::-webkit-media-controls {
+//   display: none !important;
+// }
 
 body {
   overflow: hidden;
@@ -167,6 +167,7 @@ i {
   border-radius: 1rem;
   cursor: pointer !important;
   position: relative;
+  border: none;
 }
 
 .timeline__drag {

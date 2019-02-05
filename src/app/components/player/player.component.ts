@@ -1,11 +1,9 @@
-import { Component, OnChanges, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { TorrentService, SubsService, DbService } from '../../services';
 import { ElectronService } from 'ngx-electron';
 import { Router } from '@angular/router';
-import { TweenMax } from 'gsap';
-import * as Draggable from 'gsap/Draggable';
+// import { TweenMax } from 'gsap';
 import { Subscription } from 'rxjs/Subscription';
-import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 import { Observable } from 'rxjs/Observable';
 
 @Component({
@@ -100,9 +98,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
               }
             });
           }
-        }, 1000);
-      });
-      // console.log('checkVideoPath files', files);
+        });
+      }, 1000);
     });
   }
 
@@ -115,8 +112,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     // console.log('show', this.show);
     // console.log('episode', this.episode);
     // console.log('dn', this.dn);
-    console.log('infoHash', this.infoHash);
-    console.log('file_path', this.file_path);
+    // console.log('infoHash', this.infoHash);
+    // console.log('file_path', this.file_path);
 
     // Set video file path (search recursively)
     this.checkVideoPath(this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], this.episode['label']))
@@ -128,24 +125,24 @@ export class PlayerComponent implements OnInit, OnDestroy {
         } else {
           this.dbService.getTorrent(this.infoHash)
             .subscribe(t => {
-              console.log('t', t);
+              // console.log('t', t);
               if (t['status'] === 'ready') {
                 this.setup();
               } else {
-                // Wait for 10% completion before starting video setup
-                this.torrentService.getTorrent(this.infoHash)
-                  .subscribe(_t => {
-                    this.torrent = _t;
-                    this.progressSubscription = IntervalObservable.create(1000)
-                      .subscribe(() => {
-                        // console.log('progressSubscription', this.torrent.progress);
-                        this.torrent.progress_label = Math.ceil(this.torrent.progress * 100) + '%';
-                        this.torrent.speed_label = Math.round(this.torrent['downloadSpeed'] / 1048576 * 100) / 100 + 'Mb/s';
-                        if (this.torrent.progress > 0.1) {
-                          this.setup();
-                        }
-                      });
-                  });
+                // // Wait for 10% completion before starting video setup
+                // this.torrentService.getTorrent(this.infoHash)
+                //   .subscribe(_t => {
+                //     this.torrent = _t;
+                //     this.progressSubscription = IntervalObservable.create(1000)
+                //       .subscribe(() => {
+                //         this.torrent.progress_label = Math.ceil(this.torrent.progress * 100) + '%';
+                //         this.torrent.speed_label = Math.round(this.torrent['downloadSpeed'] / 1048576 * 100) / 100 + 'Mb/s';
+                //         if (this.torrent.progress > 0.1) {
+                this.setup();
+                //         }
+                //       });
+                //     });
+
               }
             });
         }
@@ -172,7 +169,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     console.log('SETUP', this.file_path);
     const that = this;
 
-    this.downloadSubs();
+    // this.downloadSubs();
 
     if (this.progressSubscription) {
       this.progressSubscription.unsubscribe();
@@ -205,44 +202,50 @@ export class PlayerComponent implements OnInit, OnDestroy {
     track.label = '[ Disable ]';
     this.player.appendChild(track);
 
-    const i = setInterval(function () {
-      if (this.player && this.player.readyState > 0) {
-        clearInterval(i);
-        const duration = +this.player.duration;
+    document.addEventListener('mousemove', function () {
+      that.lastMove = Date.now();
+    }, false);
+
+    document.addEventListener('dragenter', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }, false);
+
+    document.addEventListener('dragover', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }, false);
+
+    document.addEventListener('drop', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      const dt = e.dataTransfer,
+        files = dt.files;
+      console.log('Subs dropped:', files[0]);
+      that.addSubs(files[0].path);
+    }, false);
+
+    let firstSetup = true;
+
+    that.player.addEventListener('loadeddata', function() {
+      console.log('that.player.readyState', that.player.readyState);
+      if (that.player && that.player.readyState === 4) {
+        const duration = +that.player.duration;
         const minutes = Math.floor(duration / 60).toString().length === 1 ?
           '0' + Math.floor(duration / 60).toString() : Math.floor(duration / 60).toString();
-        const seconds = Math.floor(this.player.duration % 60).toString().length === 1 ?
+        const seconds = Math.floor(that.player.duration % 60).toString().length === 1 ?
           '0' + Math.floor(duration % 60).toString() : Math.floor(duration % 60).toString();
         that.totalTime = minutes + ':' + seconds;
 
-        document.addEventListener('mousemove', function () {
-          that.lastMove = Date.now();
-        }, false);
-
-        document.addEventListener('dragenter', function (e) {
-          e.stopPropagation();
-          e.preventDefault();
-        }, false);
-
-        document.addEventListener('dragover', function (e) {
-          e.stopPropagation();
-          e.preventDefault();
-        }, false);
-
-        document.addEventListener('drop', function (e) {
-          e.stopPropagation();
-          e.preventDefault();
-          const dt = e.dataTransfer,
-            files = dt.files;
-          console.log('Subs dropped:', files[0]);
-          that.addSubs(files[0].path);
-        }, false);
-
-        that.controlsLoop();
-        that.dragSetup();
-
+        if (firstSetup) {
+          that.controlsLoop();
+          that.timelineSetup();
+        }
+        firstSetup = false;
       }
-    }, 20);
+    });
+
+
   }
 
   // Subtitles
@@ -350,7 +353,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         '0' + Math.floor(currentTime % 60).toString() : Math.floor(currentTime % 60).toString();
       that.currentTime = minutes + ':' + seconds;
       that.idleTime = Math.floor(Date.now() / 100) - Math.floor(that.lastMove / 100);
-    }, 100);
+    }, 1000);
   }
 
   toggle_play() {
@@ -407,59 +410,19 @@ export class PlayerComponent implements OnInit, OnDestroy {
     return ep_label === this.episode['label'];
   }
 
-  dragSetup() {
+  timelineSetup() {
     const video = document.getElementsByTagName('video')[0],
-      timeline: HTMLElement = document.getElementById('timeline'),
-      timelineProgress = document.getElementsByClassName('timeline__progress')[0],
-      drag = document.getElementsByClassName('timeline__drag')[0];
-
-    video.onplay = function () {
-      TweenMax.ticker.addEventListener('tick', vidUpdate);
-    };
-    video.onpause = function () {
-      TweenMax.ticker.removeEventListener('tick', vidUpdate);
-    };
-    video.onended = function () {
-      TweenMax.ticker.removeEventListener('tick', vidUpdate);
-    };
+      timeline = document.getElementById('timeline');
 
     video.play();
 
-    function vidUpdate() {
-      TweenMax.set(timelineProgress, {
-        scaleX: (video.currentTime / video.duration).toFixed(5)
-      });
-      TweenMax.set(drag, {
-        x: (video.currentTime / video.duration * timeline.offsetWidth).toFixed(4)
-      });
-    }
-
-    const draggable = Draggable.create(drag, {
-      type: 'x',
-      trigger: timeline,
-      bounds: timeline,
-      onPress: function (e) {
-        video.currentTime = this.x / this.maxX * video.duration;
-        TweenMax.set(this.target, {
-          x: this.pointerX - timeline.getBoundingClientRect().left
-        });
-        this.update();
-        const progress = this.x / timeline.offsetWidth;
-        TweenMax.set(timelineProgress, {
-          scaleX: progress
-        });
-      },
-      onDrag: function () {
-        video.currentTime = this.x / this.maxX * video.duration;
-        const progress = this.x / timeline.offsetWidth;
-        TweenMax.set(timelineProgress, {
-          scaleX: progress
-        });
-      },
-      onRelease: function (e) {
-        e.preventDefault();
-      }
+    timeline.addEventListener('change', function() {
+      // Calculate the new time
+      const time = video.duration * (timeline['value'] / 100);
+      // Update the video time
+      video.currentTime = time;
     });
+
   }
 
   play_episode(event) {

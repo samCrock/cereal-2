@@ -1,6 +1,6 @@
 <video id="player" width="320" height="240" (click)="toggledEpisodes = false; showSubs = false;">Format not supported</video>
 
-<div id="info" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? 'hidden' : ''" fxLayoutAlign="start center">
+<div id="info" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? 'hidden' : ''" fxLayoutAlign="start center" style="-webkit-app-region: drag">
   <i class="material-icons back_icon" [routerLink]="['/show', show['dashed_title']]">arrow_back_ios</i><span class="show">{{ show['title'] }}</span>
   <span class="episode_label">{{ episode['label'] }}</span>
   <span class="episode_title">{{ episode['title'] }}</span>
@@ -11,16 +11,13 @@
 		<i class="material-icons" (click)="quit()">clear</i>
 	</div>
 </div>
+
+<!-- <div id="toggle_play" *ngIf="!showProgress()" (click)="toggle_play()"> -->
 <div id="controls" [hidden]="loading" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? 'hidden' : ''" fxLayout="row" fxLayoutAlign="start center">
-<!--<div id="controls" [hidden]="loading" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? '' : ''" fxLayout="row" fxLayoutAlign="start center">-->
-  <div id="toggle_play" *ngIf="!showProgress()" (click)="toggle_play()">
     <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
   </div>
   <div id="duration" >{{ currentTime }} / {{ totalTime }}</div>
-  <div id="timeline" >
-    <div class="timeline__drag"></div>
-    <span class="timeline__progress"></span>
-  </div>
+  <input type="range" id="timeline" value="0">
 
   <div id="toggle_fullscreen" fxLayoutAlign="center center" (click)="toggle_fullscreen()">
     <i class="material-icons">{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</i>
@@ -35,12 +32,10 @@
   </div>
 
   <div id="open_folder"  (click)="openFolder()">
-    <!--<app-icon [name]="'folder-open'"></app-icon>-->
     <i class="material-icons">airplay</i>
   </div>
 
   <div id="toggle_episodes" [class.active]="toggledEpisodes"  (click)="toggleEpisodes(); showSubs = false;">
-    <!--<app-icon [name]="toggledEpisodes ? 'menu3' : 'menu4'"></app-icon>-->
     <i class="material-icons">{{ toggledEpisodes ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</i>
   </div>
 
