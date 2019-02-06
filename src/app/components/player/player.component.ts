@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { TorrentService, SubsService, DbService } from '../../services';
 import { ElectronService } from 'ngx-electron';
 import { Router } from '@angular/router';
-// import { TweenMax } from 'gsap';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 
 @Component({
   selector: 'app-player',
@@ -109,11 +109,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.episode = play.episode;
     this.dn = play.episode.dn;
     this.infoHash = (play.episode && play.episode.infoHash) ? play.episode.infoHash : undefined;
-    // console.log('show', this.show);
-    // console.log('episode', this.episode);
-    // console.log('dn', this.dn);
-    // console.log('infoHash', this.infoHash);
-    // console.log('file_path', this.file_path);
+
 
     // Set video file path (search recursively)
     this.checkVideoPath(this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], this.episode['label']))
@@ -129,19 +125,19 @@ export class PlayerComponent implements OnInit, OnDestroy {
               if (t['status'] === 'ready') {
                 this.setup();
               } else {
-                // // Wait for 10% completion before starting video setup
-                // this.torrentService.getTorrent(this.infoHash)
-                //   .subscribe(_t => {
-                //     this.torrent = _t;
-                //     this.progressSubscription = IntervalObservable.create(1000)
-                //       .subscribe(() => {
-                //         this.torrent.progress_label = Math.ceil(this.torrent.progress * 100) + '%';
-                //         this.torrent.speed_label = Math.round(this.torrent['downloadSpeed'] / 1048576 * 100) / 100 + 'Mb/s';
-                //         if (this.torrent.progress > 0.1) {
-                this.setup();
-                //         }
-                //       });
-                //     });
+                // Wait for 10% completion before starting video setup
+                this.torrentService.getTorrent(this.infoHash)
+                  .subscribe(_t => {
+                    this.torrent = _t;
+                    this.progressSubscription = IntervalObservable.create(1000)
+                      .subscribe(() => {
+                        this.torrent.progress_label = Math.ceil(this.torrent.progress * 100) + '%';
+                        this.torrent.speed_label = Math.round(this.torrent['downloadSpeed'] / 1048576 * 100) / 100 + 'Mb/s';
+                        if (this.torrent.progress > 0.1) {
+                          this.setup();
+                        }
+                      });
+                  });
 
               }
             });
@@ -169,7 +165,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     console.log('SETUP', this.file_path);
     const that = this;
 
-    // this.downloadSubs();
+    this.downloadSubs();
 
     if (this.progressSubscription) {
       this.progressSubscription.unsubscribe();
@@ -227,7 +223,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     let firstSetup = true;
 
-    that.player.addEventListener('loadeddata', function() {
+    that.player.addEventListener('loadeddata', function () {
       console.log('that.player.readyState', that.player.readyState);
       if (that.player && that.player.readyState === 4) {
         const duration = +that.player.duration;
@@ -416,7 +412,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     video.play();
 
-    timeline.addEventListener('change', function() {
+    timeline.addEventListener('change', function () {
       // Calculate the new time
       const time = video.duration * (timeline['value'] / 100);
       // Update the video time

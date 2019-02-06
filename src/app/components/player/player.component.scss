@@ -2,10 +2,19 @@
 //   display: none !important;
 // }
 
-body {
+// body {
+//   overflow: hidden;
+//   height: 100%;
+//   top: 0;
+// }
+.player_container {
   overflow: hidden;
   height: 100%;
   top: 0;
+  div {
+		-webkit-app-region: no-drag;
+		cursor: pointer;
+	}
 }
 
 app-icon {
@@ -28,7 +37,7 @@ i {
   background-color: rgba(20, 20, 20, .7);
   transition: all .4s ease-in;
   padding: calc(1rem + 1vw);
-  z-index: 10;
+  z-index: 10000000000;
   .show {
     font-size: calc(1.5rem + 3vw);
     line-height: calc(1.5rem + 3vw);
