@@ -77,7 +77,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.dbService.getPendingTorrents()
         .subscribe(_torrents => {
           _torrents.forEach(torrent => {
-            const _torrent = this.wt_client.get(torrent['magnet']);
+            const _torrent = this.wt_client.get(torrent['magnetURI']);
             if (_torrent && _torrent.progress === 1) {
               this.dbService.readyTorrent(_torrent.infoHash)
                 .subscribe(ep => {
@@ -94,10 +94,10 @@ export class AppComponent implements OnInit, OnDestroy {
                     });
                 });
             }
-            this.torrentService.addTorrent(torrent);
+            this.torrentService.addTorrent(torrent).subscribe();
           });
         });
-    }, 1000);
+    }, 2000);
 
   }
 
