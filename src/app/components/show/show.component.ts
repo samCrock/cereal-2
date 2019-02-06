@@ -42,9 +42,11 @@ export class ShowComponent implements OnInit, OnDestroy {
           this.show = show;
           this.navbarService.setShow(show);
 
+          console.log(show.dashed_title);
+
           this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
             .subscribe(lastSeason => {
-              let dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
+              const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
               console.log('REMOTE lastSeason', lastSeason);
               console.log('LOCAL lastSeason', dbLastSeason);
               this.episodes = Object.assign(lastSeason, dbLastSeason);

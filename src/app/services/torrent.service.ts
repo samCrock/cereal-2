@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ElectronService } from 'ngx-electron';
-import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class TorrentService {
@@ -13,16 +12,18 @@ export class TorrentService {
 
   addTorrent(episode_torrent: Object): Observable<number> {
     return new Observable(observer => {
+      console.log('Adding torrent', episode_torrent);
+
       if (!this.wt_client.get(episode_torrent['magnetURI'])) {
+        console.log('Adding torrent', episode_torrent);
         this.wt_client.add(episode_torrent['magnetURI'], {
           path: this.local_path + '\\Downloads\\Cereal\\' + episode_torrent['show'] + '\\' + episode_torrent['episode']
         });
-        console.log('Adding torrent', episode_torrent);
         this.wt_client.get(episode_torrent['magnetURI']).on('ready', function() {
           observer.next(1);
         });
       } else {
-        // console.log('Already here');
+        console.log('Already here');
         observer.next(0);
       }
     });
@@ -43,9 +44,9 @@ export class TorrentService {
     });
   }
 
-  removeTorrent(infoHash) {
-    if (this.wt_client.get(infoHash)) {
-      this.wt_client.remove(infoHash);
+  removeTorrent(magnetURI) {
+    if (this.wt_client.get(magnetURI)) {
+      this.wt_client.remove(magnetURI);
     }
   }
 

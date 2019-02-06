@@ -339,16 +339,16 @@ export class ScrapingService {
   }
 
   // PB proxy
-  retrieveEpisode(show: string, episode: string, custom?: number): Observable<any> {
-    show = show.replace(/'/g, ' ');
+  retrieveEpisode(show: string, episode: string): Observable<any> {
+    show = show.replace(/'/g, '');
     const url = encodeURI('https://thepiratebay10.org/search/' + show + ' ' + episode + '/1/99/0');
-    // console.log('Downloading episode', show, episode, custom);
-    // console.log('url', url);
+    console.log('Downloading episode', show, episode);
+    console.log('url', url);
     return Observable.create(observer => {
       return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response);
-          const _custom = custom ? custom : 1;
+          const _custom = 1;
           if ($('tr')[_custom]) {
             const dn = $('tr')[_custom].children[3].children[1].children[1].children[0].data;
             const magnetURI = $('tr')[_custom].children[3].children[3].attribs.href;
@@ -412,7 +412,7 @@ export class ScrapingService {
   }
 
   retrieveTorrentsList(show: string, episode: string) {
-    show = show.replace(/'/g, ' ');
+    show = show.replace(/'/g, '');
     const url = encodeURI('https://thepiratebay10.org/search/' + show + ' ' + episode + '/1/99/0');
     console.log('Retrieving episode', show, episode);
     console.log('url', url);
