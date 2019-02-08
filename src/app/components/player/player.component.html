@@ -1,13 +1,14 @@
-<div class="player_container">
+<div class="player_container" *ngIf="show && episode">
 
 
-  <video id="player" width="320" height="240" (click)="toggledEpisodes = false; showSubs = false;">Format not supported</video>
+  <video id="player" width="320" height="240" (click)="toggledEpisodes = false; showSubs = false;"></video>
 
   <div id="info" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? 'hidden' : ''" fxLayoutAlign="start center" style="-webkit-app-region: drag">
+  <!-- <div id="info"  fxLayoutAlign="start center" style="-webkit-app-region: drag"> -->
     <div>
-      <i class="material-icons back_icon" [routerLink]="['/show', show['dashed_title']]">arrow_back_ios</i><span class="show">{{
-        show['title'] }}</span>
+      <i class="material-icons back_icon" [routerLink]="['/show', show['dashed_title']]">arrow_back_ios</i>
     </div>
+    <span class="show">{{ show['title'] }}</span>
     <span class="episode_label">{{ episode['label'] }}</span>
     <span class="episode_title">{{ episode['title'] }}</span>
     <div class="semaphore_btn first">
@@ -18,10 +19,9 @@
     </div>
   </div>
 
-  <!-- <div id="controls"  fxLayout="row" fxLayoutAlign="start center"> -->
   <div id="controls" [hidden]="loading" [ngClass]="(idleTime > 30 && !toggledEpisodes && !showSubs) ? 'hidden' : ''"
     fxLayout="row" fxLayoutAlign="start center">
-    <div id="toggle_play" *ngIf="!showProgress()" (click)="toggle_play()">
+    <div id="toggle_play" *ngIf="this.player" (click)="toggle_play()">
       <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
     </div>
     <div id="duration">{{ currentTime }} / {{ totalTime }}</div>
@@ -37,7 +37,8 @@
     </div>
 
     <div id="subs_list" *ngIf="showSubs">
-      <div class="subs" [class.active]="sub.mode == 'showing'" *ngFor="let sub of player.textTracks" (click)="selectSubs(sub);">{{
+      <div class="subs" [class.active]="sub.mode == 'showing'" *ngFor="let sub of player.textTracks"
+        (click)="selectSubs(sub);">{{
         sub.label }}</div>
     </div>
 
@@ -49,16 +50,18 @@
       <i class="material-icons">{{ toggledEpisodes ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</i>
     </div>
 
-    <div id="episodes_list" *ngIf="toggleEpisodes" [ngClass]="toggledEpisodes ? 'on' : ''">
+    <!-- <div id="episodes_list" *ngIf="toggleEpisodes" [ngClass]="toggledEpisodes ? 'on' : ''">
       <app-episode *ngFor="let episode of show['Seasons'][show['watching_season']]" (notify)="play_episode($event)"
         [episode]="episode" [show]="show" [format]="'compact'"></app-episode>
-    </div>
+    </div> -->
 
   </div>
 
-  <div id="progress_widget" *ngIf="showProgress()" fxLayout="column" fxLayoutAlign="start center">
-    <span>{{ torrent.progress_label }}</span>
-    <span>{{ torrent.speed_label }}</span>
+  <div id="progress_widget" *ngIf="!loading && progress < 10" fxLayout="column" fxLayoutAlign="start center">
+    <span>progress: {{ progress }}%</span>
+    <span>speed: {{ speed }}</span>
   </div>
+  <app-page-loader [display]="loading"></app-page-loader>
+
 
 </div>

@@ -37,7 +37,7 @@ export class NavbarComponent implements OnInit {
     this.router.events.subscribe(val => {
       if (val instanceof NavigationEnd) {
         this.currentRoute = val['url'];
-        if (val['url'] === '/play') {
+        if (val['url'].indexOf('/play') > - 1) {
           this.enabled = false;
           document.body.style.height = '100%';
           document.body.style.top = '0';

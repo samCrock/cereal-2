@@ -29,7 +29,7 @@ import {CalendarComponent, ShowComponent, PlayerComponent, SearchComponent, Libr
 import { DialogComponent } from './common-components/index';
 
 // Services
-import { ScrapingService, TorrentService, DbService, SubsService, NavbarService } from './services/index';
+import { ScrapingService, TorrentService, DbService, SubsService, NavbarService, WtService } from './services/index';
 
 import { TorrentsComponent } from './components/torrents/torrents.component';
 
@@ -87,7 +87,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     TorrentService,
     DbService,
     SubsService,
-    NavbarService
+    NavbarService,
+    WtService
   ],
   entryComponents: [DialogComponent],
   bootstrap: [AppComponent]

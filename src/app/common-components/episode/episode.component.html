@@ -1,6 +1,6 @@
 <div class="episode_row" *ngIf="show && episode">
 
-  <div class="progress" *ngIf="(getTorrentProgress(episode) | async); let progress;">
+  <div class="progress" [ngStyle]="{ opacity: progress ? 1 : 0 }">
     <div class="determinate" [ngStyle]="{ 'width': progress + '%' }"></div>
   </div>
   <div class="progress view" *ngIf="episode.play_progress">
@@ -14,13 +14,13 @@
       <div fxFlex="10" fxLayoutAlign="end center" class="right">{{ episode.label }}</div>
       <div fxFlex="15" fxLayoutAlign="end center" *ngIf="format == 'extended'">{{ formatDate(episode.date) }}</div>
 
-      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="(getTorrentDownloadSpeed(episode) | async); let speed;">
-        <span id="speed" *ngIf="speed !== true">{{ speed }} Mb/s</span>
-        <i *ngIf="speed" class="material-icons download_btn hoverable circle"
+      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="isPlayable()">
+        <span *ngIf="speed" id="speed">{{ speed }} Mb/s</span>
+        <i *ngIf="isPlayable()" class="material-icons download_btn hoverable circle"
         [class.active]="isCurrent()"
         data-target="trailer_modal" (click)="play(episode)">play_arrow</i>
       </div>
-      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!(getTorrentDownloadSpeed(episode) | async); let speed;">
+      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!isPlayable()">
         <i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle" (click)="download_episode(episode)">file_download</i>
       </div>
       <div fxFlex="5" fxLayoutAlign="end center">
@@ -66,7 +66,7 @@
 
 
 				<div id="delete_container" *ngIf="ep_torrents.length">
-					<i *ngIf="downloadable(episode.date)" id="delete_btn" class="material-icons download_btn hoverable circle" [class.expanded]="expanded" (click)="toggleExtra(episode); deleteTorrent(episode);">delete</i>
+					<i *ngIf="downloadable(episode.date)" id="delete_btn" class="material-icons download_btn hoverable circle" [class.expanded]="expanded" (click)="deleteTorrent(episode);">delete</i>
 				</div>
 
 				<div *ngIf="!hasResults && !loading" class="episode_msg"><span>No results</span></div>

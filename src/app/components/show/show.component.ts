@@ -27,13 +27,18 @@ export class ShowComponent implements OnInit, OnDestroy {
     public navbarService: NavbarService,
     public dbService: DbService,
     public route: ActivatedRoute,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
+    private cdRef: ChangeDetectorRef
   ) {
     this.alive = true;
   }
 
   ngOnInit() {
     window.scrollTo(0, 0);
+    this.init();
+  }
+
+  init() {
     this.loading = true;
     this.route.params.subscribe(params => {
       this.title = params['title'];
@@ -42,27 +47,22 @@ export class ShowComponent implements OnInit, OnDestroy {
           this.show = show;
           this.navbarService.setShow(show);
 
-          console.log(show.dashed_title);
-
           this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
             .subscribe(lastSeason => {
               const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
-              console.log('REMOTE lastSeason', lastSeason);
-              console.log('LOCAL lastSeason', dbLastSeason);
               this.episodes = Object.assign(lastSeason, dbLastSeason);
-              this.dbService.addSeason(this.show['dashed_title'], this.current_season, this.episodes)
-                .subscribe();
+              this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
+              this.dbService.addSeason(this.show['dashed_title'], this.current_season, this.episodes).subscribe();
               this.loading = false;
+              this.retrieveSeason();
             });
 
-          this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
-          this.retrieveSeason();
         }, () => {
           this.scrapingService.retrieveShow(this.title)
             .subscribe(show => {
               this.show = show;
               this.navbarService.setShow(show);
-              console.log('show from remote', show);
+              // console.log('show from remote', show);
               this.dbService.addShow(this.show);
               this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
               this.retrieveSeason();
@@ -74,22 +74,24 @@ export class ShowComponent implements OnInit, OnDestroy {
   ngOnDestroy() { }
 
   retrieveSeason() {
+    // console.log('retrieveSeason', this.current_season);
     if (this.show['Seasons'][this.current_season]) {
-      console.log('Local', this.show['Seasons'][this.current_season]);
+      console.log('Local', this.current_season, this.show['Seasons'][this.current_season]);
       this.loading = false;
       return this.episodes = this.show['Seasons'][this.current_season];
+    } else {
+      this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.current_season)
+        .subscribe(episodes => {
+          // console.log('Scraped season', this.current_season, episodes);
+          this.episodes = episodes;
+          this.dbService.addSeason(this.show['dashed_title'], this.current_season, episodes)
+            .subscribe(show => {
+              // console.log('Season', this.current_season, 'saved');
+              this.show = show;
+              this.loading = false;
+            });
+        });
     }
-    this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.current_season)
-      .subscribe(episodes => {
-        console.log('Scraped season', this.current_season, episodes);
-        this.episodes = episodes;
-        this.dbService.addSeason(this.show['dashed_title'], this.current_season, episodes)
-          .subscribe(show => {
-            console.log('Season', this.current_season, 'saved');
-            this.show = show;
-            this.loading = false;
-          });
-      });
   }
 
   play_trailer() {
@@ -126,5 +128,10 @@ export class ShowComponent implements OnInit, OnDestroy {
   }
   /////////////
 
+
+  episodeListener() {
+    console.log('Episode emitter catched!');
+    this.init();
+  }
 
 }

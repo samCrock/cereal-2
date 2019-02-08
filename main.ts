@@ -17,7 +17,7 @@ const args = process.argv.slice(1);
 let remoteVersion, win, serve;
 serve = args.some(val => val === '--serve');
 
-global['wt_client'] = new webtorrent();
+global['wt'] = new webtorrent();
 global['local_path'] = os.homedir();
 global['shell'] = shell;
 global['fs'] = fs;

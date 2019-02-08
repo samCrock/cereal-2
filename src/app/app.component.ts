@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { DbService, TorrentService } from './services';
+import { DbService, TorrentService, WtService } from './services';
 import { TranslateService } from '@ngx-translate/core';
 import * as Materialize from 'materialize-css';
 import { HttpClient, HttpEventType } from '@angular/common/http';
@@ -13,7 +13,6 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-  private wt_client = this._electronService.remote.getGlobal('wt_client');
   public fs = this._electronService.remote.getGlobal('fs');
   public app = this._electronService.remote.getGlobal('app');
   public path = this._electronService.remote.getGlobal('path');
@@ -21,17 +20,25 @@ export class AppComponent implements OnInit, OnDestroy {
   private update = this._electronService.remote.getGlobal('update');
   public updateProgress: number;
   public updateReady: boolean;
+  private wt_client;
 
   constructor(
     public translate: TranslateService,
     private _electronService: ElectronService,
     private torrentService: TorrentService,
     private dbService: DbService,
+    private wtService: WtService,
     private http: HttpClient
   ) {
     window['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
     translate.setDefaultLang('en');
     this.alive = true;
+
+    this.wtService.getClient().subscribe(c => {
+      console.log('App got a fresh webtorrent client!');
+      this.wt_client = c;
+    });
+
   }
 
   ngOnDestroy() {
@@ -74,31 +81,48 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Restore pending torrents
     setTimeout(() => {
-      this.dbService.getPendingTorrents()
+      this.dbService.getTorrents()
         .subscribe(_torrents => {
           _torrents.forEach(torrent => {
-            const _torrent = this.wt_client.get(torrent['magnetURI']);
-            if (_torrent && _torrent.progress === 1) {
-              this.dbService.readyTorrent(_torrent.infoHash)
-                .subscribe(ep => {
-                  this.dbService.readyEpisode(ep)
-                    .subscribe(show => {
-                      Materialize.toast({
-                        html: show['title'] + ' ' + ep['episode_label'] + ' is ready',
-                        displayLength: 2000,
-                        inDuration: 600,
-                        outDuration: 400,
-                        classes: ''
-                      });
-                      console.log('Episode set to ready!');
-                    });
+            // console.log(torrent.dn, torrent.status);
+            if (torrent.status !== 'ready') {
+              this.torrentService.addTorrent(torrent)
+                .subscribe(t => {
+                  if (!t) { return; }
+
+                  if (t.progress === 1) {
+                    this.ready(torrent);
+                  }
+                  t.on('ready', function () {
+                    this.ready(torrent);
+                  });
+
+                  // t.on('download', function () {
+                  //   console.log(t.infoHash, t.progress);
+                  // });
                 });
             }
-            this.torrentService.addTorrent(torrent).subscribe();
           });
         });
-    }, 2000);
 
+      // this.wt_client.torrents.forEach(t => {
+      //   console.log('WT torrent ->', t.infoHash, t.progress);
+      // });
+    }, 1000);
+
+  }
+
+  ready(torrent) {
+    this.dbService.readyEpisode(torrent).subscribe(() => {
+      Materialize.toast({
+        html: torrent['dn'] + ' is ready',
+        displayLength: 2000,
+        inDuration: 600,
+        outDuration: 400,
+        classes: ''
+      });
+    });
+    this.dbService.readyTorrent(torrent['infoHash']).subscribe();
   }
 
   onActivate(event) {

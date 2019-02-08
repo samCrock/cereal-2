@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/observable/of';
-import {TorrentService} from './torrent.service';
+import { TorrentService } from './torrent.service';
 
 @Injectable()
 export class DbService {
@@ -17,16 +17,15 @@ export class DbService {
       console.log('onupgradeneeded', db);
 
       // Shows store
-      const shows_objectStore = db.createObjectStore('shows', {keyPath: 'dashed_title'});
-      shows_objectStore.createIndex('title', 'title', {unique: false});
-      shows_objectStore.createIndex('infoHash', 'infoHash', {unique: true});
+      const shows_objectStore = db.createObjectStore('shows', { keyPath: 'dashed_title' });
+      shows_objectStore.createIndex('title', 'title', { unique: false });
       shows_objectStore.transaction.oncomplete = function () {
         db['transaction']('shows', 'readwrite').objectStore('shows');
       };
       // Torrents store
-      const torrents_objectStore = db.createObjectStore('torrents', {keyPath: 'infoHash'});
-      torrents_objectStore.createIndex('episode', 'episode', {unique: false});
-      torrents_objectStore.createIndex('show', 'show', {unique: false});
+      const torrents_objectStore = db.createObjectStore('torrents', { keyPath: 'infoHash' });
+      torrents_objectStore.createIndex('episode', 'episode', { unique: false });
+      torrents_objectStore.createIndex('show', 'show', { unique: false });
       torrents_objectStore.transaction.oncomplete = function () {
         db['transaction']('torrents', 'readwrite').objectStore('torrents');
       };
@@ -45,16 +44,15 @@ export class DbService {
         console.log('onupgradeneeded', db);
 
         // Shows store
-        const shows_objectStore = db.createObjectStore('shows', {keyPath: 'dashed_title'});
-        shows_objectStore.createIndex('title', 'title', {unique: false});
-        shows_objectStore.createIndex('infoHash', 'infoHash', {unique: true});
+        const shows_objectStore = db.createObjectStore('shows', { keyPath: 'dashed_title' });
+        shows_objectStore.createIndex('title', 'title', { unique: false });
         shows_objectStore.transaction.oncomplete = function () {
           db['transaction']('shows', 'readwrite').objectStore('shows');
         };
         // Torrents store
-        const torrents_objectStore = db.createObjectStore('torrents', {keyPath: 'infoHash'});
-        torrents_objectStore.createIndex('episode', 'episode', {unique: false});
-        torrents_objectStore.createIndex('show', 'show', {unique: false});
+        const torrents_objectStore = db.createObjectStore('torrents', { keyPath: 'infoHash' });
+        torrents_objectStore.createIndex('episode', 'episode', { unique: false });
+        torrents_objectStore.createIndex('show', 'show', { unique: false });
         torrents_objectStore.transaction.oncomplete = function () {
           db['transaction']('torrents', 'readwrite').objectStore('torrents');
         };
@@ -174,9 +172,11 @@ export class DbService {
             if (!Seasons) {
               Seasons = {};
             }
+            console.log('Adding episode to DB shows', episode);
             request.result['watching_season'] = s;
             request.result.Seasons[s][e].magnetURI = episode.magnetURI;
             request.result.Seasons[s][e].dn = episode.dn;
+            request.result.Seasons[s][e].infoHash = episode.infoHash;
             const requestUpdate = objectStore.put(request.result);
             requestUpdate.onerror = function () {
               return observer.error();
@@ -276,6 +276,7 @@ export class DbService {
           request.result['Seasons'][Number(season)][Number(episode) - 1].status = 'pending';
           request.result['Seasons'][Number(season)][Number(episode) - 1].infoHash = episode_torrent['infoHash'];
           request.result['Seasons'][Number(season)][Number(episode) - 1].dn = episode_torrent['dn'];
+          request.result['Seasons'][Number(season)][Number(episode) - 1].magnetURI = episode_torrent['magnetURI'];
           request.result['Seasons'][Number(season)][Number(episode) - 1].date = episode_torrent['date'];
           request.result['updated'] = new Date;
           request.result['watching_season'] = Number(season);
@@ -315,6 +316,7 @@ export class DbService {
 
   deleteTorrent(infoHash) {
     return new Observable(observer => {
+      if (!infoHash) { return observer.next(); }
       this.openDb().subscribe(db => {
         db = event.target['result'];
         const objectStore = db['transaction'](['torrents'], 'readwrite').objectStore('torrents');
@@ -323,6 +325,7 @@ export class DbService {
           return observer.error();
         };
         request.onsuccess = function (event) {
+          console.log('DB deleteTorrent');
           return observer.next();
         };
       });
@@ -360,12 +363,13 @@ export class DbService {
           delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].status;
           delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].infoHash;
           delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].dn;
+          delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].magnetURI;
+          delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].play_progress;
 
           const requestUpdate = s_objectStore.put(s_request.result);
           requestUpdate.onerror = function () {
           };
           requestUpdate.onsuccess = function () {
-            console.log('Episode deleted');
             return observer.next();
           };
         };
@@ -421,7 +425,6 @@ export class DbService {
     });
   }
 
-
   readyTorrent(infoHash) {
     return new Observable(observer => {
       this.openDb().subscribe(db => {
@@ -460,8 +463,7 @@ export class DbService {
           const season = episode_torrent['episode_label'].substring(1, 3),
             episode = episode_torrent['episode_label'].substring(4, 6);
           s_request.result['Seasons'][Number(season)][Number(episode) - 1].status = 'ready';
-          s_request.result['Seasons'][Number(season)][Number(episode) - 1].infoHash = episode_torrent['infoHash'];
-          s_request.result['Seasons'][Number(season)][Number(episode) - 1].dn = episode_torrent['dn'];
+          console.log('Setting episode ready', episode_torrent);
 
           const requestUpdate = s_objectStore.put(s_request.result);
           requestUpdate.onerror = function (err) {
@@ -478,10 +480,10 @@ export class DbService {
 
   getTorrentProgress(infoHash): Observable<any> {
     return new Observable(observer => {
-      const sub = this.torrentService.getTorrent(infoHash);
-      sub.subscribe(t => {
-        return observer.next(Math.round(t['progress'] * 100));
-      });
+      this.torrentService.getTorrent(infoHash)
+        .subscribe(t => {
+          return observer.next(Math.round(t['progress'] * 100));
+        });
     });
   }
 

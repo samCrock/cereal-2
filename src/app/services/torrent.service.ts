@@ -1,53 +1,73 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ElectronService } from 'ngx-electron';
+import { WtService } from './wt.service';
 
 @Injectable()
 export class TorrentService {
 
-  private wt_client = this._electronService.remote.getGlobal('wt_client');
+  private wt_client;
   private local_path = this._electronService.remote.getGlobal('local_path');
 
-  constructor(private _electronService: ElectronService) { }
+  constructor(private _electronService: ElectronService, private wtService: WtService) {
+    this.wtService.getClient()
+      .subscribe(c => {
+        console.log('Torrent service got a fresh webtorrent client!');
+        this.wt_client = c;
+      });
+  }
 
-  addTorrent(episode_torrent: Object): Observable<number> {
+  addTorrent(episode_torrent: Object): Observable<any> {
     return new Observable(observer => {
-      console.log('Adding torrent', episode_torrent);
-
       if (!this.wt_client.get(episode_torrent['magnetURI'])) {
         console.log('Adding torrent', episode_torrent);
         this.wt_client.add(episode_torrent['magnetURI'], {
-          path: this.local_path + '\\Downloads\\Cereal\\' + episode_torrent['show'] + '\\' + episode_torrent['episode']
-        });
-        this.wt_client.get(episode_torrent['magnetURI']).on('ready', function() {
-          observer.next(1);
+          path: this.local_path + '\\Downloads\\Cereal\\' + episode_torrent['title'] + '\\' + episode_torrent['episode_label']
+        }, function (torrent) {
+          observer.next(torrent);
         });
       } else {
-        console.log('Already here');
-        observer.next(0);
+        observer.next();
       }
     });
+  }
+
+  getTorrentByHash(infoHash) {
+    return this.wt_client.get(infoHash);
   }
 
   getTorrent(infoHash): Observable<any> {
     return new Observable(observer => {
       this.wt_client.torrents.forEach(t => {
         try {
-            if (!t || !t['infoHash']) { return observer.next(); }
-            if (t['infoHash'] === infoHash) {
-              return observer.next(t);
-            }
+          if (!t || !t['infoHash']) { return observer.next(); }
+          if (t['infoHash'] === infoHash) {
+            return observer.next(t);
+          }
         } catch (e) {
-          // console.error('gettorrent', e);
+          console.error('getTorrent', e);
         }
       });
+      observer.next();
     });
   }
 
   removeTorrent(magnetURI) {
-    if (this.wt_client.get(magnetURI)) {
-      this.wt_client.remove(magnetURI);
-    }
+    return new Observable(observer => {
+      if (this.wt_client.get(magnetURI)) {
+        this.wt_client.remove(magnetURI, error => {
+          if (!error) {
+            observer.next('Done');
+          } else {
+            console.error(error);
+            throw new Error(error);
+          }
+        });
+      } else {
+        observer.next('No results');
+      }
+      this.wtService.restartClient();
+    });
   }
 
 
