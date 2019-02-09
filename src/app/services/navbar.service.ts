@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  Subject ,  BehaviorSubject } from 'rxjs';
 import { ElectronService } from 'ngx-electron';
 import { HttpClient } from '@angular/common/http';
 import * as cheerio from 'cheerio';
 import { ResponseContentType } from '@angular/http';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class NavbarService {

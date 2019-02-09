@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { DbService, SubsService, ScrapingService, TorrentService } from '../../services';
 import { ElectronService } from 'ngx-electron';
 import { Router } from '@angular/router';
@@ -40,9 +40,7 @@ export class ExpandedCardComponent implements OnChanges {
     const card = event.srcElement;
     this.hovering_episode = show;
 
-    // console.log(show);
-    // document.getElementById('expanded_card').style.display = 'none';
-    document.querySelectorAll('[id=expanded_card]')['forEach'](element => {
+    document.querySelectorAll('[id=expanded_card]')['forEach']((element: HTMLElement) => {
       element.style.display = 'none';
     });
     const exp_card = event.srcElement.nextElementSibling,

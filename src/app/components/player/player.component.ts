@@ -2,9 +2,8 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { TorrentService, SubsService, DbService } from '../../services';
 import { ElectronService } from 'ngx-electron';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/mergeMap';
+import { Subscription ,  Observable } from 'rxjs';
+
 import { interval } from 'rxjs/internal/observable/interval';
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -343,7 +342,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
   }
 
+
+
   toggle_fullscreen() {
+    const document: any = window.document;
     if (this.isFullscreen) {
       document.webkitExitFullscreen();
       this.isFullscreen = false;

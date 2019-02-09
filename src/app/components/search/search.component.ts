@@ -1,9 +1,11 @@
+
+import {debounceTime} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/throttleTime';
-import 'rxjs/add/observable/fromEvent';
+import { Subscription } from 'rxjs';
+
+
+
 import { ScrapingService } from '../../services/index';
 
 @Component({
@@ -28,8 +30,8 @@ export class SearchComponent implements OnInit {
       document.getElementById('search_input').focus();
     }, 10);
 
-    this.searchCtrlSub = this.searchControl.valueChanges
-      .debounceTime(1000)
+    this.searchCtrlSub = this.searchControl.valueChanges.pipe(
+      debounceTime(1000))
       .subscribe(newValue => {
         this.loading = true;
         if (newValue.length > 0) {

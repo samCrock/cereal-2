@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromPromise';
+import { Observable } from 'rxjs';
+
 import 'rxjs/observable/of';
 import { HttpClient } from '@angular/common/http';
 import * as cheerio from 'cheerio';
@@ -31,11 +31,11 @@ export class ScrapingService {
 
   retrieveShow(show: string): Observable<any> {
     const _show = show;
-    return Observable.create(observer => {
+    return new Observable(observer => {
       return this.http.get<any[]>('https://trakt.tv/shows/' + _show, { responseType: 'text' as 'json' })
         .subscribe(response => {
-          const $ = cheerio.load(response),
-            dashed_title = _show;
+          const $ = cheerio.load(response, { _useHtmlParser2: true });
+          const dashed_title = _show;
           // poster = $('.sidebar')['0'].children[0].children[1].attribs['data-original'],
           let title = $('#summary-ratings-wrapper')['0'].next.children[0].children[0].children[1].children[0].children[0].data;
           if (title) {
@@ -87,10 +87,10 @@ export class ScrapingService {
   }
 
   retrieveShowSeason(show, season): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
       return this.http.get<any[]>('https://trakt.tv/shows/' + show + '/seasons/' + season, { responseType: 'text' as 'json' })
         .subscribe(response => {
-          const $ = cheerio.load(response);
+          const $ = cheerio.load(response, { _useHtmlParser2: true });
           const episodes = [];
           let ep_label = '',
             ep_title = '',
@@ -138,7 +138,7 @@ export class ScrapingService {
   }
 
   retrieveCalendar(): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
       return this.retrieveRemoteCalendar(observer);
     });
   }
@@ -147,7 +147,7 @@ export class ScrapingService {
     const lastWeek = moment().subtract(6, 'days').format('YYYY-MM-DD');
     return this.http.get<any[]>('https://trakt.tv/calendars/shows/' + lastWeek, { responseType: 'text' as 'json' })
       .subscribe(response => {
-        const $ = cheerio.load(response);
+        const $ = cheerio.load(response, { _useHtmlParser2: true });
         const week = [];
         console.log('Week', lastWeek);
         $('.fanarts, .calendar-list').filter((i, result) => {
@@ -246,7 +246,7 @@ export class ScrapingService {
   }
 
   retrievePoster(dashed_title: string): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
       const poster_path = this.path.join(this.app.getPath('appData'), 'Cereal', 'posters', dashed_title + '.jpg');
       if (this.fsExtra.pathExistsSync(poster_path)) {
         return observer.next(this.normalizePath(poster_path));
@@ -270,8 +270,8 @@ export class ScrapingService {
     console.log('Retrieving poster for', dashed_title);
     return this.http.get('https://trakt.tv/shows/' + dashed_title, { responseType: 'text' })
       .subscribe(response => {
-        const $ = cheerio.load(response),
-          results = $('.poster');
+        const $ = cheerio.load(response, { _useHtmlParser2: true });
+        const results = $('.poster');
         const poster = results[0].children[1].attribs['data-original'];
 
         console.log(dashed_title, poster);
@@ -303,12 +303,12 @@ export class ScrapingService {
   }
 
   retrieveRemoteWallpaper(dashed_title: string): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
       console.log('Retrieving poster for', dashed_title);
       this.http.get('https://trakt.tv/shows/' + dashed_title, { responseType: 'text' })
         .subscribe(response => {
-          const $ = cheerio.load(response),
-            results = $('#summary-wrapper')['0'].attribs['data-fanart'];
+          const $ = cheerio.load(response, { _useHtmlParser2: true });
+          const results = $('#summary-wrapper')['0'].attribs['data-fanart'];
           const wallpaper = results;
 
           console.log(dashed_title, wallpaper);
@@ -344,10 +344,10 @@ export class ScrapingService {
     const url = encodeURI('https://thepiratebay10.org/search/' + show + ' ' + episode + '/1/99/0');
     console.log('Downloading episode', show, episode);
     console.log('url', url);
-    return Observable.create(observer => {
+    return new Observable(observer => {
       return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
-          const $ = cheerio.load(response);
+          const $ = cheerio.load(response, { _useHtmlParser2: true });
           const _custom = 1;
           if ($('tr')[_custom]) {
             const dn = $('tr')[_custom].children[3].children[1].children[1].children[0].data;
@@ -378,10 +378,11 @@ export class ScrapingService {
   //   const url = encodeURI('https://kickass.soy/usearch/' + show + ' ' + episode + '/?field=seeders&sorder=desc');
   //   console.log('Downloading episode', show, episode);
   //   // console.log('url', url);
-  //   return Observable.create(observer => {
+  //   return new Observable(observer => {
   //     return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
   //       .subscribe(response => {
-  //         const $ = cheerio.load(response);
+  //                 const $ = cheerio.load(response, { _useHtmlParser2: true });
+
   //         const _custom = custom ? custom : 1;
   //         if ($('#torrent_latest_torrents')[_custom]) {
   //           const t_row = $('#torrent_latest_torrents')[_custom];
@@ -416,10 +417,10 @@ export class ScrapingService {
     const url = encodeURI('https://thepiratebay10.org/search/' + show + ' ' + episode + '/1/99/0');
     console.log('Retrieving episode', show, episode);
     console.log('url', url);
-    return Observable.create(observer => {
+    return new Observable(observer => {
       return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
-          const $ = cheerio.load(response);
+          const $ = cheerio.load(response, { _useHtmlParser2: true });
           if ($('tr').length === 0) {
             console.log('No results');
             return observer.next();
@@ -453,10 +454,11 @@ export class ScrapingService {
   }
 
   searchShows(show_string: string): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
       return this.http.get<any[]>('https://trakt.tv/search/shows?query=' + show_string, { responseType: 'text' as 'json' })
         .subscribe(response => {
-          const $ = cheerio.load(response);
+          const $ = cheerio.load(response, { _useHtmlParser2: true });
+
           let hasResults = false;
           $('.grid-item')
             .filter((i, result) => {
@@ -482,10 +484,11 @@ export class ScrapingService {
   }
 
   retrieveTrending(): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
       return this.http.get<any[]>('https://trakt.tv/shows/trending', { responseType: 'text' as 'json' })
         .subscribe(response => {
-          const $ = cheerio.load(response);
+          const $ = cheerio.load(response, { _useHtmlParser2: true });
+
           const shows = [];
           $('.grid-item')
             .filter((i, result) => {

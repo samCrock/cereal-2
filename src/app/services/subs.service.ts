@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ElectronService } from 'ngx-electron';
 import { HttpClient } from '@angular/common/http';
 import * as cheerio from 'cheerio';
@@ -97,7 +97,7 @@ export class SubsService {
       console.log(url);
       return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
-          const $ = cheerio.load(response);
+          const $ = cheerio.load(response, { _useHtmlParser2: true });
           const results = [];
           let show_index;
           $('.title').filter(t => {
@@ -113,11 +113,11 @@ export class SubsService {
           return this.http.get<any[]>('https://subscene.com' + $('.title')[show_index].children[1].attribs.href,
             { responseType: 'text' as 'json' })
             .subscribe(response2 => {
-              const _$ = cheerio.load(response2);
+              const _$ = cheerio.load(response2, { _useHtmlParser2: true });
               _$('.a1').map((i, element) => {
-                const sub_name = element.children[1].children[3].children[0].data.trim(),
-                  link = element.children[1].attribs.href,
-                  lang = element.children[1].children[1].children[0].data.trim();
+                const sub_name = element.children[1].children[3].children[0].data.trim();
+                const link = element.children[1].attribs.href;
+                const lang = element.children[1].children[1].children[0].data.trim();
 
 
                 if (results.length < 6 && lang === 'English' && sub_name.indexOf(ep_label) > -1) {
@@ -156,7 +156,7 @@ export class SubsService {
         responseType: 'text' as 'json'
       })
         .subscribe(_response => {
-          const _$ = cheerio.load(_response);
+          const _$ = cheerio.load(_response, { _useHtmlParser2: true });
           const link = 'https://subscene.com' + _$('.download')['0'].children[1]['attribs'].href;
 
           return this.http.get(link, { responseType: 'arraybuffer' })

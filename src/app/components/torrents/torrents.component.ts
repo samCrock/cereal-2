@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TorrentService, DbService } from '../../services';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import * as moment from 'moment';
 
 @Component({

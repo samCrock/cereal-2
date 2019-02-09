@@ -1,8 +1,8 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/mergeMap';
+
+
+
+
 import { DbService, SubsService, ScrapingService, TorrentService, WtService } from '../../services';
 import * as moment from 'moment';
 import { ElectronService } from 'ngx-electron';
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import * as magnet from 'magnet-uri';
 import { ChangeDetectorRef } from '@angular/core';
 import { interval } from 'rxjs/internal/observable/interval';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 
 @Component({

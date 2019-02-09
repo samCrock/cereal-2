@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromPromise';
+import { Observable } from 'rxjs';
+
 import 'rxjs/observable/of';
 import { TorrentService } from './torrent.service';
 
