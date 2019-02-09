@@ -18,7 +18,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   public show: Object;
   public episode: Object;
-  public file_path: string;
+  public filePath: string;
   public app = this.electronService.remote.getGlobal('app');
   public shell = this.electronService.remote.getGlobal('shell');
   public loading = true;
@@ -93,8 +93,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
             console.log('Episode ->', episode);
 
             this.checkVideoPath()
-              .subscribe(file_path => {
-                this.file_path = file_path;
+              .subscribe(filePath => {
+                this.filePath = filePath;
                 this.setup();
               });
 
@@ -116,7 +116,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       this.player.firstChild.remove();
     }
 
-    this.player.setAttribute('src', this.file_path);
+    this.player.setAttribute('src', this.filePath);
 
 
 
@@ -193,28 +193,28 @@ export class PlayerComponent implements OnInit, OnDestroy {
   checkVideoPath(): Observable<any> {
     return new Observable(observer => {
       const that = this;
-      const file_path = that.path.join(that.app.getPath('downloads'), 'Cereal', that.show['title'], that.episode['label']);
-      const filesCheckInterval = setInterval(function () {
-        console.log('Check files', that.fs.existsSync(file_path));
-        if (that.fs.existsSync(file_path)) {
-          let files = that.fs.readdirSync(file_path);
+      const filePath = that.path.join(that.app.getPath('downloads'), 'Cereal', that.show['title'], that.episode['label']);
+      const filesCheckInterval = setInterval(() => {
+        console.log('Check files', filePath, that.fs.existsSync(filePath));
+        if (that.fs.existsSync(filePath)) {
+          let files = that.fs.readdirSync(filePath);
           files.forEach(file => {
             let ext = file.substring(file.length - 3, file.length);
             if (ext === 'mkv' || ext === 'mp4' || ext === 'avi') {
-              that.file_path = that.path.join(file_path, file);
-              console.log('Video found ->', that.file_path);
+              that.filePath = that.path.join(filePath, file);
+              console.log('Video found ->', that.filePath);
               clearInterval(filesCheckInterval);
-              observer.next(that.file_path);
+              observer.next(that.filePath);
             }
-            if (that.fs.statSync(that.path.join(file_path, file)).isDirectory()) {
-              files = that.fs.readdirSync(that.path.join(file_path, file));
+            if (that.fs.statSync(that.path.join(filePath, file)).isDirectory()) {
+              files = that.fs.readdirSync(that.path.join(filePath, file));
               files.forEach(_file => {
                 ext = _file.substring(_file.length - 3, _file.length);
                 if (ext === 'mkv' || ext === 'mp4') {
-                  that.file_path = that.path.join(file_path, file, _file);
-                  console.log('Video found ->', that.file_path);
+                  that.filePath = that.path.join(filePath, file, _file);
+                  console.log('Video found ->', that.filePath);
                   clearInterval(filesCheckInterval);
-                  observer.next(that.file_path);
+                  observer.next(that.filePath);
                 }
               });
             }
@@ -228,13 +228,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
   downloadSubs() {
     // Add subs tracks
     console.log('DOWNLOADING SUBS');
-    let fileName = this.path.basename(this.file_path);
+    let fileName = this.path.basename(this.filePath);
     fileName = fileName.substring(0, fileName.length - 4);
     const dn = this.dn ? this.dn : fileName;
     this.subsService.retrieveSubs(this.show, this.episode['label'], dn)
       .subscribe(subs => {
         subs.forEach(sub => {
-          this.subsService.downloadSub(sub, this.file_path)
+          this.subsService.downloadSub(sub, this.filePath)
             .subscribe(subPath => {
               console.log('subPath', subPath);
               this.addSubs(subPath);
@@ -243,18 +243,18 @@ export class PlayerComponent implements OnInit, OnDestroy {
       });
   }
 
-  addSubs(file_path) {
+  addSubs(filePath) {
     const that = this;
-    if (this.fsExtra.existsSync(file_path)) {
+    if (this.fsExtra.existsSync(filePath)) {
       const track = document.createElement('track');
       track.kind = 'captions';
       track.label = 'English';
       track.srclang = 'en';
-      that.fsExtra.createReadStream(file_path)
+      that.fsExtra.createReadStream(filePath)
         .pipe(that.srt2vtt())
-        .pipe(that.fsExtra.createWriteStream(file_path.substring(0, file_path.length - 3) + 'vtt'));
+        .pipe(that.fsExtra.createWriteStream(filePath.substring(0, filePath.length - 3) + 'vtt'));
       // setTimeout(function() {
-      track.src = file_path.substring(0, file_path.length - 3) + 'vtt';
+      track.src = filePath.substring(0, filePath.length - 3) + 'vtt';
       track.label = that.path.normalize(track.src).split(that.path.sep)[that.path.normalize(track.src).split(that.path.sep).length - 1];
       track.label = track.label.substring(0, track.label.length - 4);
       track.label = decodeURI(track.label);
@@ -381,7 +381,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   openFolder() {
-    this.shell.openItem(this.file_path);
+    this.shell.openItem(this.filePath);
   }
 
   isCurrent_episode(ep_label) {

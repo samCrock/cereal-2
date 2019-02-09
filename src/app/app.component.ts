@@ -13,18 +13,18 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-  public fs = this._electronService.remote.getGlobal('fs');
-  public app = this._electronService.remote.getGlobal('app');
-  public path = this._electronService.remote.getGlobal('path');
+  public fs = this.electronService.remote.getGlobal('fs');
+  public app = this.electronService.remote.getGlobal('app');
+  public path = this.electronService.remote.getGlobal('path');
   public alive: boolean;
-  private update = this._electronService.remote.getGlobal('update');
+  private update = this.electronService.remote.getGlobal('update');
   public updateProgress: number;
   public updateReady: boolean;
-  private wt_client;
+  public wtClient: any;
 
   constructor(
     public translate: TranslateService,
-    private _electronService: ElectronService,
+    private electronService: ElectronService,
     private torrentService: TorrentService,
     private dbService: DbService,
     private wtService: WtService,
@@ -36,7 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.wtService.getClient().subscribe(c => {
       console.log('App got a fresh webtorrent client!');
-      this.wt_client = c;
+      this.wtClient = c;
     });
 
   }
@@ -61,10 +61,10 @@ export class AppComponent implements OnInit, OnDestroy {
             this.updateProgress = Math.round(event['loaded'] / event['total'] * 100);
           }
           if (event.body) {
-            const installer_path = this.path.join(this.app.getPath('appData'), 'Cereal', 'Update_installer.exe');
-            console.log('File is ready:', installer_path);
+            const installerPath = this.path.join(this.app.getPath('appData'), 'Cereal', 'Update_installer.exe');
+            console.log('File is ready:', installerPath);
 
-            this.fs.appendFileSync(installer_path, new Buffer(event.body));
+            this.fs.appendFileSync(installerPath, new Buffer(event.body));
 
             this.updateReady = true;
             delete this.updateProgress;
@@ -105,7 +105,7 @@ export class AppComponent implements OnInit, OnDestroy {
           });
         });
 
-      // this.wt_client.torrents.forEach(t => {
+      // this.wtClient.torrents.forEach(t => {
       //   console.log('WT torrent ->', t.infoHash, t.progress);
       // });
     }, 1000);

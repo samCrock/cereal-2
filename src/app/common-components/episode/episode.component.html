@@ -34,7 +34,7 @@
 
         <div class="overview">{{ episode.overview }}</div>
 
-        <div fxFlex fxLayout="column" fxLayoutAlign="center start" *ngIf="ep_torrents.length">
+        <div fxFlex fxLayout="column" fxLayoutAlign="center start" *ngIf="epTorrents.length">
           <div fxLayout="row" fxLayoutAlign="space-evenly" class="extras_header">
             <div fxFlex="76">
               <label style="margin-left: calc(1rem + 2vw);">Name</label>
@@ -47,7 +47,7 @@
               <label>Size</label>
             </div>
           </div>
-          <div fxLayout="row" fxLayoutAlign="space-evenly" *ngFor="let t of ep_torrents; let idx = index;" class="torrent_extras">
+          <div fxLayout="row" fxLayoutAlign="space-evenly" *ngFor="let t of epTorrents; let idx = index;" class="torrent_extras">
             <div fxFlex="76">
               <label>
 							<input name="group1" type="radio" [checked]="idx === 0" [value]="t.name" (change)="onTorrentChange(episode, t)"/>
@@ -65,7 +65,7 @@
         </div>
 
 
-				<div id="delete_container" *ngIf="ep_torrents.length">
+				<div id="delete_container" *ngIf="epTorrents.length">
 					<i *ngIf="downloadable(episode.date)" id="delete_btn" class="material-icons download_btn hoverable circle" [class.expanded]="expanded" (click)="deleteTorrent(episode);">delete</i>
 				</div>
 

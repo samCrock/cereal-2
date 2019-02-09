@@ -6,24 +6,26 @@ import { WtService } from './wt.service';
 @Injectable()
 export class TorrentService {
 
-  private wt_client;
-  private local_path = this._electronService.remote.getGlobal('local_path');
+  public path = this.electronService.remote.getGlobal('path');
 
-  constructor(private _electronService: ElectronService, private wtService: WtService) {
+  private wtClient;
+  public app = this.electronService.remote.getGlobal('app');
+
+  constructor(private electronService: ElectronService, private wtService: WtService) {
     this.wtService.getClient()
       .subscribe(c => {
-        console.log('Torrent service got a fresh webtorrent client!');
-        this.wt_client = c;
+        this.wtClient = c;
       });
   }
 
-  addTorrent(episode_torrent: Object): Observable<any> {
+  addTorrent(episode): Observable<any> {
     return new Observable(observer => {
-      if (!this.wt_client.get(episode_torrent['magnetURI'])) {
-        console.log('Adding torrent', episode_torrent);
-        this.wt_client.add(episode_torrent['magnetURI'], {
-          path: this.local_path + '\\Downloads\\Cereal\\' + episode_torrent['title'] + '\\' + episode_torrent['episode_label']
-        }, function (torrent) {
+      if (!this.wtClient.get(episode['magnetURI'])) {
+        const filePath = this.path.join(this.app.getPath('downloads'), 'Cereal', episode['title'], episode['episode_label']);
+        console.log('Adding torrent', episode, filePath);
+        this.wtClient.add(episode['magnetURI'], {
+          path: filePath
+        }, (torrent) => {
           observer.next(torrent);
         });
       } else {
@@ -33,12 +35,12 @@ export class TorrentService {
   }
 
   getTorrentByHash(infoHash) {
-    return this.wt_client.get(infoHash);
+    return this.wtClient.get(infoHash);
   }
 
   getTorrent(infoHash): Observable<any> {
     return new Observable(observer => {
-      this.wt_client.torrents.forEach(t => {
+      this.wtClient.torrents.forEach(t => {
         try {
           if (!t || !t['infoHash']) { return observer.next(); }
           if (t['infoHash'] === infoHash) {
@@ -54,8 +56,8 @@ export class TorrentService {
 
   removeTorrent(magnetURI) {
     return new Observable(observer => {
-      if (this.wt_client.get(magnetURI)) {
-        this.wt_client.remove(magnetURI, error => {
+      if (this.wtClient.get(magnetURI)) {
+        this.wtClient.remove(magnetURI, error => {
           if (!error) {
             observer.next('Done');
           } else {
@@ -66,7 +68,6 @@ export class TorrentService {
       } else {
         observer.next('No results');
       }
-      this.wtService.restartClient();
     });
   }
 

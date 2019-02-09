@@ -14,11 +14,12 @@ const spawn = require('child_process').spawn;
 const request = require('request');
 
 const args = process.argv.slice(1);
-let remoteVersion, win, serve;
+let remoteVersion;
+let win;
+let serve;
 serve = args.some(val => val === '--serve');
 
 global['wt'] = new webtorrent();
-global['local_path'] = os.homedir();
 global['shell'] = shell;
 global['fs'] = fs;
 global['fsExtra'] = fsExtra;
@@ -32,8 +33,8 @@ global['request'] = request;
 console.log('Local path:', os.homedir(), __dirname);
 console.log('Local version:', app.getVersion());
 
-const installer_path = path.join(app.getPath('appData'), 'Cereal', 'Update_installer.exe');
-const update_check_path = path.join(app.getPath('appData'), 'Cereal', '_updating');
+const installerPath = path.join(app.getPath('appData'), 'Cereal', 'Update_installer.exe');
+const updateCheckPath = path.join(app.getPath('appData'), 'Cereal', '_updating');
 
 try {
   require('dotenv').config();
@@ -44,15 +45,15 @@ try {
 function checkUpdates() {
   return new Promise((resolve, reject) => {
 
-    if (fs.existsSync(installer_path)) {
+    if (fs.existsSync(installerPath)) {
       console.log('Executing updater..');
-      spawn(installer_path, [process.argv], {
+      spawn(installerPath, [process.argv], {
         cwd: process.cwd(),
         env: process.env,
         detached: true,
         stdio: 'ignore'
       });
-      fs.writeFile(update_check_path, '', function (err) {
+      fs.writeFile(updateCheckPath, '', function (err) {
         process.kill(process.pid);
       });
     } else {
@@ -106,6 +107,7 @@ function createWindow() {
       protocol: 'file:',
       slashes: true
     }));
+    win.openDevTools();
   }
 
   // Emitted when the window is closed.
@@ -116,9 +118,9 @@ function createWindow() {
 
 try {
   app.on('ready', () => {
-    if (fs.existsSync(update_check_path)) {
-      fs.unlinkSync(update_check_path);
-      fs.unlink(installer_path, function (d) {
+    if (fs.existsSync(updateCheckPath)) {
+      fs.unlinkSync(updateCheckPath);
+      fs.unlink(installerPath, function (d) {
         console.log('Update completed!');
         createWindow();
       });

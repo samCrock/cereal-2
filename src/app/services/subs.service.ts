@@ -3,23 +3,18 @@ import { Observable } from 'rxjs';
 import { ElectronService } from 'ngx-electron';
 import { HttpClient } from '@angular/common/http';
 import * as cheerio from 'cheerio';
-import { ResponseContentType } from '@angular/http';
 
 @Injectable()
 export class SubsService {
 
-  private local_path = this._electronService.remote.getGlobal('local_path');
-  private fsExtra = this._electronService.remote.getGlobal('fsExtra');
-  private zip = this._electronService.remote.getGlobal('zip');
-  private app = this._electronService.remote.getGlobal('app');
-  private path = this._electronService.remote.getGlobal('path');
-
+  private fsExtra = this.electronService.remote.getGlobal('fsExtra');
+  private zip = this.electronService.remote.getGlobal('zip');
+  private path = this.electronService.remote.getGlobal('path');
 
   constructor(
-    private _electronService: ElectronService,
+    private electronService: ElectronService,
     private http: HttpClient
   ) {
-    // console.log('local_path', this.local_path);
   }
 
   convertNumberToOrdinal(n) {
@@ -149,7 +144,7 @@ export class SubsService {
   }
 
 
-  downloadSub(subs, episode_path): Observable<any> {
+  downloadSub(subs, episodePath): Observable<any> {
     return Observable.create(observer => {
       const download_url = 'https://subscene.com' + subs['link'];
       return this.http.get<any[]>(download_url, {
@@ -161,9 +156,8 @@ export class SubsService {
 
           return this.http.get(link, { responseType: 'arraybuffer' })
             .subscribe(__response => {
-              let _path = this.path.dirname(episode_path);
-              // let _path = this.path.join(episode_path);
-              console.log('_path', _path);
+              let _path = this.path.dirname(episodePath);
+              // console.log('_path', _path);
               const that = this;
               this.fsExtra.readdir(_path, function (err, files) {
                 if (files && files.length > 0) {
@@ -184,7 +178,7 @@ export class SubsService {
               unzipper.on('extract', function (log) {
                 // console.log('Finished extracting', log);
                 // const srtPath = zip_path.substr(0,  zip_path.length - 7) + '.srt';
-                const srtPath = that.path.join(that.path.dirname(episode_path), log[0]['deflated']);
+                const srtPath = that.path.join(that.path.dirname(episodePath), log[0]['deflated']);
                 observer.next(srtPath);
                 that.fsExtra.remove(zip_path, err => {
                   if (err) {

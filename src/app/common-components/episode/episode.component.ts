@@ -1,8 +1,4 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
-
-
-
-
 import { DbService, SubsService, ScrapingService, TorrentService, WtService } from '../../services';
 import * as moment from 'moment';
 import { ElectronService } from 'ngx-electron';
@@ -22,11 +18,10 @@ import { Subscription } from 'rxjs';
 })
 export class EpisodeComponent implements OnInit, OnDestroy {
 
-  @Input() show: Object;
-  @Input() episode: Object;
+  @Input() show;
+  @Input() episode;
   @Input() format = 'extended';
   @Output() notify: EventEmitter<any> = new EventEmitter<any>();
-
 
   public path = this.electronService.remote.getGlobal('path');
   public shell = this.electronService.remote.getGlobal('shell');
@@ -34,18 +29,16 @@ export class EpisodeComponent implements OnInit, OnDestroy {
   public fsExtra = this.electronService.remote.getGlobal('fsExtra');
 
   public expanded = false;
-  public ep_torrents = [];
+  public epTorrents = [];
   public selectedTorrent;
   public titleAsButton = false;
   public loading: boolean;
   public hasResults: boolean;
   public currentTorrentsListSub;
 
-  private wt_client;
-
   public progress;
-  public progressSubscription: Subscription;
   public speed;
+  public progressSubscription: Subscription;
   public speedSubscription: Subscription;
 
   constructor(
@@ -108,7 +101,7 @@ export class EpisodeComponent implements OnInit, OnDestroy {
       if (this.episode['dn'] && this.episode['status'] === 'pending') {
         const t = this.torrentService.getTorrentByHash(this.episode['infoHash']);
 
-        // console.log('Fetch current?', this.episode['infoHash'], t['progress'], t['downloadSpeed']);
+        // console.log('Fetch current?', this.episode['infoHash'], t['progress'], t['downloadSpeed'], t['path']);
 
         if (t) {
           if (t['progress'] !== 1) {
@@ -230,10 +223,10 @@ export class EpisodeComponent implements OnInit, OnDestroy {
         .subscribe(result => {
           this.hasResults = true;
           this.loading = false;
-          this.ep_torrents.push(result);
+          this.epTorrents.push(result);
         });
     } else {
-      this.ep_torrents = [];
+      this.epTorrents = [];
       this.loading = false;
       this.hasResults = false;
     }
@@ -255,7 +248,7 @@ export class EpisodeComponent implements OnInit, OnDestroy {
   deleteTorrent(episode) {
     this.loading = true;
 
-    this.ep_torrents = [];
+    this.epTorrents = [];
 
     episode['dashed_title'] = this.show['dashed_title'];
     episode['episode_label'] = episode['label'];
@@ -270,9 +263,9 @@ export class EpisodeComponent implements OnInit, OnDestroy {
           console.log('Torrent Episode deletion:', result);
 
           // delete files
-          const folder_path = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], episode['episode_label']);
-          console.log('Deleting all files from directory:', folder_path);
-          this.fsExtra.remove(folder_path, err => {
+          const folderPath = this.path.join(this.app.getPath('downloads'), 'Cereal', this.show['title'], episode['episode_label']);
+          console.log('Deleting all files from directory:', folderPath);
+          this.fsExtra.remove(folderPath, err => {
             if (err) { console.error(err); }
           });
 

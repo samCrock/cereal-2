@@ -247,9 +247,9 @@ export class ScrapingService {
 
   retrievePoster(dashed_title: string): Observable<any> {
     return new Observable(observer => {
-      const poster_path = this.path.join(this.app.getPath('appData'), 'Cereal', 'posters', dashed_title + '.jpg');
-      if (this.fsExtra.pathExistsSync(poster_path)) {
-        return observer.next(this.normalizePath(poster_path));
+      const posterPath = this.path.join(this.app.getPath('appData'), 'Cereal', 'posters', dashed_title + '.jpg');
+      if (this.fsExtra.pathExistsSync(posterPath)) {
+        return observer.next(this.normalizePath(posterPath));
       } else {
         this.dbService.getShow(dashed_title)
           .subscribe(show => {
