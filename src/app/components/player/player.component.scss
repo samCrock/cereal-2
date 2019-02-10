@@ -67,8 +67,7 @@ i {
   top: calc(100vh - 5rem);
   z-index: 10000000000;
   transition: all .4s ease-in;
-  margin-right: 20px;
-  margin-left: 20px;
+  padding: 20px;
 }
 
 #controls.hidden {
@@ -80,7 +79,6 @@ i {
 }
 
 #toggle_play {
-  // margin-left: 20px;
   i {
     font-size: calc(1.4rem + 1vw);
   }
@@ -103,7 +101,6 @@ i {
 }
 
 #toggle_episodes {
-  // margin-right: 20px;
   transition: color .4s ease-in;
   i {
     font-size: calc(1rem + 1vw);
@@ -128,7 +125,6 @@ i {
   overflow-y: auto;
   padding-right: .5rem;
   transition: all .4s ease-in;
-  // background-color: rgba(20, 20, 20, .8);
 }
 
 #episodes_list.on {
@@ -188,6 +184,10 @@ video::cue {
   background-color: rgba(20, 20, 20, .7);
   font-size: calc(1.2rem + 1.6vw);
   border-radius: 1rem;
+}
+
+video::-webkit-media-controls {
+  display:none !important;
 }
 
 .back_icon {

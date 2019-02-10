@@ -104,6 +104,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   setup() {
     console.log('SETUP');
+
+    const document: any = window.document;
     const that = this;
 
     this.fetchProgress();
@@ -118,16 +120,14 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     this.player.setAttribute('src', this.filePath);
 
-
-
     // Set keybindings
-    document.body.onkeyup = function (e) {
+    document.body.onkeyup = (e) => {
       if (e.keyCode === 32) {
         that.toggle_play();
       }
     };
     document.getElementById('player')
-      .addEventListener('dblclick', function () {
+      .addEventListener('dblclick', () => {
         that.toggle_fullscreen();
       });
 
