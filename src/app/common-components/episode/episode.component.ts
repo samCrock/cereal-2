@@ -20,7 +20,6 @@ export class EpisodeComponent implements OnInit, OnDestroy {
 
   @Input() show;
   @Input() episode;
-  @Input() format = 'extended';
   @Output() notify: EventEmitter<any> = new EventEmitter<any>();
 
   public path = this.electronService.remote.getGlobal('path');
@@ -91,8 +90,8 @@ export class EpisodeComponent implements OnInit, OnDestroy {
     }
   }
 
-  downloadable(air_date) {
-    return moment(air_date, 'YYYY-MM-DD').diff(moment(), 'hours') < 24;
+  downloadable(airDate) {
+    return moment(airDate, 'YYYY-MM-DD').diff(moment(), 'hours') < 24;
   }
 
   fetchProgress() {
@@ -138,26 +137,25 @@ export class EpisodeComponent implements OnInit, OnDestroy {
       .subscribe(dbEpisode => {
         console.log('dbEpisode', dbEpisode);
         result = dbEpisode;
+
+        // Scrape torrent
         this.scrapingService.retrieveEpisode(this.show['title'], episode.label)
           .subscribe(scrapedEpisode => {
             console.log('scrapedEpisode', scrapedEpisode);
-            if (!scrapedEpisode) {
-              return this.loading = false;
-            }
-            if (!result.magnetURI) {
-              result.magnetURI = scrapedEpisode.magnetURI;
-            }
+            if (!scrapedEpisode) { return this.loading = false; }
+            if (!result.magnetURI) { result.magnetURI = scrapedEpisode.magnetURI; }
             // Set dn
             result.dn = scrapedEpisode.dn;
             // Set infohash
             result.infoHash = magnet.decode(result['magnetURI']).infoHash;
 
-            // Finalize
+            // Add torrent to WT client
             this.torrentService.addTorrent({
               magnetURI: result.magnetURI,
               title: this.show['title'],
               episode_label: result.label
             }).subscribe();
+            // Add episode torrent to torrents & shows DB
             this.dbService.addTorrent({
               dn: result['dn'],
               infoHash: result.infoHash,
@@ -181,26 +179,14 @@ export class EpisodeComponent implements OnInit, OnDestroy {
             });
 
           });
+
       });
   }
 
 
-  play(episode, dn) {
+  play() {
     this.loading = false;
-    this.dbService.getShow(this.show['dashed_title'])
-      .subscribe(show => {
-        this.show = show;
-        localStorage.setItem('play', JSON.stringify({
-          show: this.show,
-          episode: episode,
-          dn: dn
-        }));
-        if (this.format === 'extended') {
-          this.router.navigate(['play', { show: this.show['dashed_title'], episode: this.episode['label'] }]);
-        } else {
-          this.notify.emit(episode);
-        }
-      });
+    this.router.navigate(['play', { show: this.show['dashed_title'], episode: this.episode['label'] }]);
   }
 
   isCurrent() {

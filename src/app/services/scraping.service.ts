@@ -345,7 +345,7 @@ export class ScrapingService {
     console.log('Downloading episode', show, episode);
     console.log('url', url);
     return new Observable(observer => {
-      return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+      this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response, { _useHtmlParser2: true });
           const _custom = 1;
@@ -361,12 +361,12 @@ export class ScrapingService {
             size += 'b';
             observer.next({
               dn: dn.trim(),
-              seeds: seeds,
-              size: size,
-              magnetURI: magnetURI
+              seeds,
+              size,
+              magnetURI
             });
           } else {
-            return observer.next();
+            observer.next();
           }
         });
     });

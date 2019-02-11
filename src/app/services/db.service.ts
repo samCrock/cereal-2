@@ -199,8 +199,7 @@ export class DbService {
         request.oncomplete = function (event) {
           console.log('All done!');
         };
-        request.onerror = function (event) {
-        };
+        request.onerror = function (event) { };
 
         request.onsuccess = function (event) {
           const s = parseInt(ep_label.substring(1, 3), 10);
@@ -259,26 +258,24 @@ export class DbService {
         // Add to Torrents store
         const torrentObjectStore = db['transaction'](['torrents'], 'readwrite').objectStore('torrents');
         const torrentRequest = torrentObjectStore.add(episode_torrent);
-        torrentRequest.onerror = function (event) {
-        };
-        torrentRequest.onsuccess = function (event) {
+        torrentRequest.onerror = (event) => { };
+        torrentRequest.onsuccess = (event) => {
           console.log('Torrent added to torrents store');
         };
 
         // Add to Shows store
         const objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
         const request = objectStore.get(episode_torrent['dashed_title']);
-        request.onerror = function (event) {
-        };
-        request.onsuccess = function (event) {
-          const season = episode_torrent['episode_label'].substring(1, 3),
-            episode = episode_torrent['episode_label'].substring(4, 6);
+        request.onerror = (event) => { };
+        request.onsuccess = (event) => {
+          const season = episode_torrent['episode_label'].substring(1, 3);
+          const episode = episode_torrent['episode_label'].substring(4, 6);
           request.result['Seasons'][Number(season)][Number(episode) - 1].status = 'pending';
           request.result['Seasons'][Number(season)][Number(episode) - 1].infoHash = episode_torrent['infoHash'];
           request.result['Seasons'][Number(season)][Number(episode) - 1].dn = episode_torrent['dn'];
           request.result['Seasons'][Number(season)][Number(episode) - 1].magnetURI = episode_torrent['magnetURI'];
           request.result['Seasons'][Number(season)][Number(episode) - 1].date = episode_torrent['date'];
-          request.result['updated'] = new Date;
+          request.result['updated'] = new Date();
           request.result['watching_season'] = Number(season);
 
           const requestUpdate = objectStore.put(request.result);

@@ -129,4 +129,5 @@ export class AppComponent implements OnInit, OnDestroy {
     window.scroll(0, 0);
   }
 
+
 }

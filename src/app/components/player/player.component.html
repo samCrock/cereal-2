@@ -46,14 +46,9 @@
       <i class="material-icons">airplay</i>
     </div>
 
-    <div id="toggle_episodes" [class.active]="toggledEpisodes" (click)="toggleEpisodes(); showSubs = false;">
-      <i class="material-icons">{{ toggledEpisodes ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</i>
+    <div id="next_episode" *ngIf="nextEpisode" (click)="playNextEpisode()">
+      <i class="material-icons">skip_next</i>
     </div>
-
-    <!-- <div id="episodes_list" *ngIf="toggleEpisodes" [ngClass]="toggledEpisodes ? 'on' : ''">
-      <app-episode *ngFor="let episode of show['Seasons'][show['watching_season']]" (notify)="play_episode($event)"
-        [episode]="episode" [show]="show" [format]="'compact'"></app-episode>
-    </div> -->
 
   </div>
 
