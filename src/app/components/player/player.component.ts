@@ -5,6 +5,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 
 import { interval } from 'rxjs/internal/observable/interval';
+
 import { ChangeDetectorRef } from '@angular/core';
 
 import * as magnet from 'magnet-uri';
@@ -68,27 +69,22 @@ export class PlayerComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
-    this.init();
-  }
+  ngOnInit() { }
 
   ngOnDestroy() {
     if (this.loopInterval) { clearInterval(this.loopInterval); }
     if (this.filesCheckInterval) { clearInterval(this.filesCheckInterval); }
     if (this.progressSubscription) { this.progressSubscription.unsubscribe(); }
     if (this.player) {
-      // console.log('Seconds viewed on destroy:', this.player.currentTime);
+      // console.log('Played time:', this.player.currentTime);
       const playProgress = Math.ceil((this.player.currentTime / this.player.duration) * 100);
       this.dbService.setEpisodeProgress(this.show['dashed_title'], this.episode['label'], playProgress)
-        .subscribe(show => {
-          // console.log('Updated show', show);
-        });
+        .subscribe(show => { });
     }
   }
 
   init() {
     // console.log(this.route.snapshot.params);
-
     this.dbService.getShow(this.route.snapshot.params.show)
       .subscribe(show => {
         this.show = show;
@@ -102,7 +98,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
                 this.filePath = filePath;
                 this.setup();
               });
-
           });
       });
   }
@@ -123,7 +118,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       this.player.firstChild.remove();
     }
 
-    this.player.setAttribute('src', this.filePath);
+    // this.player.setAttribute('src', this.filePath);
 
     // Set keybindings
     document.body.onkeyup = (e) => {
@@ -395,31 +390,36 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
 
   fetchProgress() {
-    this.progressSubscription = interval(1000).subscribe(() => {
-      if (this.episode && this.episode['status'] === 'pending') {
-        const that = this;
-        const t = this.torrentService.getTorrentByHash(this.episode['infoHash']);
-        if (t) {
+    this.progressSubscription = interval(1000)
+      .subscribe(() => {
+        if (this.episode && this.episode['status'] === 'pending') {
+          const t = this.torrentService.getTorrentByHash(this.episode['infoHash']);
+          if (t) {
 
-          console.log('fetchProgress', t.infoHash, t.progress, t.downloadSpeed);
+            // console.log('fetchProgress', t.infoHash, t.progress, t.downloadSpeed);
 
-          if (t['progress'] !== 1) {
-            that.speed = (Math.round(t['downloadSpeed'] / 1048576 * 100) / 100).toString();
-            that.progress = Math.round(t['progress'] * 100);
-            that.cdRef.detectChanges();
-          } else {
-            that.progress = 100;
-            delete that.speed;
-            this.progressSubscription.unsubscribe();
+            if (t['progress'] !== 1) {
+              this.speed = (Math.round(t['downloadSpeed'] / 1048576 * 100) / 100).toString();
+              this.progress = Math.round(t['progress'] * 100);
+              if (this.progress > 10 && !this.player.getAttribute('src')) { this.player.setAttribute('src', this.filePath); }
+              this.cdRef.detectChanges();
+            } else {
+              this.progress = 100;
+              delete this.speed;
+              if (!this.player.getAttribute('src')) {
+                this.player.setAttribute('src', this.filePath);
+                this.progressSubscription.unsubscribe();
+              }
+            }
           }
         }
-      }
-      if (this.episode && this.episode['status'] === 'ready') {
-        this.progress = 100;
-        delete this.speed;
-        this.progressSubscription.unsubscribe();
-      }
-    });
+        if (this.episode && this.episode['status'] === 'ready') {
+          this.progress = 100;
+          delete this.speed;
+          if (!this.player.getAttribute('src')) { this.player.setAttribute('src', this.filePath); }
+          this.progressSubscription.unsubscribe();
+        }
+      });
   }
 
   playNextEpisode() {
