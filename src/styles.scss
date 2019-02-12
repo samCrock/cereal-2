@@ -5,40 +5,24 @@
 html {
   --distance: 50px;
   --bg-color: rgb(58, 70, 76);
-	--fore-color: #ffe000;
-	--primary: #2bbbad;
+  --fore-color: #ffe000;
+  --primary: #2bbbad;
   height: 100%;
 }
 
-html, body {
-	background-color: var(--bg-color);
-	background-size: cover;
-	user-select: none;
-	margin: 0;
-	padding: 0;
-	color: white;
-	font-family: 'Economica', sans-serif;
-	text-rendering: optimizeLegibility;
-	overflow-x: hidden;
-}
-
+html,
 body {
-  position: absolute;
-  background-color: transparent;
+  background-color: var(--bg-color);
+  background-size: cover;
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-family: 'Economica', sans-serif;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
   width: 100%;
-  // height: calc(100vh - 4rem);
-  // top: 4rem;
-}
-
-.bg-container::after {
-  content: "";
-  opacity: 0.5;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  position: absolute;
-  z-index: -1;
+  min-height: 100%;
 }
 
 ::selection {
@@ -46,86 +30,87 @@ body {
 }
 
 :focus {
-    outline: none;
+  outline: none;
 }
 
 input {
-	font-family: 'Economica', sans-serif !important;
+  font-family: 'Economica', sans-serif !important;
 }
 
 .hoverable {
-	cursor: pointer;
+  cursor: pointer;
+  // background: rgba(0, 0, 0, .1);
 }
 
 .material-icons {
-	padding: .2rem;
-	outline-color: transparent;
+  padding: .2rem;
+  outline-color: transparent;
 }
 
 
 .container {
-	margin-top: 4rem;
-  margin-bottom: 2rem;
+  top: 4rem;
+  padding: 6rem 0 4rem 0 !important
 }
 
 
 .btn {
-	border-style: solid !important;
-	border-width: 1px !important;
-	background: transparent !important;
-	font-size: calc(1rem + 1vw) !important;
-	transition: all .4s;
+  border-style: solid !important;
+  border-width: 1px !important;
+  background: transparent !important;
+  font-size: calc(1rem + 1vw) !important;
+  transition: all .4s;
 }
 
 
 // CUSTOM SCROLLBAR
 /* width */
 ::-webkit-scrollbar {
-	width: calc(.2rem + .5vw);
+  width: calc(.2rem + .5vw);
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-	background: #f1f1f1;
+  background: #f1f1f1;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-	background: #26a69a;
+  background: #26a69a;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-	background: #26a69a;
+  background: #26a69a;
 }
 
 .cdk-global-overlay-wrapper {
-	position: absolute;
-    top: 0;
-    width: 100%;
-    height: stretch;
-    background: rgba(0,0,0,.6);
-    z-index: 999999999;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: stretch;
+  background: rgba(0, 0, 0, .6);
+  z-index: 999999999;
 }
 
 .cdk-overlay-pane {
-	position: relative !important;
-	top: 40vh;
-	margin: auto;
-	background: rgb(58, 70, 76);
+  position: relative !important;
+  top: 40vh;
+  margin: auto;
+  background: rgb(58, 70, 76);
 }
 
 app-show {
-	margin-top: 4rem;
+  margin-top: 4rem;
   width: 100%;
 }
 
 #splash {
-	background-image: url('assets/cereal-bkg.png');
-	height: calc(100vh - 4rem);
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: contain;
+  background-image: url('assets/cereal-bkg.png');
+  height: calc(100vh - 4rem);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 @media only screen and (min-width: 993px) {
@@ -139,9 +124,3 @@ app-show {
     width: 95% !important;
   }
 }
-
-
-
-
-
-

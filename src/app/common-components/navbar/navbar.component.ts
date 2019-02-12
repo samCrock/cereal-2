@@ -39,12 +39,12 @@ export class NavbarComponent implements OnInit {
         this.currentRoute = val['url'];
         if (val['url'].indexOf('/play') > - 1) {
           this.enabled = false;
-          document.body.style.height = '100%';
-          document.body.style.top = '0';
+          // document.body.style.height = '100%';
+          // document.body.style.top = '0';
         } else {
           this.enabled = true;
-          document.body.style.height = 'calc(100vh - 4rem)';
-          document.body.style.top = '4rem';
+          // document.body.style.height = 'calc(100vh - 4rem)';
+          // document.body.style.top = '4rem';
         }
       }
     });

@@ -1,6 +1,3 @@
-.show_header{
-  margin-top: calc(1vw + 1rem);
-}
 
 .poster_container {
 	margin: auto;
@@ -11,7 +8,6 @@
 
 .card {
 	cursor: pointer;
-	// margin: 1vw;
 	margin: auto;
 	background-color: transparent;
 	width: calc(18vw);
@@ -21,7 +17,6 @@
 	background-size: cover;
 	border-radius: 4px;
 	background-repeat: no-repeat;
-	// background-position-x: -4px;
 	img {
 		border-radius: 4px;
 	}
@@ -48,7 +43,7 @@
 
 #network {
 	margin: 0 0;
-	font-size: calc(1.6rem + 1vw);
+	font-size: calc(1.4rem + 1vw);
 }
 
 .genres {
@@ -72,6 +67,10 @@
 #overview {
 	font-size: calc(.8rem + 1vw);
 	line-height: calc(1rem + 1vw);
+	width: 100%;
+  // white-space: nowrap;
+  // overflow: hidden;
+  // text-overflow: ellipsis;
 }
 
 #player {

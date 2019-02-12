@@ -17,7 +17,6 @@ export class ShowComponent implements OnInit, OnDestroy {
   public show: {};
   public episodes = [];
   public current_season: number;
-  public alive: boolean;
   public sanitizedTrailer;
   public openedTrailer = false;
   public loading: boolean;
@@ -27,11 +26,8 @@ export class ShowComponent implements OnInit, OnDestroy {
     public navbarService: NavbarService,
     public dbService: DbService,
     public route: ActivatedRoute,
-    public sanitizer: DomSanitizer,
-    private cdRef: ChangeDetectorRef
-  ) {
-    this.alive = true;
-  }
+    public sanitizer: DomSanitizer
+  ) { }
 
   ngOnInit() {
     window.scrollTo(0, 0);

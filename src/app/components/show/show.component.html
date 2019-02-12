@@ -1,20 +1,25 @@
 <app-page-loader [display]="loading"></app-page-loader>
 
-<app-show-preview [show]="show"></app-show-preview>
+
 <div class="container" @fadeItems *ngIf="show">
+  <app-show-preview [show]="show"></app-show-preview>
   <h5 class="center-align">Season {{ current_season }}</h5>
   <div fxLayout="row" fxLayoutAlign="center center" class="navigation_row">
     <div class="center-align">
-      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.current_season == 1 }" (click)="navigate_first()">skip_previous</i>
+      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.current_season == 1 }"
+        (click)="navigate_first()">skip_previous</i>
     </div>
     <div class="center-align">
-      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.current_season == 1 }" (click)="navigate_previous()">fast_rewind</i>
+      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.current_season == 1 }"
+        (click)="navigate_previous()">fast_rewind</i>
     </div>
     <div class="center-align">
-      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.current_season == this.show['seasons'] }" (click)="navigate_next()">fast_forward</i>
+      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.current_season == this.show['seasons'] }"
+        (click)="navigate_next()">fast_forward</i>
     </div>
     <div class="center-align">
-      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.current_season == this.show['seasons'] }" (click)="navigate_last()">skip_next</i>
+      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.current_season == this.show['seasons'] }"
+        (click)="navigate_last()">skip_next</i>
     </div>
   </div>
 
@@ -24,6 +29,7 @@
 
 
 <div *ngIf="show && openedTrailer" class="trailer_container" (click)="closeTrailer()">
-  <iframe id="player" [src]='getTrailer()' width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>
-		</iframe>
+  <iframe id="player" [src]='getTrailer()' width="640" height="360" frameborder="0" webkitallowfullscreen
+    mozallowfullscreen allowfullscreen>
+  </iframe>
 </div>

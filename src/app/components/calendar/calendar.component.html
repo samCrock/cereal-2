@@ -1,9 +1,9 @@
 <app-page-loader [display]="loading"></app-page-loader>
 
-<div *ngIf="calendar && calendar.length" fxLayout="column" class="home-main">
-	<div *ngFor="let day of calendar; let day_i = index;" fxLayout="column">
+<div *ngIf="calendar && calendar.length" fxLayout="column" class="container">
+	<div *ngFor="let day of calendar; let day_i = index;" fxLayout="column" class="days_container">
 
-		<div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="2vw" class="row_container">
+		<div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="2vw">
 			<div fxLayout="column" fxLayoutAlign="center" class="date_widget">
 				<span class="date_number center-align">{{ formatMonthDate(day.date) }}</span>
 				<span class="date_label center-align">{{ formatWeekDate(day.date) }}</span>

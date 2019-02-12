@@ -1,20 +1,11 @@
 @import "~materialize-css/sass/materialize";
 
 
-.home-main {
-	// padding-bottom: calc(4rem + 5vw);
-	padding: 0 5vw 10vw 5vw;
-}
-
 .col {
 	margin: auto;
 }
 
-.container {
-	margin-top: 1rem;
-}
-
-.row_container {
+.days_container:not(:first-child) {
 	margin-top: 4rem;
 }
 
