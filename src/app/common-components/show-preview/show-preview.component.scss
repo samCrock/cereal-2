@@ -1,6 +1,7 @@
 
 .poster_container {
 	margin: auto;
+	margin-left: 0;
 	padding-right: 2vw;
 	border-radius: 4px;
 	background-size: cover;
@@ -68,9 +69,6 @@
 	font-size: calc(.8rem + 1vw);
 	line-height: calc(1rem + 1vw);
 	width: 100%;
-  // white-space: nowrap;
-  // overflow: hidden;
-  // text-overflow: ellipsis;
 }
 
 #player {

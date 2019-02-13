@@ -1,4 +1,4 @@
-<div @fadeItems *ngIf="show" fxLayout="row" fxLayoutGap="2vw" class="show_header">
+<div @fadeItems *ngIf="show" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2vw" class="show_header">
   <div class="poster_container" *ngIf="!showMore" [routerLink]="['/show', show.dashed_title]">
     <div class="card" [ngStyle]="{'background-image': 'url(' + (show.poster)  + ')'}"></div>
   </div>
