@@ -84,49 +84,51 @@ export class SubsService {
     }
   }
 
-  retrieveSubs(show, ep_label, dn) {
-    return Observable.create(observer => {
+  retrieveSubs(show, epLabel, dn): Observable<Array<any>> {
+    return new Observable(observer => {
       // dn = dn.replace(/'/g, ' ');
-      const season = parseInt(ep_label.substring(1, 3), 10);
+      const season = parseInt(epLabel.substring(1, 3), 10);
       const url = 'https://subscene.com/subtitles/title?q=' + encodeURI(show['title']);
       console.log(url);
       return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
         .subscribe(response => {
           const $ = cheerio.load(response, { _useHtmlParser2: true });
           const results = [];
-          let show_index;
+          let showIndex;
           $('.title').filter(t => {
             if ($('.title')[t].children[1].children[0].data.indexOf(show['title'] + ' - ') > - 1) {
-              const s_season = $('.title')[t].children[1].children[0].data.split(show['title'] + ' - ')[1].trim().split(' Season')[0];
-              if (s_season.toLowerCase() === this.convertNumberToOrdinal(season)) {
-                show_index = t;
+              const sSeason = $('.title')[t].children[1].children[0].data.split(show['title'] + ' - ')[1].trim().split(' Season')[0];
+              if (sSeason.toLowerCase() === this.convertNumberToOrdinal(season)) {
+                showIndex = t;
               }
             }
           });
-          // console.log('Subs data', show_index, $('.title')[show_index]);
-          if (show_index === undefined) { return; }
-          return this.http.get<any[]>('https://subscene.com' + $('.title')[show_index].children[1].attribs.href,
+          // console.log('Subs data', showIndex, $('.title')[showIndex]);
+          if (showIndex === undefined) {
+            if ($('.title')[1].children) { showIndex = 1; } else { return; }
+          }
+          return this.http.get<any[]>('https://subscene.com' + $('.title')[showIndex].children[1].attribs.href,
             { responseType: 'text' as 'json' })
             .subscribe(response2 => {
               const _$ = cheerio.load(response2, { _useHtmlParser2: true });
               _$('.a1').map((i, element) => {
-                const sub_name = element.children[1].children[3].children[0].data.trim();
+                const subName = element.children[1].children[3].children[0].data.trim();
                 const link = element.children[1].attribs.href;
                 const lang = element.children[1].children[1].children[0].data.trim();
 
 
-                if (results.length < 6 && lang === 'English' && sub_name.indexOf(ep_label) > -1) {
-                  console.log(sub_name, lang, ep_label);
-                  const similarity = this.similarity(dn, sub_name);
+                if (results.length < 6 && lang === 'English' && subName.indexOf(epLabel) > -1) {
+                  console.log(subName, lang, epLabel);
+                  const similarity = this.similarity(dn, subName);
                   if (similarity > 0.7) {
-                    console.log('Sub candidate', sub_name);
+                    console.log('Sub candidate', subName);
                     results.push({
-                      dn: dn,
+                      dn,
                       i: i.toString(),
-                      sub: sub_name,
-                      link: link,
-                      lang: lang,
-                      similarity: similarity
+                      sub: subName,
+                      link,
+                      lang,
+                      similarity
                     });
                   }
                 }
@@ -146,53 +148,51 @@ export class SubsService {
 
   downloadSub(subs, episodePath): Observable<any> {
     return Observable.create(observer => {
-      const download_url = 'https://subscene.com' + subs['link'];
-      return this.http.get<any[]>(download_url, {
-        responseType: 'text' as 'json'
-      })
-        .subscribe(_response => {
-          const _$ = cheerio.load(_response, { _useHtmlParser2: true });
+      const downloadUrl = 'https://subscene.com' + subs['link'];
+      return this.http.get<any[]>(downloadUrl, { responseType: 'text' as 'json' })
+        .subscribe(resultsPage => {
+          const _$ = cheerio.load(resultsPage, { _useHtmlParser2: true });
           const link = 'https://subscene.com' + _$('.download')['0'].children[1]['attribs'].href;
 
           return this.http.get(link, { responseType: 'arraybuffer' })
-            .subscribe(__response => {
-              let _path = this.path.dirname(episodePath);
-              // console.log('_path', _path);
+            .subscribe(detailsPage => {
+              let subsPath = this.path.dirname(episodePath);
+              // console.log('subsPath', subsPath);
               const that = this;
-              this.fsExtra.readdir(_path, function (err, files) {
+              this.fsExtra.readdir(subsPath, (err, files) => {
                 if (files && files.length > 0) {
-                  _path = that.path.join(_path, files[0]);
+                  subsPath = that.path.join(subsPath, files[0]);
                 }
               });
 
-              this.fsExtra.appendFileSync(this.path.join(_path, subs['sub'] + '(' + subs['i'] + ')') + '.zip',
-                new Buffer(__response), err => {
+              this.fsExtra.appendFileSync(this.path.join(subsPath, subs['sub'] + '(' + subs['i'] + ')') + '.zip',
+                new Buffer(detailsPage), err => {
                   if (err) {
                     console.log('Error creating zip file', err);
                   }
                 });
 
-              const zip_path = this.path.join(_path, subs['sub'] + '(' + subs['i'] + ')') + '.zip';
-              const unzipper = new this.zip(zip_path);
+              const zipPath = this.path.join(subsPath, subs['sub'] + '(' + subs['i'] + ')') + '.zip';
+              const unzipper = new this.zip(zipPath);
 
-              unzipper.on('extract', function (log) {
+              unzipper.on('extract', log => {
                 // console.log('Finished extracting', log);
-                // const srtPath = zip_path.substr(0,  zip_path.length - 7) + '.srt';
+                // const srtPath = zipPath.substr(0,  zipPath.length - 7) + '.srt';
                 const srtPath = that.path.join(that.path.dirname(episodePath), log[0]['deflated']);
                 observer.next(srtPath);
-                that.fsExtra.remove(zip_path, err => {
+                that.fsExtra.remove(zipPath, err => {
                   if (err) {
-                    console.log('Deleting zip:', zip_path, err);
+                    console.log('Deleting zip:', zipPath, err);
                   }
                 });
               });
 
-              unzipper.on('error', function (err) {
+              unzipper.on('error', (err) => {
                 console.log('Caught an error', err);
               });
 
               unzipper.extract({
-                path: _path
+                path: subsPath
               });
 
             });

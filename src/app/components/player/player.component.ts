@@ -51,7 +51,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   private progressSubscription: Subscription;
   private routeSubscription: Subscription;
   public nextEpisode;
-  public hasSubs = false;
+  public subtitlesPaths = [];
 
   constructor(
     public torrentService: TorrentService,
@@ -149,7 +149,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     const that = this;
 
     this.fetchProgress();
-    this.downloadNext();
 
     this.player = document.getElementById('player');
 
@@ -165,9 +164,14 @@ export class PlayerComponent implements OnInit, OnDestroy {
       that.toggle_fullscreen();
     });
 
-    // Download subs
-    if (!this.hasSubs) {
+    // Download or load subs
+    console.log('Local subs', this.subtitlesPaths);
+    if (this.subtitlesPaths.length === 0) {
       this.downloadSubs();
+    } else {
+      this.subtitlesPaths.forEach(sPath => {
+        this.addSubs(sPath);
+      })
     }
 
     this.loading = false;
@@ -255,35 +259,33 @@ export class PlayerComponent implements OnInit, OnDestroy {
       );
       const filesCheckInterval = setInterval(() => {
         // console.log('Check files', filePath, that.fs.existsSync(filePath));
-        if (that.fs.existsSync(filePath)) {
-          let files = that.fs.readdirSync(filePath);
+        if (this.fs.existsSync(filePath)) {
+          let files = this.fs.readdirSync(filePath);
           let resolvedFilePath = '';
           files.forEach(file => {
             let ext = file.substring(file.length - 3, file.length);
             if (ext === 'mkv' || ext === 'mp4' || ext === 'avi') {
-              that.filePath = that.path.join(filePath, file);
-              // console.log('Video found ->', that.filePath);
+              this.filePath = this.path.join(filePath, file);
               clearInterval(filesCheckInterval);
-              resolvedFilePath = that.filePath;
+              resolvedFilePath = this.filePath;
+              // console.log('Video found ->', this.filePath);
             }
-            if (ext === 'srt' || ext === 'vtt') {
-              this.hasSubs = true;
-            }
-            if (
-              that.fs.statSync(that.path.join(filePath, file)).isDirectory()
-            ) {
-              files = that.fs.readdirSync(that.path.join(filePath, file));
+
+            if (ext === 'srt') { this.subtitlesPaths.push(this.path.join(filePath, file)); }
+
+            if (this.fs.statSync(this.path.join(filePath, file)).isDirectory()) {
+              files = this.fs.readdirSync(this.path.join(filePath, file));
               files.forEach(file2 => {
                 ext = file2.substring(file2.length - 3, file2.length);
                 if (ext === 'mkv' || ext === 'mp4') {
-                  that.filePath = that.path.join(filePath, file, file2);
-                  // console.log('Video found ->', that.filePath);
+                  this.filePath = this.path.join(filePath, file, file2);
+                  resolvedFilePath = this.filePath;
                   clearInterval(filesCheckInterval);
-                  resolvedFilePath = that.filePath;
+                  // console.log('Video found ->', this.filePath);
                 }
-                if (ext === 'srt' || ext === 'vtt') {
-                  this.hasSubs = true;
-                }
+
+                if (ext === 'srt') { this.subtitlesPaths.push(this.path.join(filePath, file, file2)); }
+
               });
             }
           });
@@ -411,6 +413,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }, 10);
   }
 
+  hideControls() {
+    const hide = (this.idleTime > 30 && !this.showSubs);
+    document.body.style.cursor = hide ? 'none' : 'auto';
+    return hide;
+  }
+
   toggle_play() {
     this.lastMove = Date.now();
     if (this.isPlaying) {
@@ -485,6 +493,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
             }
             this.cdRef.detectChanges();
           } else {
+            this.downloadNext();
             this.progress = 100;
             delete this.speed;
             if (!this.player.getAttribute('src')) {
@@ -514,7 +523,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   downloadNext() {
-    console.log('Preparing next episode download..');
+    // console.log('Preparing next episode download..');
     const currentSeasonIndex = parseInt(this.episode['label'].split('E')[0].substring(1, 3), 10);
     const currentSeason = this.show['Seasons'][currentSeasonIndex];
     currentSeason.forEach((ep, index) => {
@@ -527,6 +536,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
     if (!this.nextEpisode || moment(this.nextEpisode.date, 'YYYY-MM-DD').diff(moment(), 'days') > 1) {
       delete this.nextEpisode;
       console.log('This is the last episode available');
+      return;
+    }
+    if (this.nextEpisode && this.nextEpisode.status === 'ready' || this.nextEpisode.status === 'pending') {
       return;
     }
 
