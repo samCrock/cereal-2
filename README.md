@@ -1,4 +1,4 @@
-[![Angular Logo](./logo-angular.jpg)](https://angular.io/) [![Electron Logo](./logo-electron.jpg)](https://electron.atom.io/)
+![Cereal Background]('./src/assets/cereal-bkg.png')
 <!-- 
 [![Travis Build Status][build-badge]][build]
 [![Dependencies Status][dependencyci-badge]][dependencyci]
@@ -8,23 +8,6 @@
 [![Watch on GitHub][github-watch-badge]][github-watch]
 [![Star on GitHub][github-star-badge]][github-star]
 [![Tweet][twitter-badge]][twitter]
-
-# Introduction
-
-Bootstrap and package your project with Angular 5(+) and Electron (Typescript + SASS + Hot Reload) for creating Desktop applications.
-
-Currently runs with:
-
-- Angular v5.2.5
-- Angular-CLI v1.7.2
-- Electron v1.8.2
-- Electron Builder v20.0.4
-
-With this sample, you can :
-
-- Run your app in a local development environment with Electron & Hot reload
-- Run your app in a production environment
-- Package your app into an executable file for Linux, Windows & Mac
  -->
 ## Getting Started
 
@@ -44,8 +27,6 @@ npm install
 
 - **in a terminal window** -> npm run start  
 
-
-
 ``` bash
 npm install --save-dev electron-rebuild
 
@@ -55,3 +36,13 @@ npm install --save-dev electron-rebuild
 # On Windows if you have trouble, try:
 .\node_modules\.bin\electron-rebuild.cmd
 ```
+
+## Deploy steps
+
+* Commit changes
+* Bump version ``` npm run pre-deploy  ```  
+* Build ``` npm run electron:windows  ```
+* Move generated exe from ``` app-build ``` to another folder and rename it as 'Cereal_setup.exe'  
+* ``` npm checkout win-build ```
+* Replace previously saved 'Cereal_setup.exe' to current folder
+* Commit update and checkout back to master branch 
