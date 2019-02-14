@@ -23,9 +23,11 @@ Install dependencies with npm :
 npm install
 ```
 
-## To build for development
+``` bash
+npm start
+```
 
-- **in a terminal window** -> npm run start  
+## To build for development
 
 ``` bash
 npm install --save-dev electron-rebuild
@@ -39,10 +41,10 @@ npm install --save-dev electron-rebuild
 
 ## Deploy steps
 
-* Commit changes
+* Edit & commit changes
 * Bump version ``` npm run pre-deploy  ```  
 * Build ``` npm run electron:windows  ```
-* Move generated exe from ``` app-build ``` to another folder and rename it as 'Cereal_setup.exe'  
+* Move generated .exe from ``` app-build ``` to another folder and rename it as *Cereal_Setup.exe*  
 * ``` npm checkout win-build ```
-* Replace previously saved 'Cereal_setup.exe' to current folder
+* Replace previously saved *Cereal_Setup.exe* to current folder
 * Commit update and checkout back to master branch 
