@@ -5,8 +5,6 @@ $poster_w: 18vw;
 $expanded_poster_w: 26vw;
 
 .card {
-	// 182 x 268 ex
-	// 300 x 450
 	cursor: pointer;
 	margin: 1vw;
 	background-color: transparent;
@@ -27,8 +25,6 @@ $expanded_poster_w: 26vw;
 	z-index: 1;
 	width: $poster_w;
 	height: calc(#{$poster_w} * 1.5);
-	// max-width: 220px;
-	// max-height: 330px;
 	background-color: transparent;
 	position: absolute;
 	background-size: cover;
