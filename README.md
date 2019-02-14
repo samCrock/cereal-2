@@ -1,4 +1,4 @@
-![Cereal Background]('src/assets/cereal-bkg.png')
+![Cereal Background](src/assets/cereal-bkg.png)
 <!-- 
 [![Travis Build Status][build-badge]][build]
 [![Dependencies Status][dependencyci-badge]][dependencyci]
