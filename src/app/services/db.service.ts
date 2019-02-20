@@ -10,23 +10,22 @@ export class DbService {
   constructor(private torrentService: TorrentService) {
     let db;
     const request = window.indexedDB.open('CerealDB', 1);
-    request.onerror = function () {
-    };
-    request.onupgradeneeded = function (event) {
+    request.onerror = () => { };
+    request.onupgradeneeded = event => {
       db = event.target['result'];
       console.log('onupgradeneeded', db);
 
       // Shows store
-      const shows_objectStore = db.createObjectStore('shows', { keyPath: 'dashed_title' });
-      shows_objectStore.createIndex('title', 'title', { unique: false });
-      shows_objectStore.transaction.oncomplete = function () {
+      const showsObjectStore = db.createObjectStore('shows', { keyPath: 'dashed_title' });
+      showsObjectStore.createIndex('title', 'title', { unique: false });
+      showsObjectStore.transaction.oncomplete = () => {
         db['transaction']('shows', 'readwrite').objectStore('shows');
       };
       // Torrents store
-      const torrents_objectStore = db.createObjectStore('torrents', { keyPath: 'infoHash' });
-      torrents_objectStore.createIndex('episode', 'episode', { unique: false });
-      torrents_objectStore.createIndex('show', 'show', { unique: false });
-      torrents_objectStore.transaction.oncomplete = function () {
+      const torrentsObjectStore = db.createObjectStore('torrents', { keyPath: 'infoHash' });
+      torrentsObjectStore.createIndex('episode', 'episode', { unique: false });
+      torrentsObjectStore.createIndex('show', 'show', { unique: false });
+      torrentsObjectStore.transaction.oncomplete = () => {
         db['transaction']('torrents', 'readwrite').objectStore('torrents');
       };
     };
@@ -37,30 +36,29 @@ export class DbService {
     return new Observable(observer => {
       let db;
       const request = window.indexedDB.open('CerealDB', 1);
-      request.onerror = function (event) {
-      };
-      request.onupgradeneeded = function (event) {
+      request.onerror = event => { };
+      request.onupgradeneeded = event => {
         db = event.target['result'];
         console.log('onupgradeneeded', db);
 
         // Shows store
-        const shows_objectStore = db.createObjectStore('shows', { keyPath: 'dashed_title' });
-        shows_objectStore.createIndex('title', 'title', { unique: false });
-        shows_objectStore.transaction.oncomplete = function () {
+        const showsObjectStore = db.createObjectStore('shows', { keyPath: 'dashed_title' });
+        showsObjectStore.createIndex('title', 'title', { unique: false });
+        showsObjectStore.transaction.oncomplete = () => {
           db['transaction']('shows', 'readwrite').objectStore('shows');
         };
         // Torrents store
-        const torrents_objectStore = db.createObjectStore('torrents', { keyPath: 'infoHash' });
-        torrents_objectStore.createIndex('episode', 'episode', { unique: false });
-        torrents_objectStore.createIndex('show', 'show', { unique: false });
-        torrents_objectStore.transaction.oncomplete = function () {
+        const torrentsObjectStore = db.createObjectStore('torrents', { keyPath: 'infoHash' });
+        torrentsObjectStore.createIndex('episode', 'episode', { unique: false });
+        torrentsObjectStore.createIndex('show', 'show', { unique: false });
+        torrentsObjectStore.transaction.oncomplete = () => {
           db['transaction']('torrents', 'readwrite').objectStore('torrents');
         };
       };
-      request.onsuccess = function (event) {
+      request.onsuccess = event => {
         console.log('onsuccess', event);
       };
-      request.onsuccess = function (event) {
+      request.onsuccess = event => {
         return observer.next(event);
       };
     });
@@ -71,9 +69,8 @@ export class DbService {
       db = event.target['result'];
       const objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
       const request = objectStore.add(show);
-      request.onerror = function (event) {
-      };
-      request.onsuccess = function (event) {
+      request.onerror = event => { };
+      request.onsuccess = event => {
         console.log('Show added');
       };
     });
@@ -85,10 +82,10 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['shows']).objectStore('shows');
         const request = objectStore.get(dashed_title);
-        request.onerror = function (event) {
+        request.onerror = event => {
           return observer.error();
         };
-        request.onsuccess = function (event) {
+        request.onsuccess = event => {
           if (request.result) {
             return observer.next(request.result);
           } else {
@@ -105,10 +102,10 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['shows']).objectStore('shows');
         const request = objectStore.getAll();
-        request.onerror = function (event) {
+        request.onerror = event => {
           return observer.error();
         };
-        request.onsuccess = function (event) {
+        request.onsuccess = event => {
           if (request.result) {
             return observer.next(request.result);
           } else {
@@ -125,13 +122,12 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
         const request = objectStore.get(dashed_title);
-        request.oncomplete = function (event) {
+        request.oncomplete = event => {
           console.log('All done!');
         };
-        request.onerror = function (event) {
-        };
+        request.onerror = event => { };
 
-        request.onsuccess = function (event) {
+        request.onsuccess = event => {
           if (request.result) {
             let Seasons = request.result.Seasons;
             if (!Seasons) {
@@ -140,10 +136,10 @@ export class DbService {
             Seasons[s_number] = season;
             request.result.Seasons = Seasons;
             const requestUpdate = objectStore.put(request.result);
-            requestUpdate.onerror = function () {
+            requestUpdate.onerror = () => {
               return observer.error();
             };
-            requestUpdate.onsuccess = function () {
+            requestUpdate.onsuccess = () => {
               return observer.next(request.result);
             };
           }
@@ -158,13 +154,12 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
         const request = objectStore.get(episode.dashed_title);
-        request.oncomplete = function (event) {
+        request.oncomplete = event => {
           console.log('All done!');
         };
-        request.onerror = function (event) {
-        };
+        request.onerror = event => { };
 
-        request.onsuccess = function (event) {
+        request.onsuccess = event => {
           const s = parseInt(episode.label.substring(1, 3), 10);
           const e = parseInt(episode.label.substring(4), 10) - 1;
           if (request.result) {
@@ -178,10 +173,10 @@ export class DbService {
             request.result.Seasons[s][e].dn = episode.dn;
             request.result.Seasons[s][e].infoHash = episode.infoHash;
             const requestUpdate = objectStore.put(request.result);
-            requestUpdate.onerror = function () {
+            requestUpdate.onerror = () => {
               return observer.error();
             };
-            requestUpdate.onsuccess = function () {
+            requestUpdate.onsuccess = () => {
               return observer.next(request.result.Seasons[s][e]);
             };
           }
@@ -196,12 +191,12 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
         const request = objectStore.get(dashed_title);
-        request.oncomplete = function (event) {
+        request.oncomplete = event => {
           console.log('All done!');
         };
-        request.onerror = function (event) { };
+        request.onerror = event => { };
 
-        request.onsuccess = function (event) {
+        request.onsuccess = event => {
           const s = parseInt(ep_label.substring(1, 3), 10);
           const e = parseInt(ep_label.substring(4), 10) - 1;
           if (request.result) {
@@ -222,13 +217,12 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
         const request = objectStore.get(dashed_title);
-        request.oncomplete = function (event) {
+        request.oncomplete = event => {
           console.log('All done!');
         };
-        request.onerror = function (event) {
-        };
+        request.onerror = event => { };
 
-        request.onsuccess = function (event) {
+        request.onsuccess = event => {
           const s = parseInt(ep_label.substring(1, 3), 10);
           const e = parseInt(ep_label.substring(4), 10) - 1;
           if (request.result) {
@@ -239,10 +233,10 @@ export class DbService {
             request.result['watching_season'] = s;
             request.result.Seasons[s][e].play_progress = play_progress;
             const requestUpdate = objectStore.put(request.result);
-            requestUpdate.onerror = function () {
+            requestUpdate.onerror = () => {
               return observer.error();
             };
-            requestUpdate.onsuccess = function () {
+            requestUpdate.onsuccess = () => {
               return observer.next(request.result);
             };
           }
@@ -279,9 +273,9 @@ export class DbService {
           request.result['watching_season'] = Number(season);
 
           const requestUpdate = objectStore.put(request.result);
-          requestUpdate.onerror = function () {
+          requestUpdate.onerror = () => {
           };
-          requestUpdate.onsuccess = function () {
+          requestUpdate.onsuccess = () => {
             console.log('Torrent added to shows store');
             return observer.next(request.result);
           };
@@ -297,10 +291,10 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['torrents'], 'readwrite').objectStore('torrents');
         const request = objectStore.get(infoHash);
-        request.onerror = function (event) {
+        request.onerror = event => {
           return observer.error();
         };
-        request.onsuccess = function (event) {
+        request.onsuccess = event => {
           if (request.result) {
             return observer.next(request.result);
           } else {
@@ -318,10 +312,10 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['torrents'], 'readwrite').objectStore('torrents');
         const request = objectStore.delete(infoHash);
-        request.onerror = function (event) {
+        request.onerror = event => {
           return observer.error();
         };
-        request.onsuccess = function (event) {
+        request.onsuccess = event => {
           console.log('DB deleteTorrent');
           return observer.next();
         };
@@ -335,10 +329,10 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
         const request = objectStore.delete(dashed_title);
-        request.onerror = function (event) {
+        request.onerror = event => {
           return observer.error();
         };
-        request.onsuccess = function (event) {
+        request.onsuccess = event => {
           return observer.next();
         };
       });
@@ -351,12 +345,11 @@ export class DbService {
         db = event.target['result'];
         const s_objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
         const s_request = s_objectStore.get(episode_torrent['dashed_title']);
-        s_request.onerror = function (event) {
-        };
-        s_request.onsuccess = function (event) {
+        s_request.onerror = event => { };
+        s_request.onsuccess = event => {
 
-          const season = episode_torrent['episode_label'].substring(1, 3),
-            episode = episode_torrent['episode_label'].substring(4, 6);
+          const season = episode_torrent['episode_label'].substring(1, 3);
+          const episode = episode_torrent['episode_label'].substring(4, 6);
           delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].status;
           delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].infoHash;
           delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].dn;
@@ -364,9 +357,9 @@ export class DbService {
           delete s_request.result['Seasons'][Number(season)][Number(episode) - 1].play_progress;
 
           const requestUpdate = s_objectStore.put(s_request.result);
-          requestUpdate.onerror = function () {
+          requestUpdate.onerror = () => {
           };
-          requestUpdate.onsuccess = function () {
+          requestUpdate.onsuccess = () => {
             return observer.next();
           };
         };
@@ -380,11 +373,10 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['torrents'], 'readwrite').objectStore('torrents');
         const request = objectStore.getAll();
-        request.onerror = function (event) {
-        };
-        request.onsuccess = function (event) {
-          const torrents = request.result,
-            pending = [];
+        request.onerror = event => { };
+        request.onsuccess = event => {
+          const torrents = request.result;
+          const pending = [];
           if (torrents && torrents.length > 0) {
             torrents.forEach(t => {
               if (t['status'] === 'pending') {
@@ -408,9 +400,8 @@ export class DbService {
         db = event.target['result'];
         const objectStore = db['transaction'](['torrents'], 'readwrite').objectStore('torrents');
         const request = objectStore.getAll();
-        request.onerror = function (event) {
-        };
-        request.onsuccess = function (event) {
+        request.onerror = event => { };
+        request.onsuccess = event => {
           const torrents = request.result;
           if (request.result) {
             return observer.next(torrents);
@@ -428,18 +419,16 @@ export class DbService {
         db = event.target['result'];
         const t_objectStore = db['transaction'](['torrents'], 'readwrite').objectStore('torrents');
         const t_request = t_objectStore.get(infoHash);
-        t_request.onerror = function (event) {
-        };
-        t_request.onerror = function (event) {
-        };
-        t_request.onsuccess = function (event) {
+        t_request.onerror = event => { };
+        t_request.onerror = event => { };
+        t_request.onsuccess = event => {
           if (t_request.result) {
             t_request.result.status = 'ready';
             const requestUpdate = t_objectStore.put(t_request.result);
-            requestUpdate.onerror = function () {
+            requestUpdate.onerror = () => {
               return observer.error();
             };
-            requestUpdate.onsuccess = function () {
+            requestUpdate.onsuccess = () => {
               return observer.next(t_request.result);
             };
           }
@@ -454,11 +443,10 @@ export class DbService {
         db = event.target['result'];
         const s_objectStore = db['transaction'](['shows'], 'readwrite').objectStore('shows');
         const s_request = s_objectStore.get(episode_torrent['dashed_title']);
-        s_request.onerror = function (event) {
-        };
-        s_request.onsuccess = function (event) {
-          const season = episode_torrent['episode_label'].substring(1, 3),
-            episode = episode_torrent['episode_label'].substring(4, 6);
+        s_request.onerror = event => { };
+        s_request.onsuccess = event => {
+          const season = episode_torrent['episode_label'].substring(1, 3);
+          const episode = episode_torrent['episode_label'].substring(4, 6);
           s_request.result['Seasons'][Number(season)][Number(episode) - 1].status = 'ready';
           console.log('Setting episode ready', episode_torrent);
 
@@ -466,7 +454,7 @@ export class DbService {
           requestUpdate.onerror = function (err) {
             console.error('readyEpisode', err);
           };
-          requestUpdate.onsuccess = function () {
+          requestUpdate.onsuccess = () => {
             console.log('Torrent is ready');
             return observer.next(s_request.result);
           };

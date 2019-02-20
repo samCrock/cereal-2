@@ -528,7 +528,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     const currentSeason = this.show['Seasons'][currentSeasonIndex];
     currentSeason.forEach((ep, index) => {
       if (ep['label'] === this.episode['label'] && index < currentSeason.length - 1) {
-        // console.log('Current episode has next:', ep);
+        console.log('Current episode has next:', ep);
         this.nextEpisode = currentSeason[index + 1];
       }
     });
