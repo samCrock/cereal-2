@@ -7,8 +7,6 @@ import * as magnet from 'magnet-uri';
 import { ChangeDetectorRef } from '@angular/core';
 import { interval } from 'rxjs/internal/observable/interval';
 import { Subscription } from 'rxjs';
-
-
 @Component({
   selector: 'app-episode',
   templateUrl: './episode.component.html',
@@ -268,21 +266,22 @@ export class EpisodeComponent implements OnInit, OnDestroy {
               delete this.progress;
               delete this.speed;
               this.episode = ep;
+              this.episode['dashed_title'] = this.show['dashed_title'];
               this.setup();
             });
         });
 
-      });
+        // delete from torrent client
+        this.dbService.getTorrents().subscribe(torrents => {
+          torrents.forEach(t => {
+            if (t['dashed_title'] === episode['dashed_title'] && t['episode_label'] && episode['episode_label']) {
+              this.dbService.deleteTorrent(t.infoHash).subscribe();
+              this.torrentService.removeTorrent(t.infoHash).subscribe();
+            }
+          });
+        });
 
-    // // delete from torrent client
-    // this.dbService.getTorrents().subscribe(torrents => {
-    //   torrents.forEach(t => {
-    //     if (t['dashed_title'] === episode['dashed_title'] && t['episode_label'] && episode['episode_label']) {
-    //       this.dbService.deleteTorrent(t.infoHash).subscribe();
-    //       this.torrentService.removeTorrent(t.infoHash).subscribe();
-    //     }
-    //   });
-    // });
+      });
 
 
 
