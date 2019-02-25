@@ -31,6 +31,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   public fs = this.electronService.remote.getGlobal('fs');
   public srt2vtt = this.electronService.remote.getGlobal('srt2vtt');
   public remote = this.electronService.remote;
+  public server;
 
   public isPlaying = true;
   public isFullscreen = false;
@@ -118,6 +119,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     if (this.nextEpisode) {
       delete this.nextEpisode;
+    }
+
+    if (this.server) {
+      this.server.close();
     }
   }
 
@@ -355,20 +360,22 @@ export class PlayerComponent implements OnInit, OnDestroy {
       }
 
       setTimeout(() => {
-        const cues = that.player.textTracks[1].cues;
-        if (cues) {
-          Object.keys(cues).forEach(key => {
-            cues[key].snapToLines = false;
-            cues[key].line = 90;
-          });
-        }
-        for (const key in that.player.textTracks) {
-          if (that.player.textTracks.hasOwnProperty(key)) {
-            that.player.textTracks[key].mode = 'hidden';
+        if (that.player && that.player.textTracks) {
+          const cues = that.player.textTracks[1].cues;
+          if (cues) {
+            Object.keys(cues).forEach(key => {
+              cues[key].snapToLines = false;
+              cues[key].line = 90;
+            });
           }
-        }
-        if (that.player.textTracks['1']) {
-          that.player.textTracks['1'].mode = 'showing';
+          for (const key in that.player.textTracks) {
+            if (that.player.textTracks.hasOwnProperty(key)) {
+              that.player.textTracks[key].mode = 'hidden';
+            }
+          }
+          if (that.player.textTracks['1']) {
+            that.player.textTracks['1'].mode = 'showing';
+          }
         }
       }, 200);
     }
@@ -474,6 +481,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
   }
 
+
   fetchProgress() {
     this.progressSubscription = interval(1000).subscribe(() => {
       if (this.episode && this.episode['status'] === 'pending') {
@@ -489,7 +497,16 @@ export class PlayerComponent implements OnInit, OnDestroy {
             ).toString();
             this.progress = Math.round(t['progress'] * 100);
             if (this.progress > 10 && !this.player.getAttribute('src')) {
-              this.player.setAttribute('src', this.filePath);
+              t.files.forEach((file, i) => {
+                if (file.path.endsWith('mkv') || file.path.endsWith('mp4')) {
+                  // create HTTP server for this torrent
+                  this.server = t.createServer();
+                  this.server.listen(3333); // start the server listening to a port
+                  this.player.setAttribute('src', 'http://localhost:3333/' + i + '/' + file.path);
+                  console.log('Server src', 'http://localhost:3333/' + i + '/' + file.path);
+                }
+              });
+              // this.player.setAttribute('src', this.filePath);
             }
             this.cdRef.detectChanges();
           } else {
@@ -509,6 +526,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         if (!this.player.getAttribute('src')) {
           this.player.setAttribute('src', this.filePath);
         }
+        this.downloadNext();
         this.progressSubscription.unsubscribe();
       }
     });
