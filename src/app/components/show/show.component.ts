@@ -46,10 +46,12 @@ export class ShowComponent implements OnInit, OnDestroy {
           this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
             .subscribe(lastSeason => {
               const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
-              this.episodes = Object.assign(lastSeason, dbLastSeason);
               this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
-              this.dbService.addSeason(this.show['dashed_title'], this.current_season, this.episodes).subscribe();
-              this.loading = false;
+              if (dbLastSeason === this.current_season) {
+                this.episodes = Object.assign(lastSeason, dbLastSeason);
+                this.dbService.addSeason(this.show['dashed_title'], this.current_season, this.episodes).subscribe();
+                this.loading = false;
+              }
               this.retrieveSeason();
             });
 
@@ -70,11 +72,11 @@ export class ShowComponent implements OnInit, OnDestroy {
   ngOnDestroy() { }
 
   retrieveSeason() {
-    // console.log('retrieveSeason', this.current_season);
+    console.log('retrieveSeason', this.current_season);
     if (this.show['Seasons'][this.current_season]) {
       console.log('Local', this.current_season, this.show['Seasons'][this.current_season]);
+      this.episodes = this.show['Seasons'][this.current_season];
       this.loading = false;
-      return this.episodes = this.show['Seasons'][this.current_season];
     } else {
       this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.current_season)
         .subscribe(episodes => {
