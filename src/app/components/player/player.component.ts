@@ -159,15 +159,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     // this.player.setAttribute('src', this.filePath);
 
-    // Set keybindings
-    document.body.onkeyup = e => {
-      if (e.keyCode === 32) {
-        that.toggle_play();
-      }
-    };
-    document.getElementById('player').addEventListener('dblclick', () => {
-      that.toggle_fullscreen();
-    });
+    this.keyBindingsSetup();
 
     // Download or load subs
     console.log('Local subs', this.subtitlesPaths);
@@ -400,24 +392,82 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }, 200);
   }
 
+  keyBindingsSetup() {
+    document.body.onkeyup = e => {
+      // Space: toggle play
+      if (e.keyCode === 32) { this.toggle_play(); }
+      // Right arrow: forward 1 sec
+      if (e.keyCode === 39) { this.player.currentTime = this.player.currentTime + 1; }
+      // Left arrow: backward 1 sec
+      if (e.keyCode === 37) { this.player.currentTime = this.player.currentTime - 1; }
+    };
+    // Double click: toggle fullscreen
+    document.getElementById('player').addEventListener('dblclick', () => {
+      this.toggle_fullscreen();
+    });
+  }
+
+  timelineSetup() {
+    const video = document.getElementsByTagName('video')[0];
+    const timeline: HTMLInputElement = document.getElementById(
+      'timeline'
+    ) as HTMLInputElement;
+
+    video.play();
+
+    timeline.addEventListener('change', () => {
+      // Calculate the new time
+      const value: number = parseInt(timeline.value, 10);
+      const time = video.duration * (value / 100);
+      // Update the video time
+      video.currentTime = time;
+    });
+
+    if (this.episode['play_progress']) {
+      console.log('Restoring playback progress', this.episode['play_progress']);
+      timeline.value = this.episode['play_progress'];
+      this.player.currentTime = this.episode['play_progress']
+        ? (this.player.duration / 100) * this.episode['play_progress']
+        : 0;
+    }
+  }
+
+
   // Controls
   controlsLoop() {
     const that = this;
+    // const video = document.getElementsByTagName('video')[0];
+    const timeline: HTMLInputElement = document.getElementById(
+      'timeline'
+    ) as HTMLInputElement;
+    let pressed = false;
+
+    timeline.addEventListener('mousedown', () => {
+      pressed = true;
+    });
+    timeline.addEventListener('mouseup', () => {
+      pressed = false;
+    });
+
     this.loopInterval = setInterval(() => {
       const currentTime = +that.player.currentTime;
-      // const totalTime = +that.player.duration;
-      const minutes =
-        Math.floor(currentTime / 60).toString().length === 1
-          ? '0' + Math.floor(currentTime / 60).toString()
-          : Math.floor(currentTime / 60).toString();
-      const seconds =
-        Math.floor(that.player.currentTime % 60).toString().length === 1
-          ? '0' + Math.floor(currentTime % 60).toString()
-          : Math.floor(currentTime % 60).toString();
+      const totalTime = +that.player.duration;
+      const minutes = Math.floor(currentTime / 60).toString().length === 1
+        ? '0' + Math.floor(currentTime / 60).toString()
+        : Math.floor(currentTime / 60).toString();
+      const seconds = Math.floor(that.player.currentTime % 60).toString().length === 1
+        ? '0' + Math.floor(currentTime % 60).toString()
+        : Math.floor(currentTime % 60).toString();
+
       that.currentTime = minutes + ':' + seconds;
-      that.idleTime =
-        Math.floor(Date.now() / 100) - Math.floor(that.lastMove / 100);
-    }, 10);
+      that.idleTime = Math.floor(Date.now() / 100) - Math.floor(that.lastMove / 100);
+
+
+      const value: number = Math.floor(currentTime / totalTime * 100);
+
+      if (!pressed) { timeline.value = '' + value; }
+
+    }, 100);
   }
 
   hideControls() {
@@ -455,32 +505,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
   isCurrent_episode(epLabel) {
     return epLabel === this.episode['label'];
   }
-
-  timelineSetup() {
-    const video = document.getElementsByTagName('video')[0];
-    const timeline: HTMLInputElement = document.getElementById(
-      'timeline'
-    ) as HTMLInputElement;
-
-    video.play();
-
-    timeline.addEventListener('change', () => {
-      // Calculate the new time
-      const value: number = parseInt(timeline.value, 10);
-      const time = video.duration * (value / 100);
-      // Update the video time
-      video.currentTime = time;
-    });
-
-    if (this.episode['playProgress']) {
-      console.log('Restoring playback progress', this.episode['playProgress']);
-      timeline.value = this.episode['playProgress'];
-      this.player.currentTime = this.episode['playProgress']
-        ? (this.player.duration / 100) * this.episode['playProgress']
-        : 0;
-    }
-  }
-
 
   fetchProgress() {
     this.progressSubscription = interval(1000).subscribe(() => {
