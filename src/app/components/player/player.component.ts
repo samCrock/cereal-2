@@ -396,6 +396,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
     document.body.onkeyup = e => {
       // Space: toggle play
       if (e.keyCode === 32) { this.toggle_play(); }
+      // // Right arrow: forward 1 sec
+      // if (e.keyCode === 39) { this.player.currentTime = this.player.currentTime + 1; }
+      // // Left arrow: backward 1 sec
+      // if (e.keyCode === 37) { this.player.currentTime = this.player.currentTime - 1; }
+    };
+    document.body.onkeydown = e => {
       // Right arrow: forward 1 sec
       if (e.keyCode === 39) { this.player.currentTime = this.player.currentTime + 1; }
       // Left arrow: backward 1 sec
