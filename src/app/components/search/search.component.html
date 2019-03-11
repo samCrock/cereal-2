@@ -6,7 +6,7 @@
     <input type="text" id="search_input" [value]="show_input" [formControl]="searchControl">
   </div>
 
-  <div fxLayout="column" *ngFor="let show of shows.slice().reverse();">
+  <div fxLayout="column" *ngFor="let show of shows.slice();">
     <app-show-preview [show]="show"></app-show-preview>
   </div>
 

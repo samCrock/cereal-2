@@ -45,7 +45,7 @@ export class SearchComponent implements OnInit {
                 this.noResults = false;
                 this.scrapingService.retrieveShow(result)
                   .subscribe(show => {
-                    this.shows.push(show);
+                    this.shows.unshift(show);
                     console.log('Search shows result:', show);
                     this.loading = false;
                   });
