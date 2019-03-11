@@ -47,7 +47,8 @@ export class ShowComponent implements OnInit, OnDestroy {
             .subscribe(lastSeason => {
               const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
               this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
-              if (dbLastSeason === this.current_season) {
+              if (show.seasons === this.current_season) {
+                console.log('this.current_season', this.current_season, dbLastSeason);
                 this.episodes = Object.assign(lastSeason, dbLastSeason);
                 this.dbService.addSeason(this.show['dashed_title'], this.current_season, this.episodes).subscribe();
                 this.loading = false;
