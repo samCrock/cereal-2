@@ -16,9 +16,13 @@ label {
 }
 
 .progress {
-  background-color: rgba(172, 236, 230, .2);
+  // background-color: rgba(172, 236, 230, .2);
+  background-color: var(--primary);
 	margin: 0;
 	border-radius: 0;
+	.determinate {
+		background-color: var(--primary);
+	}
 }
 
 .progress.view {

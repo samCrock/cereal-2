@@ -6,7 +6,8 @@ html {
   --distance: 50px;
   --bg-color: rgb(58, 70, 76);
   --fore-color: #ffe000;
-  --primary: #2bbbad;
+  // --primary: #68b5bb;
+  --primary: #dbbaca;
   height: 100%;
 }
 
@@ -26,7 +27,7 @@ body {
 }
 
 ::selection {
-  background: #26a69a;
+  background: var(--primary);
 }
 
 :focus {
@@ -35,6 +36,11 @@ body {
 
 input {
   font-family: 'Economica', sans-serif !important;
+}
+
+.font-2 {
+  font-family: 'Anton', sans-serif !important;
+  font-weight: 100;
 }
 
 .hoverable {
@@ -76,12 +82,12 @@ input {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #26a69a;
+  background: var(--primary);
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #26a69a;
+  background: var(--primary);
 }
 
 .cdk-global-overlay-wrapper {

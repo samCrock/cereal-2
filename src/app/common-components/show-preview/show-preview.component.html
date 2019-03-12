@@ -4,7 +4,7 @@
   </div>
   <div fxLayout="column" fxLayoutAlign="start start">
     <div fxLayout="row">
-      <h3 id="title" [routerLink]="['/show', show.dashed_title]">{{ show.title }}</h3>
+      <h3 id="title" class="font-2" [routerLink]="['/show', show.dashed_title]">{{ show.title }}</h3>
       <div class="valign-wrapper" *ngIf="show.trailer">
         <i class="material-icons icon hoverable circle" (click)="play_trailer()">live_tv</i>
       </div>

@@ -34,7 +34,8 @@
 }
 
 #title:hover {
-	color: #2bbbad;
+	// color: var(--primary);
+	text-shadow: 2px 2px var(--primary);
 }
 
 .icon {
