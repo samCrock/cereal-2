@@ -4,14 +4,20 @@
 
 <div id="expanded_card" class="z-depth-5" (click)="openShow()">
 	<div fxLayout="column" fxLayoutAlign="center" class="expanded_overlay">
-		<div fxLayout="column" class="center-align card-title" >
-			<span>{{ hovering_episode['title'] }}</span>
+		<div fxLayout="column" class="center-align card-title font-2">
+			<span>{{ hoveringEpisode['title'] }}</span>
 		</div>
-		<div fxLayout="column" class="center-align card-episode" >
-			<span>{{ hovering_episode['episode'] }}</span>
+		<div fxLayout="column" class="center-align card-episode">
+			<span>{{ hoveringEpisode['episode'] }}</span>
 		</div>
-		<div fxLayout="column" class="center-align card-network" >
-			<span>{{ hovering_episode['network'] }}</span>
+		<div fxLayout="column" class="center-align card-network">
+			<span>{{ hoveringEpisode['network'] }}</span>
+		</div>
+		<div fxLayout="column" class="center-align card-year">
+			<span>{{ hoveringEpisode['year'] }}</span>
+		</div>
+		<div fxLayout="column" class="center-align card-rating">
+			<span>Rating: {{ hoveringEpisode['rating'] }}%</span>
 		</div>
 	</div>
 </div>

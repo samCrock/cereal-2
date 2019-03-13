@@ -11,7 +11,7 @@
     <div fxLayout="row" fxLayoutAlign="space-evenly" fxFill fxLayoutGap="1vw">
       <div fxFlex="50" fxLayoutAlign="center center" class="waves-effect waves-light btn" *ngIf="titleAsButton" [routerLink]="['/show/' + episode.dashed_title]">{{ episode.title }}</div>
       <div fxFlex="50" fxLayoutAlign="start center" class="right" *ngIf="!titleAsButton">{{ episode.title }}</div>
-      <div fxFlex="10" fxLayoutAlign="end center" class="right">{{ episode.label }}</div>
+      <div fxFlex="10" fxLayoutAlign="end center" class="right label">{{ episode.label }}</div>
       <div fxFlex="15" fxLayoutAlign="end center">{{ formatDate(episode.date) }}</div>
 
       <div fxFlex="20" fxLayoutAlign="end center" *ngIf="isPlayable()">

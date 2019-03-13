@@ -20,6 +20,33 @@ $expanded_poster_w: 26vw;
 	}
 }
 
+.card-title {
+	margin: auto;
+	width: calc(18vw);
+	padding-top: 1rem !important;
+	font-size: calc(1rem + 1vw);
+	line-height: calc(1rem + 1vw);
+}
+
+.card-episode {
+	padding-top: 1rem !important;
+}
+
+.card-network {
+	padding-top: 1rem !important;
+	font-size: calc(.6rem + 1vw);
+}
+
+.card-year {
+	font-weight: 600;
+	font-size: calc(.5rem + 1vw);
+}
+
+.card-rating {
+	font-size: calc(.6rem + 1vw);
+	margin-bottom: 1rem;
+}
+
 #expanded_card {
 	display: none;
 	z-index: 1;
@@ -40,15 +67,3 @@ $expanded_poster_w: 26vw;
 	cursor: pointer;
 }
 
-.card-title {
-	padding-top: 1rem !important;
-}
-
-.card-episode {
-	padding-top: 1rem !important;
-}
-
-.card-network {
-	padding-top: 1rem !important;
-	font-size: calc(.6rem + 1vw);
-}

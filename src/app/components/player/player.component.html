@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <div id="controls" [hidden]="loading" [ngClass]="hideControls() ? 'hidden' : ''"
+  <div id="controls" [hidden]="loading" 
     fxLayout="row" fxLayoutAlign="start center">
     <div id="toggle_play" *ngIf="this.player" (click)="toggle_play()">
       <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>

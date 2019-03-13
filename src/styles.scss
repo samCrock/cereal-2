@@ -5,9 +5,8 @@
 html {
   --distance: 50px;
   --bg-color: rgb(58, 70, 76);
-  --fore-color: #ffe000;
-  // --primary: #68b5bb;
-  --primary: #dbbaca;
+  --primary: #f0e380;
+  --fore-color: #ebafaf;
   height: 100%;
 }
 
@@ -45,8 +44,19 @@ input {
 
 .hoverable {
   cursor: pointer;
-  // background: rgba(0, 0, 0, .1);
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  transition: all .4s;
 }
+
+.hoverable:hover {
+  color: var(--primary);
+}
+
+.hoverable:active {
+  transform: scale(.9);
+}
+
+
 
 .material-icons {
   padding: .2rem;
@@ -82,12 +92,16 @@ input {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--primary);
+  background: var(--primary) !important;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: var(--primary) !important;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  background: var(--primary) !important;
 }
 
 .cdk-global-overlay-wrapper {
