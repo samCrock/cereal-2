@@ -6,48 +6,49 @@ $expanded_poster_w: 26vw;
 
 .card {
 	cursor: pointer;
-	margin: 1vw;
+	margin: 10px;
 	background-color: transparent;
-	width: calc(18vw);
-	height: calc(18vw * 1.5);
-	max-width: 220px;
-	max-height: 330px;
+	width: $poster_w;
+	height: calc(#{$poster_w} * 1.5);
+	// max-width: 220px;
+	// max-height: 330px;
 	background-size: cover;
 	border-radius: 4px;
-	background-repeat: no-repeat;
+	background-repeat: round;
 	img {
 		border-radius: 4px;
 	}
 }
 
 .card-title {
-	margin: auto;
+	margin: 0 auto;
 	padding-top: 1rem !important;
-	font-size: calc(1rem + 1vw);
-	line-height: calc(1rem + 1vw);
+	font-size: calc(1rem + 1rem);
+	line-height: calc(1rem + 1rem);
 	span {
-		min-width: calc(12vw);
-		max-width: calc(12vw);
+		min-width: $poster_w;
+		max-width: $poster_w;
 	}
 }
 
 .card-episode {
 	padding-top: 1rem !important;
-	font-size: calc(1rem + 1vw);
+	font-size: calc(1rem + 1rem);
 }
 
 .card-network {
 	padding-top: 1rem !important;
-	font-size: calc(.8rem + 1vw);
+	font-size: calc(.8rem + 1rem);
 }
 
 .card-year {
+	padding-top: 1rem !important;
+	font-size: calc(.6rem + 1rem);
 	font-weight: 600;
-	font-size: calc(.6rem + 1vw);
 }
 
 .card-rating {
-	font-size: calc(.6rem + 1vw);
+	font-size: calc(.6rem + 1rem);
 	margin-bottom: 1rem;
 }
 
@@ -60,7 +61,7 @@ $expanded_poster_w: 26vw;
 	position: absolute;
 	background-size: cover;
 	border-radius: 4px;
-	background-repeat: no-repeat;
+	background-repeat: round;
 	border-radius: 4px;
 }
 
@@ -71,3 +72,52 @@ $expanded_poster_w: 26vw;
 	cursor: pointer;
 }
 
+
+// Change poster on breakpoint
+@media only screen and (max-width: 500px)  {
+	$poster_w: calc(50vw);
+	.card {
+		width: $poster_w;
+		height: calc(#{$poster_w} * 1.5);
+		max-width: none;
+		max-height: none;
+	}
+	.card-title {
+		span {
+			min-width: $poster_w;
+			max-width: $poster_w;
+		}
+	}
+}
+
+@media only screen and (min-width: 501px) and (max-width: 993px) {
+	$poster_w: calc(30vw);
+	.card {
+		width: $poster_w;
+		height: calc(#{$poster_w} * 1.5);
+		max-width: none;
+		max-height: none;
+	}
+	.card-title {
+		span {
+			min-width: $poster_w;
+			max-width: $poster_w;
+		}
+	}
+}
+
+@media only screen and (min-width: 1600px) {
+	$poster_w: calc(15vw);
+	.card {
+		width: $poster_w;
+		height: calc(#{$poster_w} * 1.5);
+		max-width: none;
+		max-height: none;
+	}
+	.card-title {
+		span {
+			min-width: $poster_w;
+			max-width: $poster_w;
+		}
+	}
+}
