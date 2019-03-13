@@ -504,7 +504,6 @@ export class ScrapingService {
                 show['year'] = result.children[1].children[0].children[5].children[1].children[1].children[0].data;
                 show['rating'] = result.children[2].children[1].children[0].children[1].data;
                 show['rating'] = show['rating'].substr(0, show['rating'].length - 1);
-                console.log('additional-stats', $('.additional-stats'));
               }
               if (show['title']) { shows.push(show); }
             });

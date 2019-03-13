@@ -38,7 +38,7 @@ export class ExpandedCardComponent implements OnChanges {
   enterCard(event, show) {
     const card = event.srcElement;
     this.hoveringEpisode = show;
-    if (this.hoveringEpisode['episode'].indexOf('Special') > -1) {
+    if (this.hoveringEpisode['episode'] && this.hoveringEpisode['episode'].indexOf('Special') > -1) {
       this.hoveringEpisode['episode'] = '- Special Episode -';
     }
 
