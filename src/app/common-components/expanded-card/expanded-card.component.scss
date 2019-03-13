@@ -21,11 +21,11 @@ $expanded_poster_w: 26vw;
 }
 
 .card-title {
+	margin: auto;
 	padding-top: 1rem !important;
 	font-size: calc(1rem + 1vw);
 	line-height: calc(1rem + 1vw);
 	span {
-		margin: auto;
 		min-width: calc(12vw);
 		max-width: calc(12vw);
 	}
