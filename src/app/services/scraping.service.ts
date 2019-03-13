@@ -55,7 +55,6 @@ export class ScrapingService {
           let network = $('.additional-stats')['0'].children[0].children[4] ? $('.additional-stats')['0'].children[0].children[4].data : '';
           let runtime = $('#overview')['0'].children[2].children[0].children[0].children[2] ?
             $('#overview')['0'].children[2].children[0].children[0].children[2].children[1].data : '';
-          
 
           network = network.split(' on ');
           network = network[1];
@@ -152,20 +151,22 @@ export class ScrapingService {
         const week = [];
         console.log('Week', lastWeek);
         $('.fanarts, .calendar-list').filter((i, result) => {
-          const dotm = result.children[0].children[0].children[0].data,
-            month = result.children[0].children[1].children[0].data;
+          const dotm = result.children[0].children[0].children[0].data;
+          const month = result.children[0].children[1].children[0].data;
           let year = Number(moment().format('YYYY'));
           if (moment().month() === 11 && month === 'January') {
             year = +year;
           }
           const date = moment(year + ' ' + month + ' ' + dotm, 'YYYY MMM DD').format('DD-MM-YYYY');
           const day = {
-            date: date,
+            date,
             shows: []
           };
           for (i = 1; i < result.children.length; i++) {
             if (result.children[i].attribs['data-episode-id']) {
-              let episode, network, title;
+              let episode;
+              let network;
+              let title;
               const poster = result.children[i].children[1].children[0].children[1].attribs['data-original'];
               if (result.children[i].children[1].children[0].children.length === 7) {
                 if (result.children[i].children[1].children[0].children[6].children.length === 8) {
@@ -215,10 +216,10 @@ export class ScrapingService {
               episode = episode[0] + episode[1];
               const dashed_title = result.children[i].children[0].attribs['content'].split('/')[4];
               const showObject = {
-                title: title,
-                dashed_title: dashed_title,
-                episode: episode,
-                network: network,
+                title,
+                dashed_title,
+                episode,
+                network,
                 runtime: result.children[i].attribs['data-runtime'],
                 poster: this.retrievePoster(dashed_title)
                 // poster: poster
@@ -285,7 +286,7 @@ export class ScrapingService {
           this.request({
             url: poster,
             encoding: null
-          }, function (err, data) {
+          }, (err, data) => {
             if (err) {
               console.error('err', err);
             }
@@ -440,9 +441,9 @@ export class ScrapingService {
 
               observer.next({
                 name: name.trim(),
-                seeds: seeds,
-                size: size,
-                magnetURI: magnetURI
+                seeds,
+                size,
+                magnetURI
               });
             }
           }
@@ -475,7 +476,7 @@ export class ScrapingService {
               }
             });
 
-          setTimeout(function () {
+          setTimeout(() => {
             if (!hasResults) {
               return observer.next();
             }
@@ -503,6 +504,7 @@ export class ScrapingService {
                 show['year'] = result.children[1].children[0].children[5].children[1].children[1].children[0].data;
                 show['rating'] = result.children[2].children[1].children[0].children[1].data;
                 show['rating'] = show['rating'].substr(0, show['rating'].length - 1);
+                console.log('additional-stats', $('.additional-stats'));
               }
               if (show['title']) { shows.push(show); }
             });
