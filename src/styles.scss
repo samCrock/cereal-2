@@ -79,8 +79,20 @@ input {
   transition: all .4s;
 }
 
+input[type=text] {
+  border-bottom: 1px solid var(--fore-color) !important;
+  box-shadow: 0 1px 0 0 var(--fore-color) !important;
+}
 
-
+// Radio Buttons
+[type="radio"]:checked + span:after,
+[type="radio"].with-gap:checked + span:before,
+[type="radio"].with-gap:checked + span:after {
+  border: 2px solid var(--primary) !important; }
+  [type="radio"]:checked + span:after,
+  [type="radio"].with-gap:checked + span:after {
+    background-color: var(--primary) !important; }
+  
 
 // CUSTOM SCROLLBAR
 /* width */
