@@ -21,32 +21,32 @@
 
   <div id="controls" [hidden]="loading" 
     fxLayout="row" fxLayoutAlign="start center">
-    <div id="toggle_play" *ngIf="this.player" (click)="toggle_play()">
+    <div class="hoverable" *ngIf="this.player" (click)="toggle_play()">
       <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
     </div>
     <div id="duration">{{ currentTime }} / {{ totalTime }}</div>
 
     <input type="range" id="timeline" value="0">
 
-    <div id="toggle_fullscreen" fxLayoutAlign="center center" (click)="toggle_fullscreen()">
+    <div class="hoverable" fxLayoutAlign="center center" (click)="toggle_fullscreen()">
       <i class="material-icons">{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</i>
     </div>
 
-    <div id="toggle_subs" [ngClass]="showSubs ? 'active' : ''" (click)="toggleSubs(); toggledEpisodes = false;">
+    <div class="hoverable" [ngClass]="showSubs ? 'active' : ''" (click)="toggleSubs(); toggledEpisodes = false;">
       <i class="material-icons">textsms</i>
     </div>
 
-    <div id="subs_list" *ngIf="showSubs">
+    <div class="hoverable" *ngIf="showSubs">
       <div class="subs" [class.active]="sub.mode == 'showing'" *ngFor="let sub of player.textTracks"
         (click)="selectSubs(sub);">{{
         sub.label }}</div>
     </div>
 
-    <div id="open_folder" (click)="openFolder()">
+    <div class="hoverable" (click)="openFolder()">
       <i class="material-icons">airplay</i>
     </div>
 
-    <div id="next_episode" *ngIf="nextEpisode" (click)="playNextEpisode()">
+    <div class="hoverable" *ngIf="nextEpisode" (click)="playNextEpisode()">
       <i class="material-icons">skip_next</i>
     </div>
 

@@ -78,33 +78,7 @@ i {
   opacity: 0;
 }
 
-#toggle_play {
-  i {
-    font-size: calc(1.4rem + 1vw);
-  }
-}
 
-#toggle_fullscreen {
-  margin-left: 10px;
-  app-icon {
-    i {
-      font-size: calc(1rem + 1vw);
-    }
-  }
-}
-
-#toggle_subs {
-  transition: color .4s ease-in;
-  i {
-    font-size: calc(1rem + 1vw);
-  }
-}
-
-#open_folder {
-  i {
-    font-size: calc(1rem + 1vw);
-  }
-}
 
 .current_episode {
   label {
