@@ -36,9 +36,11 @@ export class ExpandedCardComponent implements OnChanges {
   }
 
   enterCard(event, show) {
-    console.log('< enter', event);
     const card = event.srcElement;
     this.hoveringEpisode = show;
+    if (this.hoveringEpisode['episode'].indexOf('Special') > -1) {
+      this.hoveringEpisode['episode'] = '- Special Episode -';
+    }
 
     document.querySelectorAll('[id=expanded_card]')['forEach']((element: HTMLElement) => {
       element.style.display = 'none';
@@ -82,10 +84,7 @@ export class ExpandedCardComponent implements OnChanges {
 
     expCard.style.backgroundImage = target.style.backgroundImage;
     // expCard.getElementsByClassName('card-title')[0]['style']['transition'] = beforeTransitions;
-    // expCard.getElementsByClassName('card-episode')[0]['style']['transition'] = beforeTransitions;
     // expCard.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1rem + 1vw)';
-    // expCard.getElementsByClassName('card-episode')[0]['style']['font-size'] = 'calc(.5rem + 1vw)';
-    // expCard.getElementsByClassName('card-title')[0]['style']['padding'] = 'calc(1vw)';
 
     // TRANSITION
     setTimeout(()  => {
@@ -97,11 +96,8 @@ export class ExpandedCardComponent implements OnChanges {
       expCard.style.height = 'calc(' + computedCardH + 'px + ' + Math.floor(+computedCardH / 5) + 'px)';
 
       // expCard.getElementsByClassName('card-title')[0]['style']['transition'] = afterTransitions;
-      // expCard.getElementsByClassName('card-episode')[0]['style']['transition'] = afterTransitions;
-
-      // expCard.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1.5rem + 1vw)';
-      // expCard.getElementsByClassName('card-episode')[0]['style']['font-size'] = 'calc(1rem + 1vw)';
-      // expCard.getElementsByClassName('card-title')[0]['style']['line-height'] = 'calc(1.5rem + 1vw)';
+      // expCard.getElementsByClassName('card-title')[0]['style']['font-size'] = 'calc(1.2rem + 1vw)';
+      // expCard.getElementsByClassName('card-title')[0]['style']['line-height'] = 'calc(1.2rem + 1vw)';
     }, 10);
 
     document.onmousemove = handleMouseMove;

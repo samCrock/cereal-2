@@ -1,7 +1,7 @@
 @import "~materialize-css/sass/materialize";
 
 
-$poster_w: auto;
+$poster_w: 18vw;
 $expanded_poster_w: 26vw;
 
 .card {
@@ -21,25 +21,29 @@ $expanded_poster_w: 26vw;
 }
 
 .card-title {
-	margin: auto;
-	width: calc(18vw);
 	padding-top: 1rem !important;
 	font-size: calc(1rem + 1vw);
 	line-height: calc(1rem + 1vw);
+	span {
+		margin: auto;
+		min-width: calc(12vw);
+		max-width: calc(12vw);
+	}
 }
 
 .card-episode {
 	padding-top: 1rem !important;
+	font-size: calc(1rem + 1vw);
 }
 
 .card-network {
 	padding-top: 1rem !important;
-	font-size: calc(.6rem + 1vw);
+	font-size: calc(.8rem + 1vw);
 }
 
 .card-year {
 	font-weight: 600;
-	font-size: calc(.5rem + 1vw);
+	font-size: calc(.6rem + 1vw);
 }
 
 .card-rating {

@@ -128,6 +128,8 @@ app-show {
 #splash {
   background-image: url('assets/cereal-bkg.png');
   height: calc(100vh - 4rem);
+  max-width: 600px;
+  margin: auto;
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;

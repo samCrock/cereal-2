@@ -7,16 +7,16 @@
 		<div fxLayout="column" class="center-align card-title font-2">
 			<span>{{ hoveringEpisode['title'] }}</span>
 		</div>
-		<div fxLayout="column" class="center-align card-episode">
+		<div *ngIf="hoveringEpisode['episode']" fxLayout="column" class="center-align card-episode">
 			<span>{{ hoveringEpisode['episode'] }}</span>
 		</div>
-		<div fxLayout="column" class="center-align card-network">
+		<div *ngIf="hoveringEpisode['network']" fxLayout="column" class="center-align card-network">
 			<span>{{ hoveringEpisode['network'] }}</span>
 		</div>
-		<div fxLayout="column" class="center-align card-year">
+		<div *ngIf="hoveringEpisode['year']" fxLayout="column" class="center-align card-year">
 			<span>{{ hoveringEpisode['year'] }}</span>
 		</div>
-		<div fxLayout="column" class="center-align card-rating">
+		<div *ngIf="hoveringEpisode['rating']" fxLayout="column" class="center-align card-rating">
 			<span>Rating: {{ hoveringEpisode['rating'] }}%</span>
 		</div>
 	</div>
