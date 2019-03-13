@@ -36,27 +36,26 @@ export class ScrapingService {
         .subscribe(response => {
           const $ = cheerio.load(response, { _useHtmlParser2: true });
           const dashed_title = _show;
-          // poster = $('.sidebar')['0'].children[0].children[1].attribs['data-original'],
           let title = $('#summary-ratings-wrapper')['0'].next.children[0].children[0].children[1].children[0].children[0].data;
-          if (title) {
-            title = title.trim();
-          } else {
-            title = '';
-          }
-          const seasons = $('.season-count')[1] ? $('.season-count')[1].attribs['data-all-count'] : 0,
-            genres = $('#overview')['0'].children[2].children[0].children[0].children[6] ?
-              $('#overview')['0'].children[2].children[0].children[0].children[6].children : [],
-            premiered = $('#overview')['0'] && $('#overview')['0'].children[2].children[0].children[1].children[2] &&
-              $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs ?
-              $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs.content : '',
-            overview = $('#overview')[1].children[0] ? $('#overview')[1].children[0].children[0].data : '',
-            trailer = $('.affiliate-links')['0'].children[0] ? $('.affiliate-links')['0'].children[0].children[1].attribs.href : '',
-            wallpaper = $('#summary-wrapper')['0'].attribs['data-fanart'],
-            poster = this.retrievePoster(_show);
-          let network = $('.additional-stats')['0'].children[0].children[4] ? $('.additional-stats')['0'].children[0].children[4].data : '',
-            runtime = $('#overview')['0'].children[2].children[0].children[0].children[2] ?
-              $('#overview')['0'].children[2].children[0].children[0].children[2].children[1].data : '';
+          title = title ? title.trim() : '';
+
+          const seasons = $('.season-count')[1] ? $('.season-count')[1].attribs['data-all-count'] : 0;
+          const genres = $('#overview')['0'].children[2].children[0].children[0].children[6] ?
+            $('#overview')['0'].children[2].children[0].children[0].children[6].children : [];
+          const premiered = $('#overview')['0'] && $('#overview')['0'].children[2].children[0].children[1].children[2] &&
+            $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs ?
+            $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs.content : '';
+          const overview = $('#overview')[1].children[0] ? $('#overview')[1].children[0].children[0].data : '';
+          const trailer = $('.affiliate-links')['0'].children[0] ? $('.affiliate-links')['0'].children[0].children[1].attribs.href : '';
+          const wallpaper = $('#summary-wrapper')['0'].attribs['data-fanart'];
+          const poster = this.retrievePoster(_show);
           const genresArray = [];
+          const rating = $('#summary-ratings-wrapper .row .ratings li')[0].children[0].attribs.content;
+          const year = $('.container.summary .container .row h1 span')[0].children[0].data;
+          let network = $('.additional-stats')['0'].children[0].children[4] ? $('.additional-stats')['0'].children[0].children[4].data : '';
+          let runtime = $('#overview')['0'].children[2].children[0].children[0].children[2] ?
+            $('#overview')['0'].children[2].children[0].children[0].children[2].children[1].data : '';
+          
 
           network = network.split(' on ');
           network = network[1];
@@ -66,19 +65,21 @@ export class ScrapingService {
               genresArray.push(genre.children[0].data);
             }
           });
-          poster.subscribe(res_poster => {
+          poster.subscribe(resPoster => {
             return observer.next({
-              title: title,
-              dashed_title: dashed_title,
-              network: network,
-              premiered: premiered,
-              runtime: runtime,
+              title,
+              dashed_title,
+              network,
+              premiered,
+              runtime,
               genres: genresArray,
-              overview: overview,
-              trailer: trailer,
-              poster: res_poster,
-              wallpaper: wallpaper,
-              seasons: seasons,
+              overview,
+              trailer,
+              poster: resPoster,
+              wallpaper,
+              seasons,
+              rating,
+              year,
               Seasons: {}
             });
           });
@@ -92,10 +93,10 @@ export class ScrapingService {
         .subscribe(response => {
           const $ = cheerio.load(response, { _useHtmlParser2: true });
           const episodes = [];
-          let ep_label = '',
-            ep_title = '',
-            ep_date = '',
-            ep_overview = '';
+          let ep_label = '';
+          let ep_title = '';
+          let ep_date = '';
+          let ep_overview = '';
           $('.titles').filter((i, episode) => {
             if (episode.children[0].name === 'h3') {
               ep_label = episode.children[0].children[1] ? episode.children[0].children[1].children[0].children[0].data :
@@ -494,17 +495,16 @@ export class ScrapingService {
             .filter((i, result) => {
               const show = {};
               if (result.children[1] && result.children[1].attribs['href']) {
-                // console.log(result.children[1].attribs['href'].split('/shows/')[1]);
                 show['dashed_title'] = result.children[1].attribs['href'].split('/shows/')[1];
                 show['poster'] = this.retrievePoster(show['dashed_title']);
                 if (result.children[1] && result.children[1].children[0]) {
-                  // console.log(result.children[1].children[0].children[5].children[1].children[0].data);
-                  show['title'] = result.children[1].children[0].children[5].children[1].children[0].data;
+                  show['title'] = result.children[1].children[0].children[5].children[1].children[0].data.trim();
                 }
+                show['year'] = result.children[1].children[0].children[5].children[1].children[1].children[0].data;
+                show['rating'] = result.children[2].children[1].children[0].children[1].data;
+                show['rating'] = show['rating'].substr(0, show['rating'].length - 1);
               }
-              if (show['title']) {
-                shows.push(show);
-              }
+              if (show['title']) { shows.push(show); }
             });
           observer.next(shows);
         });
