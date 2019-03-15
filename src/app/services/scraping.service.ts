@@ -355,12 +355,17 @@ export class ScrapingService {
             const dn = $('tr')[_custom].children[3].children[1].children[1].children[0].data;
             const magnetURI = $('tr')[_custom].children[3].children[3].attribs.href;
             const seeds = $('tr')[_custom].children[5].children[0].data;
-            let size = $('tr')[_custom].children[3].children[7].children[0].data;
-            size = size ? size.substring(
-              size.lastIndexOf('Size ') + 5,
-              size.lastIndexOf('iB')
-            ) : '';
-            size += 'b';
+            let size = $('tr')[_custom].children[3] ? $('tr')[_custom].children[3].children[7].children[0].data : '';
+            if (size) {
+              size = size ? size.substring(
+                size.lastIndexOf('Size ') + 5,
+                size.lastIndexOf('iB')
+              ) : '';
+              size += 'b';
+            } else {
+              size = '-';
+            }
+
             observer.next({
               dn: dn.trim(),
               seeds,
@@ -432,12 +437,16 @@ export class ScrapingService {
               const name = $('tr')[i].children[3].children[1].children[1].children[0].data;
               const magnetURI = $('tr')[i].children[3].children[3].attribs.href;
               const seeds = $('tr')[i].children[5].children[0].data;
-              let size = $('tr')[i].children[3].children[7].children[0].data;
-              size = size ? size.substring(
-                size.lastIndexOf('Size ') + 5,
-                size.lastIndexOf('iB')
-              ) : '';
-              size += 'b';
+              let size = $('tr')[i].children[3].children[7].children ? $('tr')[i].children[3].children[7].children[0].data : '';
+              if (size) {
+                size = size ? size.substring(
+                  size.lastIndexOf('Size ') + 5,
+                  size.lastIndexOf('iB')
+                ) : '';
+                size += 'b';
+              } else {
+                size = '-';
+              }
 
               observer.next({
                 name: name.trim(),

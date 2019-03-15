@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { ScrapingService, DbService, NavbarService } from '../../services';
+import { ScrapingService, DbService, NavbarService, TorrentService } from '../../services';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { fade } from '../../animations/fade';
+import { Subscription } from 'rxjs';
+import { interval } from 'rxjs/internal/observable/interval';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-show',
@@ -20,13 +23,18 @@ export class ShowComponent implements OnInit, OnDestroy {
   public sanitizedTrailer;
   public openedTrailer = false;
   public loading: boolean;
+  public selectedEpisode;
+  public progressSubscription: Subscription;
+
 
   constructor(
     public scrapingService: ScrapingService,
     public navbarService: NavbarService,
+    public torrentService: TorrentService,
     public dbService: DbService,
     public route: ActivatedRoute,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
+    private cdRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -77,12 +85,16 @@ export class ShowComponent implements OnInit, OnDestroy {
     if (this.show['Seasons'][this.current_season]) {
       console.log('Local', this.current_season, this.show['Seasons'][this.current_season]);
       this.episodes = this.show['Seasons'][this.current_season];
+      this.selectedEpisode = this.episodes[0];
+      this.fetchProgress();
       this.loading = false;
     } else {
       this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.current_season)
         .subscribe(episodes => {
           // console.log('Scraped season', this.current_season, episodes);
           this.episodes = episodes;
+          this.selectedEpisode = this.episodes[0];
+          this.fetchProgress();
           this.dbService.addSeason(this.show['dashed_title'], this.current_season, episodes)
             .subscribe(show => {
               // console.log('Season', this.current_season, 'saved');
@@ -132,5 +144,60 @@ export class ShowComponent implements OnInit, OnDestroy {
     console.log('Episode emitter catched!');
     this.init();
   }
+
+  isSelected(episode) {
+    return this.selectedEpisode && this.selectedEpisode.label === episode.label;
+  }
+
+  selectEpisode(episode) {
+    this.selectedEpisode = episode;
+    this.fetchProgress();
+  }
+
+
+  fetchProgress() {
+    this.progressSubscription = interval(1000).subscribe(() => {
+      for (const ep in this.episodes) {
+        if (this.episodes[ep]) {
+
+          if (this.episodes[ep]['dn'] && this.episodes[ep]['status'] === 'pending') {
+            const t = this.torrentService.getTorrentByHash(this.episodes[ep]['infoHash']);
+
+            // console.log('Fetch current?', this.episodes[ep]['infoHash'], t['progress'], t['downloadSpeed'], t['path']);
+
+            if (t) {
+              if (t['progress'] !== 1) {
+                this.episodes[ep]['speed'] = (Math.round(t['downloadSpeed'] / 1048576 * 100) / 100).toString();
+                this.episodes[ep]['progress'] = Math.round(t['progress'] * 100);
+              } else {
+                this.episodes[ep]['progress'] = 100;
+                delete this.episodes[ep]['speed'];
+                this.progressSubscription.unsubscribe();
+              }
+            }
+
+          }
+          if (this.episodes[ep]['status'] === 'ready') {
+            this.episodes[ep]['progress'] = 100;
+            delete this.episodes[ep]['speed'];
+            this.progressSubscription.unsubscribe();
+          }
+          this.cdRef.detectChanges();
+        }
+      }
+
+    });
+
+  }
+
+  formatDate(date) {
+    if (date) {
+      return moment(date, 'YYYY-MM-DD').fromNow();
+    }
+    if (!date) {
+      return 'No air date';
+    }
+  }
+
 
 }

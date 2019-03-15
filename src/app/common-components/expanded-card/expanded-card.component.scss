@@ -107,7 +107,7 @@ $expanded_poster_w: 26vw;
 }
 
 @media only screen and (min-width: 1600px) {
-	$poster_w: calc(15vw);
+	$poster_w: calc(10vw);
 	.card {
 		width: $poster_w;
 		height: calc(#{$poster_w} * 1.5);

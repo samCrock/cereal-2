@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, Input, Output, OnDestroy, EventEmitter, OnChanges } from '@angular/core';
 import { DbService, SubsService, ScrapingService, TorrentService, WtService } from '../../services';
 import * as moment from 'moment';
 import { ElectronService } from 'ngx-electron';
@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
   providers: [DbService, ScrapingService, SubsService, TorrentService, WtService]
 
 })
-export class EpisodeComponent implements OnInit, OnDestroy {
+export class EpisodeComponent implements OnChanges, OnDestroy {
 
   @Input() show;
   @Input() episode;
@@ -50,7 +50,7 @@ export class EpisodeComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
+  ngOnChanges() {
     this.setup();
   }
 
@@ -60,7 +60,12 @@ export class EpisodeComponent implements OnInit, OnDestroy {
 
   setup() {
 
+    delete this.progress;
+    delete this.speed;
+
     this.fetchProgress();
+
+    this.toggleExtra(this.episode);
 
     if (!this.show) {
       this.dbService.getShow(this.episode['dashed_title'])
@@ -94,7 +99,6 @@ export class EpisodeComponent implements OnInit, OnDestroy {
 
   fetchProgress() {
     this.progressSubscription = interval(500).subscribe(() => {
-      const that = this;
       if (this.episode['dn'] && this.episode['status'] === 'pending') {
         const t = this.torrentService.getTorrentByHash(this.episode['infoHash']);
 
@@ -102,11 +106,11 @@ export class EpisodeComponent implements OnInit, OnDestroy {
 
         if (t) {
           if (t['progress'] !== 1) {
-            that.speed = (Math.round(t['downloadSpeed'] / 1048576 * 100) / 100).toString();
-            that.progress = Math.round(t['progress'] * 100);
+            this.speed = (Math.round(t['downloadSpeed'] / 1048576 * 100) / 100).toString();
+            this.progress = Math.round(t['progress'] * 100);
           } else {
-            that.progress = 100;
-            delete that.speed;
+            this.progress = 100;
+            delete this.speed;
             this.progressSubscription.unsubscribe();
           }
         }
@@ -117,7 +121,7 @@ export class EpisodeComponent implements OnInit, OnDestroy {
         delete this.speed;
         this.progressSubscription.unsubscribe();
       }
-      that.cdRef.detectChanges();
+      this.cdRef.detectChanges();
     });
   }
 
@@ -200,20 +204,14 @@ export class EpisodeComponent implements OnInit, OnDestroy {
   }
 
   toggleExtra(episode) {
-    this.expanded = !this.expanded;
-    if (this.expanded) {
-      this.loading = true;
-      this.scrapingService.retrieveTorrentsList(this.show['title'], episode.label)
-        .subscribe(result => {
-          this.hasResults = true;
-          this.loading = false;
-          this.epTorrents.push(result);
-        });
-    } else {
-      this.epTorrents = [];
-      this.loading = false;
-      this.hasResults = false;
-    }
+    this.epTorrents = [];
+    this.loading = true;
+    this.scrapingService.retrieveTorrentsList(this.show['title'], episode.label)
+      .subscribe(result => {
+        this.hasResults = true;
+        this.loading = false;
+        this.epTorrents.push(result);
+      });
   }
 
 

@@ -5,14 +5,12 @@ span {
 }
 
 h3 {
-	margin-top: 1rem;
-	margin-bottom: 1rem;
+	margin: 1rem 0;
 }
 
 h5 {
 	font-size: calc(1rem + 1vw);
-	margin-top: calc(1rem + 1vw);
-	margin-bottom: 0;
+	margin: 0 2rem;
 	text-transform: uppercase;
 	span {
 		padding: 0 .5rem;
@@ -34,10 +32,34 @@ h5 {
 
 .navigation_row {
 	min-height: 48px;
+	margin: 1rem 0;
 }
 
 .disabled {
 	color: rgb(100, 100, 100);
 	pointer-events: none;
 }
+
+.episode-select {
+	margin: 0 1rem .5rem 0;
+	background-color: var(--bg-color-2);
+}
+
+.episode-info {
+	padding: .5rem 1.5rem;
+	text-align: center;
+	label {
+		font-size: calc(1rem + .5vw);
+	}
+}
+
+.progress {
+	margin: 0;
+	border-radius: 0;
+}
+
+.selected {
+	color: var(--primary);
+}
+
 

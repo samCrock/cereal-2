@@ -5,8 +5,9 @@
 html {
   --distance: 50px;
   --bg-color: rgb(58, 70, 76);
-  --primary: #f0e380;
-  --fore-color: #ebafaf;
+  --bg-color-2: rgba(20, 20, 20, 0.6);
+  --primary: #ffea4e;
+  --fore-color: #a894db;
   height: 100%;
 }
 
@@ -44,7 +45,7 @@ input {
 
 .hoverable {
   cursor: pointer;
-  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  // box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   transition: all .4s;
 }
 
@@ -150,6 +151,25 @@ app-show {
   background-size: contain;
 }
 
+.progress {
+  background-color: transparent !important;
+	margin: 0 !important;
+	border-radius: 0;
+	.determinate {
+    background-color: var(--fore-color) !important;
+		opacity: .6;
+	}
+}
+
+.progress.view {
+  background-color: transparent !important;
+	height: 3px;
+	.determinate {
+		background-color: var(--primary) !important;
+		opacity: .6;
+	}
+}
+
 @media only screen and (min-width: 993px) {
   .container {
     width: 85% !important;
@@ -161,3 +181,4 @@ app-show {
     width: 95% !important;
   }
 }
+

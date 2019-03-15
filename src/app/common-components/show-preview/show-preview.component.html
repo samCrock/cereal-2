@@ -1,28 +1,54 @@
-<div @fadeItems *ngIf="show" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2vw" class="show_header">
+<div @fadeItems *ngIf="show" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="2vw" class="show_header">
+
   <div class="poster_container" *ngIf="!showMore" [routerLink]="['/show', show.dashed_title]">
     <div class="card" [ngStyle]="{'background-image': 'url(' + (show.poster)  + ')'}"></div>
   </div>
+
   <div fxLayout="column" fxLayoutAlign="start start">
-    <div fxLayout="row">
-      <h3 id="title" class="font-2" [routerLink]="['/show', show.dashed_title]">{{ show.title }}</h3>
-      <div class="valign-wrapper" *ngIf="show.trailer">
-        <i class="material-icons icon hoverable circle" (click)="play_trailer()">live_tv</i>
+
+    <div fxLayout="row" fxLayoutAlign="start">
+
+      <div fxLayout="column">
+      
+        <h3 id="title" class="font-2" [routerLink]="['/show', show.dashed_title]">{{ show.title }}</h3>
+        
+        <div fxLayout="row" fxLayoutGap="2vw" class="additionals">
+          <label *ngIf="show.year" class="left-align valign-wrapper"><span>Year</span>{{ show.year }} </label>
+          <label *ngIf="show.network" class="left-align valign-wrapper"><span>Network</span>{{ show.network }} </label>
+          <label *ngIf="show.runtime" class="left-align valign-wrapper"><span>Runtime</span>{{ show.runtime }}' </label>
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="2vw">
+          <span class="genres" *ngFor="let g of show.genres">{{ g }} </span>
+        </div>
+
       </div>
-      <div class="valign-wrapper" *ngIf="showMore">
-        <i class="material-icons icon hoverable circle" (click)="delete_show()">delete</i>
+
+      <div fxLayout="row" fxLayoutAlign="center">
+        <div class="valign-wrapper" *ngIf="show.trailer">
+          <i class="material-icons icon hoverable circle" (click)="play_trailer()">live_tv</i>
+        </div>
+        <div class="valign-wrapper" *ngIf="showMore">
+          <i class="material-icons icon hoverable circle" (click)="delete_show()">delete</i>
+        </div>
       </div>
+
+
+
     </div>
-    <div fxLayout="row">
-      <span id="network" class="left-align valign-wrapper">{{ show.network }} </span>
-    </div>
+
+
     <span id="overview">{{ show.overview }} </span>
-    <div fxLayout="row" fxLayoutGap="2vw">
-      <span class="genres" *ngFor="let g of show.genres">{{ g }} </span>
-    </div>
+
+
   </div>
+
+
+
 </div>
 
 <div *ngIf="show && openedTrailer" class="trailer_container" (click)="closeTrailer()">
-  <iframe id="player" [src]='getTrailer()' width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>
-		</iframe>
+  <iframe id="player" [src]='getTrailer()' width="640" height="360" frameborder="0" webkitallowfullscreen
+    mozallowfullscreen allowfullscreen>
+  </iframe>
 </div>
