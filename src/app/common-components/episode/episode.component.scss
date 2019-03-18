@@ -72,19 +72,11 @@ label {
 }
 
 .extra.expanded {
-	opacity: 1;
-	height: calc(15rem + 10vw);
-	.extras_header div label {
-		opacity: 1;
-	}
-	.episode_msg {
-		opacity: .6;
-	}
+	display: block !important;
 }
 
 .extra {
-	opacity: 0;
-	height: 0;
+	display: none !important;
 	transition: height .3s, visibility .6s, opacity .6s ease-in;
 	transition-delay: .2s;
 }

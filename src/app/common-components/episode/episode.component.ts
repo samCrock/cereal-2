@@ -18,7 +18,8 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
 
   @Input() show;
   @Input() episode;
-  @Output() notify: EventEmitter<any> = new EventEmitter<any>();
+  @Input() mode;
+  @Output() updatedEpisode: EventEmitter<any> = new EventEmitter<any>();
 
   public path = this.electronService.remote.getGlobal('path');
   public shell = this.electronService.remote.getGlobal('shell');
@@ -152,11 +153,12 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
             result.infoHash = magnet.decode(result['magnetURI']).infoHash;
 
             // Add torrent to WT client
-            this.torrentService.addTorrent({
+            const ep = {
               magnetURI: result.magnetURI,
               title: this.show['title'],
               episode_label: result.label
-            }).subscribe();
+            };
+            this.torrentService.addTorrent(ep).subscribe();
             // Add episode torrent to torrents & shows DB
             this.dbService.addTorrent({
               dn: result['dn'],
@@ -173,9 +175,10 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
                 .subscribe(ep => {
                   this.episode = ep;
                   this.setup();
-                  if (this.expanded) {
-                    this.toggleExtra(episode);
-                  }
+                  // if (this.expanded) {
+                  //   this.toggleExtra(episode);
+                  // }
+                  this.updatedEpisode.emit(ep);
                   this.loading = false;
                 });
             });
@@ -206,7 +209,7 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
   toggleExtra(episode) {
     this.epTorrents = [];
     this.loading = true;
-    this.scrapingService.retrieveTorrentsList(this.show['title'], episode.label)
+    this.scrapingService.retrieveTorrentsList(this.mode === 'compact' ? episode.title : this.show['title'], episode.label)
       .subscribe(result => {
         this.hasResults = true;
         this.loading = false;
@@ -217,13 +220,15 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
 
   onTorrentChange(episode, t) {
     this.selectedTorrent = t;
-    this.dbService.setEpisode({
+    const ep = {
       dashed_title: this.show['dashed_title'],
       label: episode['label'],
       dn: t.name,
       magnetURI: t.magnetURI
-    }).subscribe(_t => {
+    }
+    this.dbService.setEpisode(ep).subscribe(_t => {
       console.log('Episode torrent changed:', _t);
+      this.updatedEpisode.emit(ep);
     });
   }
 
@@ -234,8 +239,6 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
 
     episode['dashed_title'] = this.show['dashed_title'];
     episode['episode_label'] = episode['label'];
-
-    // this.notify.emit(episode);
 
     this.dbService.getEpisode(this.show['dashed_title'], episode['episode_label'])
       .subscribe(dbEpisode => {

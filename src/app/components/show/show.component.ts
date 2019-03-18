@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ScrapingService, DbService, NavbarService, TorrentService } from '../../services';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -78,15 +78,17 @@ export class ShowComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    if (this.progressSubscription) { this.progressSubscription.unsubscribe(); }
+  }
 
   retrieveSeason() {
-    console.log('retrieveSeason', this.current_season);
+    // console.log('retrieveSeason', this.current_season);
     if (this.show['Seasons'][this.current_season]) {
       console.log('Local', this.current_season, this.show['Seasons'][this.current_season]);
       this.episodes = this.show['Seasons'][this.current_season];
       this.selectedEpisode = this.episodes[0];
-      this.fetchProgress();
+      this.fetchGlobalProgress();
       this.loading = false;
     } else {
       this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.current_season)
@@ -94,7 +96,7 @@ export class ShowComponent implements OnInit, OnDestroy {
           // console.log('Scraped season', this.current_season, episodes);
           this.episodes = episodes;
           this.selectedEpisode = this.episodes[0];
-          this.fetchProgress();
+          this.fetchGlobalProgress();
           this.dbService.addSeason(this.show['dashed_title'], this.current_season, episodes)
             .subscribe(show => {
               // console.log('Season', this.current_season, 'saved');
@@ -140,9 +142,14 @@ export class ShowComponent implements OnInit, OnDestroy {
   /////////////
 
 
-  episodeListener() {
-    console.log('Episode emitter catched!');
-    this.init();
+  episodeListener(episode) {
+    console.log('Episode progress emitter catched!', episode);
+    this.episodes.forEach((e, i) => {
+      if (e['label'] === episode['label']) {
+        this.episodes[i] = Object.assign(this.episodes[i], episode);
+      }
+    });
+    this.fetchGlobalProgress();
   }
 
   isSelected(episode) {
@@ -151,43 +158,38 @@ export class ShowComponent implements OnInit, OnDestroy {
 
   selectEpisode(episode) {
     this.selectedEpisode = episode;
-    this.fetchProgress();
+    this.fetchGlobalProgress();
   }
 
 
-  fetchProgress() {
+  fetchGlobalProgress() {
+    // if (this.progressSubscription) { this.progressSubscription.unsubscribe(); }
     this.progressSubscription = interval(1000).subscribe(() => {
       for (const ep in this.episodes) {
         if (this.episodes[ep]) {
-
-          if (this.episodes[ep]['dn'] && this.episodes[ep]['status'] === 'pending') {
+          if (this.episodes[ep]['status'] !== 'ready') {
             const t = this.torrentService.getTorrentByHash(this.episodes[ep]['infoHash']);
-
-            // console.log('Fetch current?', this.episodes[ep]['infoHash'], t['progress'], t['downloadSpeed'], t['path']);
-
             if (t) {
+              // console.log('Fetch current?', this.episodes[ep]['label'], t['progress'], t['downloadSpeed']);
               if (t['progress'] !== 1) {
                 this.episodes[ep]['speed'] = (Math.round(t['downloadSpeed'] / 1048576 * 100) / 100).toString();
                 this.episodes[ep]['progress'] = Math.round(t['progress'] * 100);
-              } else {
+              } else if (t['progress'] === 1) {
                 this.episodes[ep]['progress'] = 100;
                 delete this.episodes[ep]['speed'];
-                this.progressSubscription.unsubscribe();
+                // this.progressSubscription.unsubscribe();
               }
             }
-
           }
           if (this.episodes[ep]['status'] === 'ready') {
             this.episodes[ep]['progress'] = 100;
             delete this.episodes[ep]['speed'];
-            this.progressSubscription.unsubscribe();
+            // this.progressSubscription.unsubscribe();
           }
           this.cdRef.detectChanges();
         }
       }
-
     });
-
   }
 
   formatDate(date) {

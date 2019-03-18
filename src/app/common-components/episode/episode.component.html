@@ -31,27 +31,20 @@
       </div> -->
     </div>
 
-    <div fxLayout="row" class="extra expanded" id="ep_{{ episode.label }}">
+    <div fxLayout="row" class="extra" id="ep_{{ episode.label }}" [ngClass]="mode != 'compact' ? 'expanded' : ''">
 
       <div fxLayout="column" fxFlex="100">
 
         <div class="overview">{{ episode.overview }}</div>
 
-        <div fxFlex fxLayout="column" fxLayoutAlign="center start" *ngIf="epTorrents.length">
-          <div fxLayout="row" fxLayoutAlign="space-evenly" class="extras_header">
-            <div fxFlex="76">
-              <label style="margin-left: calc(1rem + 2vw);">Name</label>
-            </div>
-            <div fxFlex="5">
-              <label>Seeds</label>
-            </div>
+        <div fxLayout="column" fxLayoutAlign="center start" *ngIf="epTorrents.length">
+          <div fxLayout="row" class="extras_header">
+            <div fxFlex="76"><label>Name</label></div>
+            <div fxFlex="5"><label>Seeds</label></div>
             <div fxFlex="2"></div>
-            <div fxFlex="13">
-              <label>Size</label>
-            </div>
+            <div fxFlex="13"><label>Size</label></div>
           </div>
-          <div fxLayout="row" fxLayoutAlign="space-evenly" *ngFor="let t of epTorrents; let idx = index;"
-            class="torrent_extras">
+          <div fxLayout="row" *ngFor="let t of epTorrents; let idx = index;" class="torrent_extras">
             <div fxFlex="76">
               <label>
                 <input name="group1" type="radio" [checked]="idx === 0" [value]="t.name"
