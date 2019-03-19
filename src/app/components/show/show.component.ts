@@ -144,6 +144,10 @@ export class ShowComponent implements OnInit, OnDestroy {
     this.fetchGlobalProgress();
   }
 
+  getEpLabel(episode) {
+    return 'Ep ' + episode.split('E')[1];
+  }
+
   isSelected(episode) {
     return this.selectedEpisode && this.selectedEpisode.label === episode.label;
   }

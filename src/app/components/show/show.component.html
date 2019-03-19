@@ -31,7 +31,7 @@
 
   <div fxLayout="row">
 
-    <div fxFlex="20">
+    <div fxFlex="auto">
       <div *ngFor="let episode of episodes" fxLayout="column" class="episode-select hoverable" (click)="selectEpisode(episode)">
         
         <div class="progress" [ngStyle]="{ opacity: episode.progress ? 1 : 0 }">
@@ -41,12 +41,13 @@
           <div class="determinate" [ngStyle]="{ 'width': episode.play_progress + '%' }"></div>
         </div>
         <div class="episode-info">
-          <label [ngClass]="getEpisodeClass(episode)">{{ episode.label }}</label>
+          <label [ngClass]="getEpisodeClass(episode)">{{ getEpLabel(episode.label) }}</label>
+          <label class="date">{{ formatDate(episode.date) }}</label>
         </div>
       </div>
     </div>
 
-    <div *ngIf="selectedEpisode" fxFlex="80">
+    <div *ngIf="selectedEpisode" fxFlex="auto">
       <app-episode [show]="show" [episode]="selectedEpisode" [mode]="'expanded'" (updatedEpisode)="episodeListener($event)"></app-episode>
     </div>
   </div>
