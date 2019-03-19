@@ -251,7 +251,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       const filePath = this.path.join(
         this.app.getPath('downloads'),
         'Cereal',
-        this.show['title'],
+        this.torrentService.getCleanTitle(this.show['title']),
         this.episode['label']
       );
       const filesCheckInterval = setInterval(() => {

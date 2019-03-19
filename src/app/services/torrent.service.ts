@@ -18,10 +18,15 @@ export class TorrentService {
       });
   }
 
+  getCleanTitle(title) {
+    return title.replace(':', '');
+  }
+
   addTorrent(episode): Observable<any> {
     return new Observable(observer => {
       if (!this.wtClient.get(episode['magnetURI'])) {
-        const filePath = this.path.join(this.app.getPath('downloads'), 'Cereal', episode['title'], episode['episode_label']);
+        const filePath = this.path.join(this.app.getPath('downloads'), 'Cereal',
+          this.getCleanTitle(episode['title']), episode['episode_label']);
         console.log('Adding torrent', episode, filePath);
         this.wtClient.add(episode['magnetURI'], {
           path: filePath
