@@ -3,8 +3,9 @@
 
   <video id="player" width="320" height="240" (click)="toggledEpisodes = false; showSubs = false;"></video>
 
-  <div id="info" [ngClass]="hideControls() ? 'hidden' : ''" fxLayoutAlign="start center" style="-webkit-app-region: drag">
-  <!-- <div id="info"  fxLayoutAlign="start center" style="-webkit-app-region: drag"> -->
+  <div id="info" [ngClass]="hideControls() ? 'hidden' : ''" fxLayoutAlign="start center"
+    style="-webkit-app-region: drag">
+    <!-- <div id="info"  fxLayoutAlign="start center" style="-webkit-app-region: drag"> -->
     <div>
       <i class="material-icons back_icon" [routerLink]="['/show', show['dashed_title']]">arrow_back_ios</i>
     </div>
@@ -19,8 +20,7 @@
     </div>
   </div>
 
-  <div id="controls" [hidden]="loading" 
-    fxLayout="row" fxLayoutAlign="start center">
+  <div id="controls" [ngClass]="hideControls() ? 'hidden' : ''" [hidden]="loading" fxLayout="row" fxLayoutAlign="start center">
     <div class="hoverable" *ngIf="this.player" (click)="toggle_play()">
       <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
     </div>

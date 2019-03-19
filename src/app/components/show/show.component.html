@@ -29,12 +29,10 @@
     </div>
   </div>
 
-  <!-- <app-episode *ngFor="let episode of episodes" [episode]="episode" [show]="show"></app-episode> -->
-
   <div fxLayout="row">
 
     <div fxFlex="20">
-      <div *ngFor="let episode of episodes;" fxLayout="column" class="episode-select hoverable" (click)="selectEpisode(episode)">
+      <div *ngFor="let episode of episodes" fxLayout="column" class="episode-select hoverable" (click)="selectEpisode(episode)">
         
         <div class="progress" [ngStyle]="{ opacity: episode.progress ? 1 : 0 }">
           <div class="determinate" [ngStyle]="{ 'width': episode.progress + '%' }"></div>

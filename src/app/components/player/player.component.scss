@@ -28,7 +28,7 @@ i {
   background-color: rgba(20, 20, 20, .7);
   transition: all .4s ease-in;
   padding: calc(1rem + 1vw);
-  z-index: 10000000000;
+  z-index: 10000000000000;
   .show {
     font-size: calc(1.5rem + 3vw);
     line-height: calc(1.5rem + 3vw);
@@ -65,7 +65,7 @@ i {
   opacity: 1;
   background: rgba(20, 20, 20, .7);
   top: calc(100vh - 4rem);
-  z-index: 100000000;
+  z-index: 10000000000000;
   transition: all .4s ease-in;
   padding: 20px;
 }
@@ -143,6 +143,7 @@ video::-webkit-media-controls-enclosure {
 }
 
 #progress_widget {
+  cursor: auto;
   position: absolute;
   top: calc(50vh);
   left: calc(50vw - 100px);
