@@ -31,7 +31,7 @@
 
   <div fxLayout="row">
 
-    <div fxFlex="auto">
+    <div fxFlex="15rem">
       <div *ngFor="let episode of episodes" fxLayout="column" class="episode-select hoverable" (click)="selectEpisode(episode)">
         
         <div class="progress" [ngStyle]="{ opacity: episode.progress ? 1 : 0 }">
