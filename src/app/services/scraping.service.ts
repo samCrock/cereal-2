@@ -281,8 +281,6 @@ export class ScrapingService {
         this.fsExtra.mkdirsSync(path);
         path = this.path.join(path, dashed_title + '.jpg');
         if (!this.fsExtra.pathExistsSync(path)) {
-
-          const that = this;
           this.request({
             url: poster,
             encoding: null
@@ -290,9 +288,13 @@ export class ScrapingService {
             if (err) {
               console.error('err', err);
             }
-            that.fsExtra.outputFileSync(path, data.body);
-            path = that.normalizePath(path);
-            return observer.next(path);
+            if (data) {
+              this.fsExtra.outputFileSync(path, data.body);
+              path = this.normalizePath(path);
+              return observer.next(path);
+            } else {
+              return observer.next();
+            }
           });
 
         } else {
@@ -511,7 +513,8 @@ export class ScrapingService {
                 if (result.children[1] && result.children[1].children[0]) {
                   show['title'] = result.children[1].children[0].children[5].children[1].children[0].data.trim();
                 }
-                show['year'] = result.children[1].children[0].children[5].children[1].children[1].children[0].data;
+                show['year'] = result.children[1].children[0].children[5].children[1].children[1].children[0] ?
+                  result.children[1].children[0].children[5].children[1].children[1].children[0].data : '-';
                 show['rating'] = result.children[2].children[1].children[0].children[1].data;
                 show['rating'] = show['rating'].substr(0, show['rating'].length - 1);
               }
