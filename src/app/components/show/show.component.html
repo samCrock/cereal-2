@@ -8,24 +8,24 @@
 
   <div fxLayout="row" fxLayoutAlign="center center" class="navigation_row">
     <div class="center-align">
-      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.current_season == 1 }"
+      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.currentSeason == 1 }"
         (click)="navigate_first()">skip_previous</i>
     </div>
     <div class="center-align">
-      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.current_season == 1 }"
+      <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.currentSeason == 1 }"
         (click)="navigate_previous()">fast_rewind</i>
     </div>
 
-    <h5 class="center-align">Season <span>{{ current_season }}</span></h5>
+    <h5 class="center-align">Season <span>{{ currentSeason }}</span></h5>
 
     <div class="center-align">
       <i class="material-icons navigation_btn hoverable circle"
-        [ngClass]="{ 'disabled': this.current_season == this.show['seasons'] }"
+        [ngClass]="{ 'disabled': this.currentSeason == this.show['seasons'] }"
         (click)="navigate_next()">fast_forward</i>
     </div>
     <div class="center-align">
       <i class="material-icons navigation_btn hoverable circle"
-        [ngClass]="{ 'disabled': this.current_season == this.show['seasons'] }" (click)="navigate_last()">skip_next</i>
+        [ngClass]="{ 'disabled': this.currentSeason == this.show['seasons'] }" (click)="navigate_last()">skip_next</i>
     </div>
   </div>
 
@@ -43,7 +43,7 @@
           <div class="determinate" [ngStyle]="{ 'width': episode.play_progress + '%' }"></div>
         </div>
         <div class="episode-info">
-          <label [ngClass]="isSelected(episode) ? 'selected' : ''">{{ episode.label }}</label>
+          <label [ngClass]="getEpisodeClass(episode)">{{ episode.label }}</label>
         </div>
       </div>
     </div>

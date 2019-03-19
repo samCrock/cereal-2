@@ -19,7 +19,8 @@ export class ShowComponent implements OnInit, OnDestroy {
   public title: string;
   public show: {};
   public episodes = [];
-  public current_season: number;
+  public currentSeason: number;
+  public currentEpisode: number;
   public sanitizedTrailer;
   public openedTrailer = false;
   public loading: boolean;
@@ -54,11 +55,11 @@ export class ShowComponent implements OnInit, OnDestroy {
           this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
             .subscribe(lastSeason => {
               const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
-              this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
-              if (show.seasons === this.current_season) {
-                console.log('this.current_season', this.current_season, dbLastSeason);
+              this.currentSeason = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
+              if (show.seasons === this.currentSeason) {
+                console.log('this.currentSeason', this.currentSeason, dbLastSeason);
                 this.episodes = Object.assign(lastSeason, dbLastSeason);
-                this.dbService.addSeason(this.show['dashed_title'], this.current_season, this.episodes).subscribe();
+                this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, this.episodes).subscribe();
                 this.loading = false;
               }
               this.retrieveSeason();
@@ -71,7 +72,7 @@ export class ShowComponent implements OnInit, OnDestroy {
               this.navbarService.setShow(show);
               // console.log('show from remote', show);
               this.dbService.addShow(this.show);
-              this.current_season = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
+              this.currentSeason = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
               this.retrieveSeason();
             });
         });
@@ -83,23 +84,25 @@ export class ShowComponent implements OnInit, OnDestroy {
   }
 
   retrieveSeason() {
-    // console.log('retrieveSeason', this.current_season);
-    if (this.show['Seasons'][this.current_season]) {
-      console.log('Local', this.current_season, this.show['Seasons'][this.current_season]);
-      this.episodes = this.show['Seasons'][this.current_season];
-      this.selectedEpisode = this.episodes[0];
+    // console.log('retrieveSeason', this.currentSeason);
+    if (this.show['Seasons'][this.currentSeason]) {
+      console.log('Local', this.currentSeason, this.show['Seasons'][this.currentSeason]);
+      this.episodes = this.show['Seasons'][this.currentSeason];
+      this.currentEpisode = (this.currentSeason === this.show['watching_season'] && this.show['watching_episode']) ?
+      this.show['watching_episode'] : 0;
+      this.selectedEpisode = this.episodes[this.currentEpisode];
       this.fetchGlobalProgress();
       this.loading = false;
     } else {
-      this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.current_season)
+      this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.currentSeason)
         .subscribe(episodes => {
-          // console.log('Scraped season', this.current_season, episodes);
+          // console.log('Scraped season', this.currentSeason, episodes);
           this.episodes = episodes;
-          this.selectedEpisode = this.episodes[0];
+          this.selectedEpisode = this.episodes[this.currentEpisode];
           this.fetchGlobalProgress();
-          this.dbService.addSeason(this.show['dashed_title'], this.current_season, episodes)
+          this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, episodes)
             .subscribe(show => {
-              // console.log('Season', this.current_season, 'saved');
+              // console.log('Season', this.currentSeason, 'saved');
               this.show = show;
               this.loading = false;
             });
@@ -124,19 +127,19 @@ export class ShowComponent implements OnInit, OnDestroy {
 
   // NAVIGATION
   navigate_next() {
-    this.current_season++;
+    this.currentSeason++;
     this.retrieveSeason();
   }
   navigate_previous() {
-    this.current_season--;
+    this.currentSeason--;
     this.retrieveSeason();
   }
   navigate_last() {
-    this.current_season = this.show['seasons'];
+    this.currentSeason = this.show['seasons'];
     this.retrieveSeason();
   }
   navigate_first() {
-    this.current_season = 1;
+    this.currentSeason = 1;
     this.retrieveSeason();
   }
   /////////////
@@ -157,8 +160,18 @@ export class ShowComponent implements OnInit, OnDestroy {
   }
 
   selectEpisode(episode) {
-    this.selectedEpisode = episode;
-    this.fetchGlobalProgress();
+    if (moment(episode['date'], 'YYYY-MM-DD').diff(moment(), 'hours') < 24) {
+      this.selectedEpisode = episode;
+      this.fetchGlobalProgress();
+    }
+  }
+
+  getEpisodeClass(episode) {
+    const selected = this.selectedEpisode && this.selectedEpisode.label === episode.label;
+    const disabled = !episode['date'] || moment(episode['date'], 'YYYY-MM-DD').diff(moment(), 'hours') > 24;
+    if (selected) { return 'selected'; }
+    if (disabled) { return 'disabled'; }
+    return '';
   }
 
 
@@ -200,6 +213,5 @@ export class ShowComponent implements OnInit, OnDestroy {
       return 'No air date';
     }
   }
-
 
 }

@@ -149,6 +149,7 @@ export class DbService {
   }
 
   setEpisode(episode) {
+    console.log('setEpisode', episode);
     return new Observable(observer => {
       this.openDb().subscribe(db => {
         db = event.target['result'];
@@ -169,6 +170,7 @@ export class DbService {
             }
             console.log('Adding episode to DB shows', episode);
             request.result['watching_season'] = s;
+            request.result['watching_episode'] = e;
             request.result.Seasons[s][e].magnetURI = episode.magnetURI;
             request.result.Seasons[s][e].dn = episode.dn;
             request.result.Seasons[s][e].infoHash = episode.infoHash;

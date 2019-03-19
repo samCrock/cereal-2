@@ -191,6 +191,10 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
 
   play() {
     this.loading = false;
+    this.episode.dashed_title = this.show.dashed_title;
+    this.dbService.setEpisode(this.episode).subscribe(_t => {
+      this.updatedEpisode.emit(this.episode);
+    });
     this.router.navigate(['play', { show: this.show['dashed_title'], episode: this.episode['label'] }]);
   }
 
@@ -227,7 +231,6 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
       magnetURI: t.magnetURI
     }
     this.dbService.setEpisode(ep).subscribe(_t => {
-      console.log('Episode torrent changed:', _t);
       this.updatedEpisode.emit(ep);
     });
   }
