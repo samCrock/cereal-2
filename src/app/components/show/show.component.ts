@@ -98,7 +98,7 @@ export class ShowComponent implements OnInit, OnDestroy {
         .subscribe(episodes => {
           // console.log('Scraped season', this.currentSeason, episodes);
           this.episodes = episodes;
-          this.selectedEpisode = this.episodes[this.currentEpisode];
+          this.selectedEpisode = this.episodes[0];
           this.fetchGlobalProgress();
           this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, episodes)
             .subscribe(show => {
