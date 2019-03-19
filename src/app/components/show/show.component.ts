@@ -57,8 +57,7 @@ export class ShowComponent implements OnInit, OnDestroy {
               const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
               this.currentSeason = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
               if (show.seasons === this.currentSeason) {
-                console.log('this.currentSeason', this.currentSeason, dbLastSeason);
-                this.episodes = Object.assign(lastSeason, dbLastSeason);
+                console.log('Watching last season', lastSeason, dbLastSeason);
                 this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, this.episodes).subscribe();
                 this.loading = false;
               }
@@ -70,9 +69,8 @@ export class ShowComponent implements OnInit, OnDestroy {
             .subscribe(show => {
               this.show = show;
               this.navbarService.setShow(show);
-              // console.log('show from remote', show);
               this.dbService.addShow(this.show);
-              this.currentSeason = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
+              this.currentSeason = this.show['seasons'];
               this.retrieveSeason();
             });
         });
@@ -84,30 +82,21 @@ export class ShowComponent implements OnInit, OnDestroy {
   }
 
   retrieveSeason() {
-    // console.log('retrieveSeason', this.currentSeason);
-    if (this.show['Seasons'][this.currentSeason]) {
-      console.log('Local', this.currentSeason, this.show['Seasons'][this.currentSeason]);
-      this.episodes = this.show['Seasons'][this.currentSeason];
-      this.currentEpisode = (this.currentSeason === this.show['watching_season'] && this.show['watching_episode']) ?
-      this.show['watching_episode'] : 0;
-      this.selectedEpisode = this.episodes[this.currentEpisode];
-      this.fetchGlobalProgress();
-      this.loading = false;
-    } else {
-      this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.currentSeason)
-        .subscribe(episodes => {
-          // console.log('Scraped season', this.currentSeason, episodes);
-          this.episodes = episodes;
-          this.selectedEpisode = this.episodes[0];
-          this.fetchGlobalProgress();
-          this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, episodes)
-            .subscribe(show => {
-              // console.log('Season', this.currentSeason, 'saved');
-              this.show = show;
-              this.loading = false;
-            });
-        });
-    }
+    this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.currentSeason)
+      .subscribe(episodes => {
+        console.log('Fresh season data', this.currentSeason, episodes);
+        this.episodes = Object.assign(episodes, this.show['Seasons'][this.currentSeason]);
+        this.currentEpisode = (this.currentSeason === this.show['watching_season'] && this.show['watching_episode']) ?
+          this.show['watching_episode'] : 0;
+        this.selectedEpisode = this.episodes[this.currentEpisode];
+        this.fetchGlobalProgress();
+        this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, episodes)
+          .subscribe(show => {
+            console.log('Season', this.currentSeason, 'saved');
+            this.show = show;
+            this.loading = false;
+          });
+      });
   }
 
   play_trailer() {
