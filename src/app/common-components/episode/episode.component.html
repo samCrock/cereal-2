@@ -9,13 +9,19 @@
   <div fxLayout="column" fxLayoutAlign="space-evenly" class="episode">
 
     <div fxLayout="row" fxLayoutAlign="space-evenly" fxFill fxLayoutGap="1vw">
+
+
       <div fxFlex="50" fxLayoutAlign="center center" class="waves-effect waves-light btn" *ngIf="titleAsButton"
         [routerLink]="['/show/' + episode.dashed_title]">{{ episode.title }}</div>
       <div fxFlex="60" fxLayoutAlign="start center" *ngIf="!titleAsButton">
         <label class="title">{{ episode.title }}</label>
       </div>
-      <!-- <div fxFlex="10" fxLayoutAlign="end center" class="right label">{{ episode.label }}</div> -->
-      <div fxFlex="15" fxLayoutAlign="end center">{{ formatDate(episode.date) }}</div>
+
+
+      <div fxFlex="30" fxLayoutAlign="end center" *ngIf="!titleAsButton">
+        {{ formatDate(episode.date) }}
+        <!-- <app-date-widget [date]="episode.date"></app-date-widget> -->
+      </div>
 
       <div fxFlex="20" fxLayoutAlign="end center" *ngIf="isPlayable()">
         <span *ngIf="speed" id="speed">{{ speed }} Mb/s</span>
@@ -39,7 +45,7 @@
 
         <div fxLayout="column" fxLayoutAlign="center start" *ngIf="epTorrents.length">
           <div fxLayout="row" class="extras_header">
-            <div fxFlex="76"><label>Name</label></div>
+            <div fxFlex="76"></div>
             <div fxFlex="5"><label>Seeds</label></div>
             <div fxFlex="2"></div>
             <div fxFlex="13"><label>Size</label></div>
@@ -68,8 +74,12 @@
             [class.expanded]="expanded" (click)="deleteTorrent(episode);">delete</i>
         </div>
 
-        <div *ngIf="!hasResults && !loading" class="episode_msg"><span>No results</span></div>
-        <div *ngIf="loading" class="episode_msg glow"><span>Loading</span></div>
+        <div *ngIf="!hasResults && !loading" class="episode_msg">
+          <span>No results</span>
+        </div>
+        <div *ngIf="loading" class="episode_msg glow">
+          <span>Loading</span>
+        </div>
       </div>
 
     </div>

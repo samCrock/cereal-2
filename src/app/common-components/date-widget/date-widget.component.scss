@@ -1,0 +1,21 @@
+.date_widget {
+	padding: .5rem;
+	background-color: rgb(200, 210, 220);
+	color: rgb(100, 110, 120);
+	border-radius: .3rem;
+}
+
+.date_number {
+    font-size: calc(1rem + 3vw);
+    line-height: calc(1rem + 3vw);
+    font-weight: bold;
+}
+
+.date_label {
+	font-size: calc(1rem + 1vw);
+	line-height: calc(1rem + 1vw);
+}
+
+.date_fromnow {
+	font-size: calc(1rem + 1vw);
+}

@@ -1,146 +1,148 @@
 label {
-	color: white;
+  color: white;
 }
 
 [type="radio"]:checked + span {
-	font-size: calc(1rem + .5vw);
-	color: white;
+  font-size: calc(1rem + 0.5vw);
+  color: white;
 }
 
 [type="radio"] + span {
-	transition: all 0.2s ease-in;
-	font-size: calc(1rem + .5vw);
-	color:rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease-in;
+  font-size: calc(1rem + 0.5vw);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .btn {
-	height: 2rem;
-	line-height: 2rem;
+  height: 2rem;
+  line-height: 2rem;
 }
 
-
 .right {
-	justify-content: flex-end !important;
-	text-align: right;
+  justify-content: flex-end !important;
+  text-align: right;
 }
 
 .label {
-	font-weight: 600;
+  font-weight: 600;
 }
 
 .title {
-	font-size: calc(1rem + 1vw);
-	font-weight: 600;
-	margin: 0 .5rem;
-	text-align: left;
-	width: 100%;
+  font-size: calc(1rem + 1vw);
+  font-weight: 600;
+  margin: 0 0.5rem;
+  text-align: left;
+  width: 100%;
 }
 
 .episode {
-	margin-bottom: .6rem;
-	padding: 1rem;
-	min-height: 4.5rem;
-	border-width: 1px;
-	font-size: calc(1rem + .5vw);
-	line-height: calc(1rem + .5vw);
-	background-color: var(--bg-color-2);
+  margin-bottom: 0.6rem;
+  padding: 1rem;
+  min-height: 4.5rem;
+  border-width: 1px;
+  font-size: calc(1rem + 0.5vw);
+  line-height: calc(1rem + 0.5vw);
+  background-color: var(--bg-color-2);
 }
 
 .active {
-	color: var(--fore-color);
+  color: var(--fore-color);
 }
 
 .material-icons {
-	cursor: pointer;
-	vertical-align: middle;
+  cursor: pointer;
+  vertical-align: middle;
 }
 
 .download_btn {
-	font-size: calc(2rem + 1vw);
+  font-size: calc(2rem + 1vw);
 }
 
 .download_btn:active {
-	filter: blur(1px);
+  filter: blur(1px);
 }
 
 .download_btn.hoverable.circle {
-	transition: transform .2s ease-in;
+  transition: transform 0.2s ease-in;
 }
 
 .episode_row {
-	margin: auto;
+  margin: auto;
 }
 
 .extra.expanded {
-	display: block !important;
+  display: block !important;
 }
 
 .extra {
-	display: none !important;
-	transition: height .3s, visibility .6s, opacity .6s ease-in;
-	transition-delay: .2s;
+  display: none !important;
+  transition: height 0.3s, visibility 0.6s, opacity 0.6s ease-in;
+  transition-delay: 0.2s;
 }
 
 .rotate {
-	transform: rotate(90deg);
-	-ms-transform: rotate(90deg);
-	-webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
 }
 
 .torrent_extras {
-	font-size: calc(1rem + .5vw);
-	width: 100%;
-	padding-bottom: .2rem;
+  font-size: calc(1rem + 0.5vw);
+  width: 100%;
+  padding-bottom: 0.2rem;
 }
 
 .extras_header {
-	width: 100%;
-	margin-bottom: .5rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
 }
 
 .extras_header div label {
-	opacity: 0;
-	color: rgba(255, 255, 255, .6);
-	font-size: calc(1rem + .5vw);
-	transition: all .4s linear;
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: calc(1rem + 0.5vw);
+  transition: all 0.4s linear;
 }
 
 .seeds {
-	color: var(--fore-color);
+  color: var(--fore-color);
 }
 
 #speed {
-	font-size: calc(1rem + .5vw);
-	line-height: calc(1rem + 1vw);
-	color: var(--fore-color);
-	margin-right: .5rem;
+  font-size: calc(1rem + 0.5vw);
+  line-height: calc(1rem + 1vw);
+  color: var(--fore-color);
+  margin-right: 0.5rem;
 }
 
 #delete_btn {
-	font-size: calc(1rem + 1vw);
-	margin-top: 0;
-	float: right;
-	position: relative;
-	transition: margin-top 2s, opacity .4s ease-in;
+  font-size: calc(1rem + 1vw);
+  margin-top: 0;
+  float: right;
+  position: relative;
+  transition: margin-top 2s, opacity 0.4s ease-in;
 }
 
 .episode_msg {
-	width: 100%;
-	text-align: center;
-	opacity: 0;
-	z-index: 0;
-	transition: all .4s ease-in;
-	span {
-		font-size: calc(1rem + 1vw);
-		line-height: calc(7rem + 1vw);
-	}
+  width: 100%;
+  text-align: center;
+  opacity: 1;
+  z-index: 0;
+  transition: all 0.4s ease-in;
+  span {
+    color: var(--fore-color);
+    font-size: calc(1rem + 1vw);
+    line-height: calc(7rem + 1vw);
+		animation: glowing 1s infinite;
+		animation-direction: alternate;
+  }
 }
 
 .overview {
-	padding: 1.5rem 3rem .5rem;
-	font-size: calc(1.2rem + .5vw);
-	line-height: calc(1.4rem + .5vw);
-	color: rgba(255,255,255, .8);
+  padding: 1.5rem 3rem 0.5rem;
+  font-size: calc(1rem + 0.5vw);
+  line-height: calc(1.4rem + 0.5vw);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .opacity-0 {
@@ -149,4 +151,13 @@ label {
 
 .opacity-1 {
   opacity: 1;
+}
+
+@keyframes glowing {
+  0% {
+    opacity: .2;
+  }
+  100% {
+    font-size: 1;
+  }
 }

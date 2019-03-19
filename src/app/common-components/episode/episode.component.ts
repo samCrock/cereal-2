@@ -86,12 +86,8 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
   }
 
   formatDate(date) {
-    if (date) {
-      return moment(date, 'YYYY-MM-DD').fromNow();
-    }
-    if (!date) {
-      return 'No air date';
-    }
+    if (date) { return moment(date, 'YYYY-MM-DD').format('DD MMMM YYYY'); }
+    if (!date) { return 'No air date'; }
   }
 
   downloadable(airDate) {
@@ -213,8 +209,10 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
   toggleExtra(episode) {
     this.epTorrents = [];
     this.loading = true;
+    console.log('Searching torrents');
     this.scrapingService.retrieveTorrentsList(this.mode === 'compact' ? episode.title : this.show['title'], episode.label)
       .subscribe(result => {
+        console.log('Torrents found');
         this.hasResults = true;
         this.loading = false;
         this.epTorrents.push(result);

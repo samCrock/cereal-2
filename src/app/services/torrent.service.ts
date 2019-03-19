@@ -31,6 +31,9 @@ export class TorrentService {
         this.wtClient.add(episode['magnetURI'], {
           path: filePath
         }, (torrent) => {
+          torrent.on('ready', function () {
+            this.dbService.readyTorrent(torrent['infoHash']).subscribe();
+          });
           observer.next(torrent);
         });
       } else {
