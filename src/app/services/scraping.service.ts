@@ -343,6 +343,7 @@ export class ScrapingService {
   // PB proxy
   retrieveEpisode(show: string, episode: string): Observable<any> {
     show = show.replace(/'/g, '');
+    show = show.replace(/&/g, 'and');
     const url = encodeURI('https://thepiratebay10.org/search/' + show + ' ' + episode + '/1/99/0');
     console.log('Downloading episode', show, episode);
     console.log('url', url);
