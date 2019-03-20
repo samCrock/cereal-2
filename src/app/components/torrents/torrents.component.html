@@ -1,9 +1,11 @@
 <app-page-loader [display]="loading"></app-page-loader>
-<div class="container" @fadeItems *ngIf="torrents">
+
+<div class="container" @fadeItems>
 	<div *ngFor="let t of torrents | sort:'date'" fxLayout="column">
 		<app-episode (emit)="episodeDeleted()" [episode]="t" [mode]="'compact'"></app-episode>
 	</div>
 </div>
-<div *ngIf="torrents && torrents.length === 0;" fxLayoutAlign="center center" flex>
-	<span>There are no pending downloads</span>
+
+<div *ngIf="torrents && torrents.length === 0 && !loading" fxLayoutAlign="center center" flex>
+	<span id="noPending">There are no pending downloads</span>
 </div>

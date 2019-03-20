@@ -2,14 +2,14 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { ScrapingService } from '../../services';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
-import {fade} from '../../animations/fade';
+import { fade } from '../../animations/fade';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
   providers: [ScrapingService],
-  animations: [ fade ]
+  animations: [fade]
 })
 export class CalendarComponent implements OnInit {
 
@@ -38,15 +38,15 @@ export class CalendarComponent implements OnInit {
     console.log('Retrieve calendar..');
     this.loading = true;
     this.scrapingService.retrieveCalendar()
-    .subscribe(
-      result => {
-        console.log('calendar', result);
-        this.calendar = result.reverse();
-        this.loading = false;
-      },
-      error => {
-        console.log('Cannot load calendar', error);
-      });
+      .subscribe(
+        result => {
+          console.log('calendar', result);
+          this.calendar = result.reverse();
+          this.loading = false;
+        },
+        error => {
+          console.log('Cannot load calendar', error);
+        });
   }
 
 }

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { TorrentService, DbService } from '../../services';
-import { Observable } from 'rxjs';
-import * as moment from 'moment';
+import { fade } from '../../animations/fade';
 
 @Component({
   selector: 'app-torrents',
   templateUrl: './torrents.component.html',
-  styleUrls: ['./torrents.component.scss']
+  styleUrls: ['./torrents.component.scss'],
+  animations: [ fade ]
 })
 export class TorrentsComponent implements OnInit {
 
