@@ -20,7 +20,8 @@
     </div>
   </div>
 
-  <div id="controls" [ngClass]="hideControls() ? 'hidden' : ''" [hidden]="loading" fxLayout="row" fxLayoutAlign="start center">
+  <div id="controls" [ngClass]="hideControls() ? 'hidden' : ''" [hidden]="loading" fxLayout="row"
+    fxLayoutAlign="start center">
     <div class="hoverable" *ngIf="this.player" (click)="toggle_play()">
       <i class="material-icons">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
     </div>
@@ -52,10 +53,7 @@
 
   </div>
 
-  <div id="progress_widget" *ngIf="!loading && progress < 10" fxLayout="column" fxLayoutAlign="start center">
-    <span>progress: {{ progress }}%</span>
-    <span>speed: {{ speed }}</span>
-  </div>
+  <app-progress-widget *ngIf="!loading && progress < 10" [progress]="progress" [speed]="speed"></app-progress-widget>
   <app-page-loader [display]="loading"></app-page-loader>
 
 

@@ -157,6 +157,9 @@ video::-webkit-media-controls-enclosure {
   :nth-child(2) {
     font-size: calc(2rem + 1vw);
   }
+  span {
+    color: var(--fore-color);
+  }
 }
 
 .semaphore_btn {

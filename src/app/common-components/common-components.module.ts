@@ -9,7 +9,8 @@ import {
   ExpandedCardComponent,
   DialogComponent,
   PageLoaderComponent,
-  DateWidgetComponent
+  DateWidgetComponent,
+  ProgressWidgetComponent
 } from '.';
 import { MatDialogModule } from '@angular/material';
 // Pipes
@@ -24,7 +25,8 @@ const COMMON_COMPONENTS = [
   DialogComponent,
   PageLoaderComponent,
   IconComponent,
-  DateWidgetComponent
+  DateWidgetComponent,
+  ProgressWidgetComponent
 ];
 
 @NgModule({

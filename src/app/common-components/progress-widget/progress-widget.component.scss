@@ -1,0 +1,52 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.progress {
+  position: absolute;
+  height: 160px;
+  width: 160px;
+  cursor: pointer;
+  top: calc(50% - 60px);
+  left: calc(50% - 60px);
+  margin: -80px 0 0 -80px;
+}
+
+.progress-circle {
+  transform: rotate(-90deg);
+  margin-top: -40px;
+}
+
+.progress-circle-back {
+  fill: none;
+  stroke: var(--bg-color);
+  stroke-width: 10px;
+}
+
+.progress-circle-prog {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 10px;
+  stroke-dasharray: 0 999;
+  stroke-dashoffset: 0px;
+  transition: stroke-dasharray 0.7s linear 0s;
+}
+
+.progress-text {
+  width: 100%;
+  position: absolute;
+  top: 40px;
+	text-align: center;
+	font-weight: 600;
+  font-size: 2.2rem;
+}
+
+.speed {
+	width: 100%;
+  position: absolute;
+  top: 85px;
+  text-align: center;
+	font-weight: 100;
+  font-size: 1.6rem;
+}
