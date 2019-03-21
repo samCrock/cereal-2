@@ -53,7 +53,7 @@
 
   </div>
 
-  <app-progress-widget *ngIf="!loading && progress < 10" [progress]="progress" [speed]="speed"></app-progress-widget>
+  <app-progress-widget *ngIf="!loading" [progress]="progress" [speed]="speed"></app-progress-widget>
   <app-page-loader [display]="loading"></app-page-loader>
 
 

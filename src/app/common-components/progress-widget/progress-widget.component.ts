@@ -13,22 +13,28 @@ export class ProgressWidgetComponent implements OnChanges {
   @Input() progress;
   @Input() speed;
 
-  constructor() {}
+  constructor() { }
 
   update() {
-    const rand = this.progress;
-    const x = document.querySelector('.progress-circle-prog');
-    x.style.strokeDasharray = (rand * 4.65) + ' 999';
-    const el = document.querySelector('.progress-text');
-    console.log(el);
-    el.value = rand.toString();
-    setTimeout(() => {
-      el.innerHTML = rand + '%';
-    }, 10);
+    const relativeProgress = this.progress;
+    const x = document.querySelector('.progress-circle-prog') as HTMLElement;
+    const el = document.querySelector('.progress-text') as HTMLElement;
+    if (x && el) {
+      x.style.strokeDasharray = (relativeProgress * 4.65) + ' 999';
+      el.setAttribute('value', relativeProgress.toString());
+      setTimeout(() => {
+        el.innerHTML = relativeProgress + '%';
+      }, 10);
+    }
+
   }
 
   ngOnChanges() {
-    if (this.progress) { this.update(); }
+    if (this.progress) {
+      // console.log(this.progress);
+      this.progress = parseFloat(this.progress.toString().substring(0, 3)) * 10;
+      this.update();
+    }
   }
 
 }

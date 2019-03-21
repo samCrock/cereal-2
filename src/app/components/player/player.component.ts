@@ -509,7 +509,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   fetchProgress() {
-    this.progressSubscription = interval(1000).subscribe(() => {
+    this.progressSubscription = interval(500).subscribe(() => {
       if (this.episode && this.episode['status'] === 'pending') {
         const t = this.torrentService.getTorrentByHash(
           this.episode['infoHash']
@@ -518,14 +518,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
           // console.log('fetchProgress', t.infoHash, t.progress, t.downloadSpeed);
 
           if (t['progress'] !== 1) {
-            this.speed = (
-              Math.round((t['downloadSpeed'] / 1048576) * 100) / 100
-            ).toString();
-            this.progress = Math.round(t['progress'] * 100);
+            this.speed = ( Math.round((t['downloadSpeed'] / 1048576) * 100) / 100 ).toString();
+            this.progress = t['progress'] * 100;
             if (this.progress > 10 && !this.player.getAttribute('src')) {
               t.files.forEach((file, i) => {
                 if (file.path.endsWith('mkv') || file.path.endsWith('mp4')) {
                   // create HTTP server for this torrent
+                  if (this.server) {
+                    this.server.close();
+                  }
                   this.server = t.createServer();
                   this.server.listen(3333); // start the server listening to a port
                   this.player.setAttribute('src', 'http://localhost:3333/' + i + '/' + file.path);
