@@ -537,12 +537,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
             }
             this.cdRef.detectChanges();
           } else {
-            this.downloadNext();
             this.progress = 100;
             delete this.speed;
             if (!this.player.getAttribute('src')) {
               this.player.setAttribute('src', this.filePath);
               this.progressSubscription.unsubscribe();
+              this.downloadNext();
             }
           }
         }
