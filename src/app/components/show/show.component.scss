@@ -1,3 +1,6 @@
+.container {
+	padding: 5rem 0 0 0 !important;
+}
 
 span {
 	margin: auto;
@@ -64,10 +67,16 @@ h5 {
 .progress {
 	margin: 0;
 	border-radius: 0;
+	background-color: var(--bg-color-2) !important;
 }
 
 .selected {
 	color: var(--primary);
+}
+
+.episodes-container {
+	height: 300px;
+	overflow-y: auto;
 }
 
 

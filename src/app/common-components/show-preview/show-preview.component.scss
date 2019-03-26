@@ -89,3 +89,9 @@
   left: calc(50% - 320px);
   top: calc(50% - 160px);
 }
+
+.progress {
+	margin: 0;
+	border-radius: 0;
+	background-color: var(--bg-color-2) !important;
+}

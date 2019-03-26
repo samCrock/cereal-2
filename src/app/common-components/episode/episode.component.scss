@@ -42,7 +42,6 @@ label {
   border-width: 1px;
   font-size: calc(1rem + 0.5vw);
   line-height: calc(1rem + 0.5vw);
-  background-color: var(--bg-color-2);
 }
 
 .active {
@@ -67,7 +66,9 @@ label {
 }
 
 .episode_row {
+  background-color: var(--bg-color-2);
   margin: auto;
+  height: 300px;
 }
 
 .extra.expanded {
@@ -145,14 +146,6 @@ label {
   color: rgba(255, 255, 255, 0.8);
 }
 
-.opacity-0 {
-  opacity: 0;
-}
-
-.opacity-1 {
-  opacity: 1;
-}
-
 @keyframes glowing {
   0% {
     opacity: .2;
@@ -160,4 +153,10 @@ label {
   100% {
     font-size: 1;
   }
+}
+
+.progress {
+	margin: 0;
+	border-radius: 0;
+	background-color: var(--bg-color-2) !important;
 }

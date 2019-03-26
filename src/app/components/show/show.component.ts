@@ -86,6 +86,13 @@ export class ShowComponent implements OnInit, OnDestroy {
       .subscribe(episodes => {
         console.log('Fresh season data', this.currentSeason, episodes);
         this.episodes = Object.assign(episodes, this.show['Seasons'][this.currentSeason]);
+
+        // setTimeout(() => {
+        //   const episode = document.getElementsByClassName('episode')[0] as HTMLElement;
+        //   const episodeContainer = document.getElementsByClassName('episodes-container')[0] as HTMLElement;
+        //   episodeContainer.style.maxHeight = episode.clientHeight + 'px';
+        // }, 0);
+
         this.currentEpisode = (this.currentSeason === this.show['watching_season'] && this.show['watching_episode']) ?
           this.show['watching_episode'] : 0;
         this.selectedEpisode = this.episodes[this.currentEpisode];

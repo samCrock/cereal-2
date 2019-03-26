@@ -6,19 +6,24 @@
   <div class="progress view" *ngIf="episode.play_progress">
     <div class="determinate" [ngStyle]="{ 'width': episode.play_progress + '%' }"></div>
   </div>
+  
   <div fxLayout="column" fxLayoutAlign="space-evenly" class="episode">
 
     <div fxLayout="row" fxLayoutAlign="space-evenly" fxFill fxLayoutGap="1vw">
 
 
-      <div fxFlex="50" fxLayoutAlign="center center" class="waves-effect waves-light btn" *ngIf="titleAsButton"
+      <div fxFlex="60" fxLayoutAlign="center center" class="waves-effect waves-light btn" *ngIf="titleAsButton"
         [routerLink]="['/show/' + episode.dashed_title]">{{ episode.title }}</div>
-      <div fxFlex="60" fxLayoutAlign="start center" *ngIf="!titleAsButton">
+      <div fxFlex="50" fxLayoutAlign="start center" *ngIf="!titleAsButton">
         <label class="title">{{ episode.title }}</label>
       </div>
 
+      <div fxFlex="10" fxLayoutAlign="end center" *ngIf="!titleAsButton">
+        Ep {{ episode.label.substring(4, 6) }}
+      </div>
 
-      <div fxFlex="30" fxLayoutAlign="end center" *ngIf="!titleAsButton">
+
+      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!titleAsButton">
         {{ formatDate(episode.date) }}
         <!-- <app-date-widget [date]="episode.date"></app-date-widget> -->
       </div>
