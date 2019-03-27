@@ -49,22 +49,13 @@ export class ShowComponent implements OnInit, OnDestroy {
       this.title = params['title'];
       this.dbService.getShow(this.title)
         .subscribe(show => {
+          // Stored show
           this.show = show;
           this.navbarService.setShow(show);
-
-          this.scrapingService.retrieveShowSeason(show.dashed_title, show.seasons)
-            .subscribe(lastSeason => {
-              const dbLastSeason = show.Seasons[parseInt(show.seasons, 10)];
-              this.currentSeason = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
-              if (show.seasons === this.currentSeason) {
-                console.log('Watching last season', lastSeason, dbLastSeason);
-                this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, this.episodes).subscribe();
-                this.loading = false;
-              }
-              this.retrieveSeason();
-            });
-
+          this.currentSeason = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
+          this.retrieveSeason();
         }, () => {
+            // First time
           this.scrapingService.retrieveShow(this.title)
             .subscribe(show => {
               this.show = show;
@@ -86,12 +77,6 @@ export class ShowComponent implements OnInit, OnDestroy {
       .subscribe(episodes => {
         console.log('Fresh season data', this.currentSeason, episodes);
         this.episodes = Object.assign(episodes, this.show['Seasons'][this.currentSeason]);
-
-        // setTimeout(() => {
-        //   const episode = document.getElementsByClassName('episode')[0] as HTMLElement;
-        //   const episodeContainer = document.getElementsByClassName('episodes-container')[0] as HTMLElement;
-        //   episodeContainer.style.maxHeight = episode.clientHeight + 'px';
-        // }, 0);
 
         this.currentEpisode = (this.currentSeason === this.show['watching_season'] && this.show['watching_episode']) ?
           this.show['watching_episode'] : 0;

@@ -215,7 +215,9 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
         console.log('Torrents found');
         this.hasResults = true;
         this.loading = false;
-        this.epTorrents.push(result);
+        if (this.epTorrents.length < 4) {
+          this.epTorrents.push(result);
+        }
       });
   }
 
