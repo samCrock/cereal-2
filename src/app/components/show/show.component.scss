@@ -35,7 +35,6 @@ h5 {
 
 .navigation_row {
 	min-height: 48px;
-	// margin: 1rem 0;
 }
 
 .disabled {
@@ -75,7 +74,10 @@ h5 {
 }
 
 .episodes-container {
-	height: 300px;
+	overflow-y: auto;
+}
+
+.episode-container {
 	overflow-y: auto;
 }
 

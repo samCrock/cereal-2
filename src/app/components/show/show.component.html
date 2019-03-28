@@ -1,7 +1,7 @@
 <app-page-loader [display]="loading"></app-page-loader>
 
 
-<div class="container" @fadeItems *ngIf="show">
+<div class="container" @fadeItems *ngIf="show" fxLayout="column">
 
   <app-show-preview [show]="show"></app-show-preview>
 
@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <div *ngIf="selectedEpisode" fxFlex="auto">
+    <div *ngIf="selectedEpisode" fxFlex="auto" class="episode-container">
       <app-episode [show]="show" [episode]="selectedEpisode" [mode]="'expanded'" (updatedEpisode)="episodeListener($event)"></app-episode>
     </div>
   </div>

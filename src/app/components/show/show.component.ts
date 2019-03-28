@@ -6,6 +6,7 @@ import { fade } from '../../animations/fade';
 import { Subscription } from 'rxjs';
 import { interval } from 'rxjs/internal/observable/interval';
 import * as moment from 'moment';
+import { SELECT_PANEL_MAX_HEIGHT } from '@angular/material';
 
 @Component({
   selector: 'app-show',
@@ -43,6 +44,10 @@ export class ShowComponent implements OnInit, OnDestroy {
     this.init();
   }
 
+  ngOnDestroy() {
+    if (this.progressSubscription) { this.progressSubscription.unsubscribe(); }
+  }
+
   init() {
     this.loading = true;
     this.route.params.subscribe(params => {
@@ -55,7 +60,7 @@ export class ShowComponent implements OnInit, OnDestroy {
           this.currentSeason = this.show['watching_season'] ? this.show['watching_season'] : this.show['seasons'];
           this.retrieveSeason();
         }, () => {
-            // First time
+          // First time
           this.scrapingService.retrieveShow(this.title)
             .subscribe(show => {
               this.show = show;
@@ -68,10 +73,6 @@ export class ShowComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    if (this.progressSubscription) { this.progressSubscription.unsubscribe(); }
-  }
-
   retrieveSeason() {
     this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.currentSeason)
       .subscribe(episodes => {
@@ -82,6 +83,10 @@ export class ShowComponent implements OnInit, OnDestroy {
           this.show['watching_episode'] : 0;
         this.selectedEpisode = this.episodes[this.currentEpisode];
         this.fetchGlobalProgress();
+
+        // Set containers max height
+        this.setMaxHeights();
+
         this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, episodes)
           .subscribe(show => {
             console.log('Season', this.currentSeason, 'saved');
@@ -89,6 +94,17 @@ export class ShowComponent implements OnInit, OnDestroy {
             this.loading = false;
           });
       });
+  }
+
+  setMaxHeights() {
+    setTimeout(() => {
+      const showHeader = document.getElementsByClassName('show_header')[0] as HTMLElement;
+      const episodesContainter = document.getElementsByClassName('episodes-container')[0] as HTMLElement;
+      const episodeContainter = document.getElementsByClassName('episode-container')[0] as HTMLElement;
+      const h = showHeader.getBoundingClientRect().height;
+      episodesContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 10rem)';
+      episodeContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 10rem)';
+    }, 10);
   }
 
   play_trailer() {
