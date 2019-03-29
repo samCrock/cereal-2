@@ -73,11 +73,26 @@ export class ShowComponent implements OnInit, OnDestroy {
     });
   }
 
+  assignSeason(target, source) {
+    target.forEach((episode, i) => {
+      if (source && source[i]) {
+        episode['dn'] = source[i]['dn'];
+        episode['infoHash'] = source[i]['infoHash'];
+        episode['magnetURI'] = source[i]['magnetURI'];
+        episode['progress'] = source[i]['progress'];
+        episode['status'] = source[i]['status'];
+      }
+    });
+    return target;
+  }
+
   retrieveSeason() {
     this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.currentSeason)
       .subscribe(episodes => {
         console.log('Fresh season data', this.currentSeason, episodes);
-        this.episodes = Object.assign(episodes, this.show['Seasons'][this.currentSeason]);
+
+        // this.episodes = Object.assign(episodes, this.show['Seasons'][this.currentSeason]);
+        this.episodes = this.assignSeason(episodes, this.show['Seasons'][this.currentSeason]);
 
         this.currentEpisode = (this.currentSeason === this.show['watching_season'] && this.show['watching_episode']) ?
           this.show['watching_episode'] : 0;
@@ -87,7 +102,7 @@ export class ShowComponent implements OnInit, OnDestroy {
         // Set containers max height
         this.setMaxHeights();
 
-        this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, episodes)
+        this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, this.episodes)
           .subscribe(show => {
             console.log('Season', this.currentSeason, 'saved');
             this.show = show;
