@@ -207,18 +207,16 @@ export class PlayerComponent implements OnInit, OnDestroy {
       false
     );
 
-    document.addEventListener(
-      'drop',
-      e => {
-        e.stopPropagation();
-        e.preventDefault();
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        console.log('Subs dropped:', files[0]);
-        that.addSubs(files[0].path);
-      },
-      false
-    );
+    document.addEventListener('drop', e => {
+      e.stopPropagation();
+      e.preventDefault();
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      console.log('Subs dropped:', files[0]);
+      // const fileName = this.path.join(this.path.dirname(this.filePath), files[0].name);
+      // this.fsExtra.writeFileSync(fileName, files[0]);
+      that.addSubs(files[0].path);
+    }, false);
 
     let firstSetup = true;
 
@@ -320,14 +318,14 @@ export class PlayerComponent implements OnInit, OnDestroy {
       track.kind = 'captions';
       track.label = 'English';
       track.srclang = 'en';
+      console.log('Creating vtt', filePath);
       that.fsExtra
         .createReadStream(filePath)
         .pipe(that.srt2vtt())
-        .pipe(
-          that.fsExtra.createWriteStream(
-            filePath.substring(0, filePath.length - 3) + 'vtt'
-          )
-        );
+        .pipe(that.fsExtra.createWriteStream(
+          filePath.substring(0, filePath.length - 3) + 'vtt'
+        ));
+
       track.src = filePath.substring(0, filePath.length - 3) + 'vtt';
       track.label = that.path.normalize(track.src).split(that.path.sep)[
         that.path.normalize(track.src).split(that.path.sep).length - 1
@@ -344,52 +342,66 @@ export class PlayerComponent implements OnInit, OnDestroy {
           }
         }
       }
-      if (that.player.textTracks['1']) {
-        that.player.textTracks['1'].mode = 'showing';
-      }
+      // if (that.player.textTracks['1']) {
+      //   that.player.textTracks['1'].mode = 'showing';
+      // }
+
       if (!duplicate) {
         that.player.appendChild(track);
       }
 
       setTimeout(() => {
-        if (that.player && that.player.textTracks) {
-          const cues = that.player.textTracks[1].cues;
-          if (cues) {
-            Object.keys(cues).forEach(key => {
-              cues[key].snapToLines = false;
-              cues[key].line = 90;
-            });
-          }
-          for (const key in that.player.textTracks) {
-            if (that.player.textTracks.hasOwnProperty(key)) {
-              that.player.textTracks[key].mode = 'hidden';
-            }
-          }
-          if (that.player.textTracks['1']) {
-            that.player.textTracks['1'].mode = 'showing';
+        this.selectSubs(0);
+      }, 500);
+
+    } else {
+      console.log('Cannot access file:', filePath);
+    }
+  }
+
+  formatCues(index?: number) {
+    index = index ? index : 0;
+    console.log('formatCues', index);
+    setTimeout(() => {
+      if (this.player && this.player.textTracks) {
+        const track = this.player.textTracks[index];
+        const cues = track.cues;
+        if (cues) {
+          Object.keys(cues).forEach(key => {
+            cues[key].snapToLines = false;
+            cues[key].line = 90;
+          });
+        }
+        for (const key in this.player.textTracks) {
+          if (this.player.textTracks.hasOwnProperty(key)) {
+            this.player.textTracks[key].mode = 'hidden';
           }
         }
-      }, 200);
-    }
+        if (this.player.textTracks[index]) {
+          this.player.textTracks[index].mode = 'showing';
+        }
+      }
+    }, 10);
   }
 
   toggleSubs() {
     this.showSubs = !this.showSubs;
   }
 
-  selectSubs(sub) {
+  selectSubs(i) {
     for (const key in this.player.textTracks) {
       if (this.player.textTracks.hasOwnProperty(key)) {
         const element = this.player.textTracks[key];
         element.mode = 'hidden';
-        if (element.label === sub.label) {
+        if (element.label === this.player.textTracks[i].label) {
           element.mode = 'showing';
+          this.formatCues(i);
         }
       }
     }
     setTimeout(() => {
       this.showSubs = false;
-    }, 200);
+    }, 100);
   }
 
   keyBindingsSetup() {
@@ -518,7 +530,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
           // console.log('fetchProgress', t.infoHash, t.progress, t.downloadSpeed);
 
           if (t['progress'] !== 1) {
-            this.speed = ( Math.round((t['downloadSpeed'] / 1048576) * 100) / 100 ).toString();
+            this.speed = (Math.round((t['downloadSpeed'] / 1048576) * 100) / 100).toString();
             this.progress = t['progress'] * 100;
             if (this.progress > 10 && !this.player.getAttribute('src')) {
               t.files.forEach((file, i) => {
