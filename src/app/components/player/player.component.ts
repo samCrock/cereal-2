@@ -300,14 +300,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.subsService
       .retrieveSubs(this.show, this.episode['label'], dn)
       .subscribe(subs => {
-        subs.forEach(sub => {
+        // subs.forEach(sub => {
+          console.log('------------>', subs);
           this.subsService
-            .downloadSub(sub, this.filePath)
+            .downloadSub(subs, this.filePath)
             .subscribe(subPath => {
               // console.log('subPath', subPath);
               this.addSubs(subPath);
             });
-        });
+        // });
       });
   }
 
