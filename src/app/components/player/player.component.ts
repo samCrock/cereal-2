@@ -114,7 +114,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
           this.episode['label'],
           playProgress
         )
-        .subscribe(show => { });
+        .subscribe(show => {});
     }
 
     if (this.nextEpisode) {

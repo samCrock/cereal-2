@@ -9,14 +9,18 @@
     <div fxLayout="row" fxLayoutAlign="start">
 
       <div fxLayout="column">
-      
-        <h3 id="title" class="font-2" [routerLink]="['/show', show.dashed_title]">{{ show.title }}</h3>
-        
-        <div fxLayout="row" fxLayoutGap="2vw" class="additionals">
-          <label *ngIf="show.year" class="left-align valign-wrapper"><span>Year</span>{{ show.year }} </label>
-          <label *ngIf="show.network" class="left-align valign-wrapper"><span>Network</span>{{ show.network }} </label>
-          <label *ngIf="show.runtime" class="left-align valign-wrapper"><span>Runtime</span>{{ show.runtime }}' </label>
+
+        <div fxLayout="row" fxLayoutGap="2vw">
+          <h3 id="title" class="font-2" [routerLink]="['/show', show.dashed_title]">{{ show.title }}</h3>
+          <div fxLayout="row" fxLayoutGap="2vw" class="additionals">
+            <label *ngIf="show.year" class="left-align valign-wrapper"><span>Year</span>{{ show.year }} </label>
+            <label *ngIf="show.network" class="left-align valign-wrapper"><span>Network</span>{{ show.network }} </label>
+            <label *ngIf="show.runtime" class="left-align valign-wrapper"><span>Runtime</span>{{ show.runtime }}' </label>
+          </div>
+
         </div>
+      
+        
 
         <div fxLayout="row" fxLayoutGap="2vw">
           <span class="genres" *ngFor="let g of show.genres">{{ g }} </span>
@@ -24,7 +28,7 @@
 
       </div>
 
-      <div fxLayout="column" fxLayoutAlign="center">
+      <div fxLayout="row" fxLayoutAlign="center">
         <div class="valign-wrapper" *ngIf="show.trailer">
           <i class="material-icons icon hoverable circle" (click)="play_trailer()">live_tv</i>
         </div>

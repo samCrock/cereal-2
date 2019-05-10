@@ -37,8 +37,8 @@
         <div class="progress" [ngStyle]="{ opacity: episode.progress ? 1 : 0 }">
           <div class="determinate" [ngStyle]="{ 'width': episode.progress + '%' }"></div>
         </div>
-        <div class="progress view" [ngStyle]="{ opacity: episode.play_progress ? 1 : 0 }">
-          <div class="determinate" [ngStyle]="{ 'width': episode.play_progress + '%' }"></div>
+        <div class="progress view">
+          <div class="determinate" [ngStyle]="{ width: episode.play_progress + '%' }"></div>
         </div>
         <div class="episode-info">
           <label [ngClass]="getEpisodeClass(episode)">{{ getEpLabel(episode.label) }}</label>

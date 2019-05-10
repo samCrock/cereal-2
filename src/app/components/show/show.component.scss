@@ -43,7 +43,7 @@ h5 {
 }
 
 .episode-select {
-	margin: 0 1rem .5rem 0;
+	margin: 0 0 .5rem 0;
 	background-color: var(--bg-color-2);
 }
 
@@ -75,6 +75,7 @@ h5 {
 
 .episodes-container {
 	overflow-y: auto;
+	margin: 0 .5rem 1rem 0;
 }
 
 .episode-container {
