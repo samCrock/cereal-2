@@ -15,6 +15,7 @@ import { SELECT_PANEL_MAX_HEIGHT } from '@angular/material';
   providers: [ScrapingService, DbService],
   animations: [fade]
 })
+
 export class ShowComponent implements OnInit, OnDestroy {
 
   public title: string;
@@ -27,7 +28,6 @@ export class ShowComponent implements OnInit, OnDestroy {
   public loading: boolean;
   public selectedEpisode;
   public progressSubscription: Subscription;
-
 
   constructor(
     public scrapingService: ScrapingService,
@@ -80,6 +80,7 @@ export class ShowComponent implements OnInit, OnDestroy {
         episode['infoHash'] = source[i]['infoHash'];
         episode['magnetURI'] = source[i]['magnetURI'];
         episode['progress'] = source[i]['progress'];
+        episode['play_progress'] = source[i]['play_progress'];
         episode['status'] = source[i]['status'];
       }
     });
@@ -89,9 +90,8 @@ export class ShowComponent implements OnInit, OnDestroy {
   retrieveSeason() {
     this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.currentSeason)
       .subscribe(episodes => {
-        console.log('Fresh season data', this.currentSeason, episodes);
+        // console.log('Fresh season data', this.currentSeason, episodes, this.show['Seasons'][this.currentSeason]);
 
-        // this.episodes = Object.assign(episodes, this.show['Seasons'][this.currentSeason]);
         this.episodes = this.assignSeason(episodes, this.show['Seasons'][this.currentSeason]);
 
         this.currentEpisode = (this.currentSeason === this.show['watching_season'] && this.show['watching_episode']) ?
