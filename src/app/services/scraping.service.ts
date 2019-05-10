@@ -103,7 +103,7 @@ export class ScrapingService {
               ep_title = (episode.children[0].children[0] && episode.children[0].children[0].children[2].children[0]) ?
                 episode.children[0].children[0].children[2].children[0].data : '';
               ep_date = episode.children[1].children[0].children[0].attribs['data-date'];
-              if (i === 1) {
+              if (episode.children[1].children[0].children[2]) {
                 ep_date = episode.children[1].children[0].children[2].attribs['data-date'];
               }
               // Format episode label
