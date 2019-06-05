@@ -37,12 +37,14 @@ i {
   }
   .episode_title {
     font-size: calc(1rem + 1vw);
-    line-height: calc(1rem + 1vw);
+    line-height: calc(1rem + 2vw);
+    font-weight: 200;
     padding-left: calc(1rem + 1vw);
   }
   .episode_label {
-    font-size: calc(1rem + 2vw);
+    font-size: calc(1rem + 1vw);
     line-height: calc(1rem + 2vw);
+    font-weight: 600;
     padding-left: calc(1rem + 1vw);
   }
 }

@@ -10,8 +10,8 @@ $expanded_poster_w: 26vw;
 	background-color: transparent;
 	width: $poster_w;
 	height: calc(#{$poster_w} * 1.5);
-	// max-width: 220px;
-	// max-height: 330px;
+	 //max-width: 220px;
+	 //max-height: 330px;
 	background-size: cover;
 	border-radius: 4px;
 	background-repeat: round;
@@ -79,8 +79,8 @@ $expanded_poster_w: 26vw;
 	.card {
 		width: $poster_w;
 		height: calc(#{$poster_w} * 1.5);
-		max-width: none;
-		max-height: none;
+		//max-width: none;
+		//max-height: none;
 	}
 	.card-title {
 		span {
@@ -95,8 +95,8 @@ $expanded_poster_w: 26vw;
 	.card {
 		width: $poster_w;
 		height: calc(#{$poster_w} * 1.5);
-		max-width: none;
-		max-height: none;
+		//max-width: none;
+		//max-height: none;
 	}
 	.card-title {
 		span {
