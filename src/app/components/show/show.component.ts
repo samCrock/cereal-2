@@ -117,8 +117,8 @@ export class ShowComponent implements OnInit, OnDestroy {
       const episodesContainter = document.getElementsByClassName('episodes-container')[0] as HTMLElement;
       const episodeContainter = document.getElementsByClassName('episode-container')[0] as HTMLElement;
       const h = showHeader.getBoundingClientRect().height;
-      episodesContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 10rem)';
-      episodeContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 10rem)';
+      episodesContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 11rem)';
+      episodeContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 11rem)';
     }, 10);
   }
 

@@ -1,15 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {
   TorrentService,
   SubsService,
   DbService,
   ScrapingService
 } from '../../services';
-import { ElectronService } from 'ngx-electron';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { Subscription, Observable } from 'rxjs';
-import { interval } from 'rxjs/internal/observable/interval';
-import { ChangeDetectorRef } from '@angular/core';
+import {ElectronService} from 'ngx-electron';
+import {Router, ActivatedRoute, NavigationEnd} from '@angular/router';
+import {Subscription, Observable} from 'rxjs';
+import {interval} from 'rxjs/internal/observable/interval';
+import {ChangeDetectorRef} from '@angular/core';
 import * as magnet from 'magnet-uri';
 import * as moment from 'moment';
 
@@ -74,7 +74,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   ngOnDestroy() {
     if (this.routeSubscription) {
@@ -114,7 +115,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
           this.episode['label'],
           playProgress
         )
-        .subscribe(show => {});
+        .subscribe(show => {
+        });
     }
 
     if (this.nextEpisode) {
@@ -149,16 +151,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   setup() {
     // console.log('SETUP');
-
     const document: any = window.document;
+    this.player = document.getElementById('player');
+
     const that = this;
 
     this.fetchProgress();
-
-    this.player = document.getElementById('player');
-
-    // this.player.setAttribute('src', this.filePath);
-
     this.keyBindingsSetup();
 
     // Download or load subs
@@ -168,7 +166,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     } else {
       this.subtitlesPaths.forEach(sPath => {
         this.addSubs(sPath);
-      })
+      });
     }
 
     this.loading = false;
@@ -266,7 +264,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
               // console.log('Video found ->', this.filePath);
             }
 
-            if (ext === 'srt') { this.subtitlesPaths.push(this.path.join(filePath, file)); }
+            if (ext === 'srt') {
+              this.subtitlesPaths.push(this.path.join(filePath, file));
+            }
 
             if (this.fs.statSync(this.path.join(filePath, file)).isDirectory()) {
               files = this.fs.readdirSync(this.path.join(filePath, file));
@@ -279,7 +279,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
                   // console.log('Video found ->', this.filePath);
                 }
 
-                if (ext === 'srt') { this.subtitlesPaths.push(this.path.join(filePath, file, file2)); }
+                if (ext === 'srt') {
+                  this.subtitlesPaths.push(this.path.join(filePath, file, file2));
+                }
 
               });
             }
@@ -301,13 +303,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
       .retrieveSubs(this.show, this.episode['label'], dn)
       .subscribe(subs => {
         // subs.forEach(sub => {
-          console.log('------------>', subs);
-          this.subsService
-            .downloadSub(subs, this.filePath)
-            .subscribe(subPath => {
-              // console.log('subPath', subPath);
-              this.addSubs(subPath);
-            });
+        console.log('------------>', subs);
+        this.subsService
+          .downloadSub(subs, this.filePath)
+          .subscribe(subPath => {
+            // console.log('subPath', subPath);
+            this.addSubs(subPath);
+          });
         // });
       });
   }
@@ -319,7 +321,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       track.kind = 'captions';
       track.label = 'English';
       track.srclang = 'en';
-      console.log('Creating vtt', filePath);
+      // console.log('Creating vtt', filePath);
       that.fsExtra
         .createReadStream(filePath)
         .pipe(that.srt2vtt())
@@ -329,8 +331,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
       track.src = filePath.substring(0, filePath.length - 3) + 'vtt';
       track.label = that.path.normalize(track.src).split(that.path.sep)[
-        that.path.normalize(track.src).split(that.path.sep).length - 1
-      ];
+      that.path.normalize(track.src).split(that.path.sep).length - 1
+        ];
       track.label = track.label.substring(0, track.label.length - 4);
       track.label = decodeURI(track.label);
       let duplicate = false;
@@ -362,9 +364,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   formatCues(index?: number) {
     index = index ? index : 0;
-    console.log('formatCues', index);
+    // console.log('formatCues', index);
     setTimeout(() => {
-      if (this.player && this.player.textTracks) {
+      if (this.player && this.player.textTracks && this.player.textTracks[index]) {
         const track = this.player.textTracks[index];
         const cues = track.cues;
         if (cues) {
@@ -407,14 +409,21 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   keyBindingsSetup() {
     document.body.onkeyup = e => {
+      // console.log(e.key);
       // Space: toggle play
-      if (e.keyCode === 32) { this.toggle_play(); }
+      if (e.key === ' ') {
+        this.toggle_play();
+      }
     };
     document.body.onkeydown = e => {
       // Right arrow: forward 1 sec
-      if (e.keyCode === 39) { this.player.currentTime = this.player.currentTime + 1; }
+      if (e.key === 'ArrowRight') {
+        this.player.currentTime = this.player.currentTime + 1;
+      }
       // Left arrow: backward 1 sec
-      if (e.keyCode === 37) { this.player.currentTime = this.player.currentTime - 1; }
+      if (e.key === 'ArrowLeft') {
+        this.player.currentTime = this.player.currentTime - 1;
+      }
     };
     // Double click: toggle fullscreen
     document.getElementById('player').addEventListener('dblclick', () => {
@@ -480,7 +489,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
       const value: number = Math.floor(currentTime / totalTime * 100);
 
-      if (!pressed) { timeline.value = '' + value; }
+      if (!pressed) {
+        timeline.value = '' + value;
+      }
 
     }, 100);
   }
@@ -576,7 +587,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.router.navigate([
       'play',
-      { show: this.show['dashed_title'], episode: this.nextEpisode['label'] }
+      {show: this.show['dashed_title'], episode: this.nextEpisode['label']}
     ]);
   }
 

@@ -3,13 +3,13 @@ label {
 }
 
 [type="radio"]:checked + span {
-  font-size: calc(1rem + 0.5vw);
+  font-size: calc(.8rem + 0.5vw);
   color: white;
 }
 
 [type="radio"] + span {
   transition: all 0.2s ease-in;
-  font-size: calc(1rem + 0.5vw);
+  font-size: calc(.8rem + 0.5vw);
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -131,7 +131,7 @@ label {
   transition: all 0.4s ease-in;
   span {
     color: var(--fore-color);
-    font-size: calc(1rem + 1vw);
+    font-size: calc(.8rem + 1vw);
     line-height: calc(7rem + 1vw);
 		animation: glowing 1s infinite;
 		animation-direction: alternate;
@@ -140,8 +140,8 @@ label {
 
 .overview {
   padding: 1.5rem 3rem 0.5rem;
-  font-size: calc(1rem + 0.5vw);
-  line-height: calc(1.4rem + 0.5vw);
+  font-size: calc(1.2rem + 0.5vw);
+  line-height: calc(1.5rem + 0.5vw);
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -150,7 +150,7 @@ label {
     opacity: .2;
   }
   100% {
-    font-size: 1;
+    font-size: 100%;
   }
 }
 
@@ -158,4 +158,11 @@ label {
 	margin: 0;
 	border-radius: 0;
 	background-color: var(--bg-color-2) !important;
+}
+
+.clickable-title {
+  text-align: left;
+  span {
+    padding-left: 1rem;
+  }
 }

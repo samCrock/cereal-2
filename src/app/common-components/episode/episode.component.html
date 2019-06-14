@@ -12,18 +12,21 @@
     <div fxLayout="row" fxLayoutAlign="space-evenly" fxFill fxLayoutGap="1vw">
 
 
-      <div fxFlex="60" fxLayoutAlign="center center" class="waves-effect waves-light btn" *ngIf="titleAsButton"
-        [routerLink]="['/show/' + episode.dashed_title]">{{ episode.title }}</div>
-      <div fxFlex="50" fxLayoutAlign="start center" *ngIf="!titleAsButton">
+      <div fxFlex="60" fxLayoutAlign="start center" class="waves-effect waves-light clickable-title" *ngIf="clickableTitle"
+        [routerLink]="['/show/' + episode.dashed_title]">
+        <span class="font-2" fxFlex="70">{{ episode.title }}</span>
+        <span fxFlex="30">{{ episode.episode_label }}</span>
+      </div>
+      <div fxFlex="50" fxLayoutAlign="start center" *ngIf="!clickableTitle">
         <label class="title">{{ episode.title }}</label>
       </div>
 
-      <div fxFlex="10" fxLayoutAlign="end center" *ngIf="!titleAsButton">
+      <div fxFlex="10" fxLayoutAlign="end center" *ngIf="!clickableTitle">
         Ep {{ episode.label.substring(4, 6) }}
       </div>
 
 
-      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!titleAsButton">
+      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!clickableTitle">
         {{ formatDate(episode.date) }}
         <!-- <app-date-widget [date]="episode.date"></app-date-widget> -->
       </div>
@@ -31,7 +34,7 @@
       <div fxFlex="20" fxLayoutAlign="end center" *ngIf="isPlayable()">
         <span *ngIf="speed" id="speed">{{ speed }} Mb/s</span>
         <i *ngIf="isPlayable()" class="material-icons download_btn hoverable circle" [class.active]="isCurrent()"
-          data-target="trailer_modal" (click)="play(episode)">play_arrow</i>
+          data-target="trailer_modal" (click)="play()">play_arrow</i>
       </div>
       <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!isPlayable()">
         <i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle"

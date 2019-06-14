@@ -24,7 +24,7 @@ export class ProgressWidgetComponent implements OnChanges {
       el.setAttribute('value', relativeProgress.toString());
       setTimeout(() => {
         el.innerHTML = relativeProgress + '%';
-      }, 10);
+      });
     }
 
   }

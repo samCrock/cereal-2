@@ -29,7 +29,7 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
   public expanded = false;
   public epTorrents = [];
   public selectedTorrent;
-  public titleAsButton = false;
+  public clickableTitle = false;
   public loading: boolean;
   public hasResults: boolean;
   public currentTorrentsListSub;
@@ -78,7 +78,7 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
       this.episode['label'] = this.episode['episode_label'];
     }
     if (this.router.url === '/torrents') {
-      this.titleAsButton = true;
+      this.clickableTitle = true;
     }
 
     this.cdRef.detectChanges();
@@ -168,13 +168,13 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
             }).subscribe(show => {
               this.show = show;
               this.dbService.getEpisode(this.show['dashed_title'], this.episode['label'])
-                .subscribe(ep => {
-                  this.episode = ep;
+                .subscribe(updatedEpisode => {
+                  this.episode = updatedEpisode;
                   this.setup();
                   // if (this.expanded) {
                   //   this.toggleExtra(episode);
                   // }
-                  this.updatedEpisode.emit(ep);
+                  this.updatedEpisode.emit(updatedEpisode);
                   this.loading = false;
                 });
             });
@@ -188,7 +188,7 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
   play() {
     this.loading = false;
     this.episode.dashed_title = this.show.dashed_title;
-    this.dbService.setEpisode(this.episode).subscribe(_t => {
+    this.dbService.setEpisode(this.episode).subscribe(() => {
       this.updatedEpisode.emit(this.episode);
     });
     this.router.navigate(['play', { show: this.show['dashed_title'], episode: this.episode['label'] }]);
@@ -229,8 +229,8 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
       label: episode['label'],
       dn: t.name,
       magnetURI: t.magnetURI
-    }
-    this.dbService.setEpisode(ep).subscribe(_t => {
+    };
+    this.dbService.setEpisode(ep).subscribe(() => {
       this.updatedEpisode.emit(ep);
     });
   }
