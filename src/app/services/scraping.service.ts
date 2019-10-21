@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
 
 import 'rxjs/observable/of';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
-import { DbService } from './db.service';
-import { ElectronService } from 'ngx-electron';
+import {DbService} from './db.service';
+import {ElectronService} from 'ngx-electron';
 
 @Injectable()
 export class ScrapingService {
@@ -32,9 +32,9 @@ export class ScrapingService {
   retrieveShow(show: string): Observable<any> {
     const _show = show;
     return new Observable(observer => {
-      return this.http.get<any[]>('https://trakt.tv/shows/' + _show, { responseType: 'text' as 'json' })
+      return this.http.get<any[]>('https://trakt.tv/shows/' + _show, {responseType: 'text' as 'json'})
         .subscribe(response => {
-          const $ = cheerio.load(response, { _useHtmlParser2: true });
+          const $ = cheerio.load(response, {_useHtmlParser2: true});
           const dashed_title = _show;
           let title = $('#summary-ratings-wrapper')['0'].next.children[0].children[0].children[1].children[0].children[0].data;
           title = title ? title.trim() : '';
@@ -43,9 +43,10 @@ export class ScrapingService {
           const genres = $('#overview')['0'].children[2].children[0].children[0].children[6] ?
             $('#overview')['0'].children[2].children[0].children[0].children[6].children : [];
           const premiered = $('#overview')['0'] && $('#overview')['0'].children[2].children[0].children[1].children[2] &&
-            $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs ?
+          $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs ?
             $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs.content : '';
-          const overview = $('#overview')[1].children[0] ? $('#overview')[1].children[0].children[0].data : '';
+          // console.log($('#overview'));
+          const overview = $('#overview')[1].children[0] && $('#overview')[1].children[0].children[0] ? $('#overview')[1].children[0].children[0].data : '';
           const trailer = $('.affiliate-links')['0'].children[0] ? $('.affiliate-links')['0'].children[0].children[1].attribs.href : '';
           const wallpaper = $('#summary-wrapper')['0'].attribs['data-fanart'];
           const poster = this.retrievePoster(_show);
@@ -88,9 +89,9 @@ export class ScrapingService {
 
   retrieveShowSeason(show, season): Observable<any> {
     return new Observable(observer => {
-      return this.http.get<any[]>('https://trakt.tv/shows/' + show + '/seasons/' + season, { responseType: 'text' as 'json' })
+      return this.http.get<any[]>('https://trakt.tv/shows/' + show + '/seasons/' + season, {responseType: 'text' as 'json'})
         .subscribe(response => {
-          const $ = cheerio.load(response, { _useHtmlParser2: true });
+          const $ = cheerio.load(response, {_useHtmlParser2: true});
           const episodes = [];
           let ep_label = '';
           let ep_title = '';
@@ -145,9 +146,9 @@ export class ScrapingService {
 
   retrieveRemoteCalendar(observer: any) {
     const lastWeek = moment().subtract(6, 'days').format('YYYY-MM-DD');
-    return this.http.get<any[]>('https://trakt.tv/calendars/shows/' + lastWeek, { responseType: 'text' as 'json' })
+    return this.http.get<any[]>('https://trakt.tv/calendars/shows/' + lastWeek, {responseType: 'text' as 'json'})
       .subscribe(response => {
-        const $ = cheerio.load(response, { _useHtmlParser2: true });
+        const $ = cheerio.load(response, {_useHtmlParser2: true});
         const week = [];
         console.log('Week', lastWeek);
         $('.fanarts, .calendar-list').filter((i, result) => {
@@ -270,9 +271,9 @@ export class ScrapingService {
 
   retrieveRemotePoster(dashed_title: string, observer) {
     console.log('Retrieving poster for', dashed_title);
-    return this.http.get('https://trakt.tv/shows/' + dashed_title, { responseType: 'text' })
+    return this.http.get('https://trakt.tv/shows/' + dashed_title, {responseType: 'text'})
       .subscribe(response => {
-        const $ = cheerio.load(response, { _useHtmlParser2: true });
+        const $ = cheerio.load(response, {_useHtmlParser2: true});
         const results = $('.poster');
         const poster = results[0].children[1].attribs['data-original'];
 
@@ -309,9 +310,9 @@ export class ScrapingService {
   retrieveRemoteWallpaper(dashed_title: string): Observable<any> {
     return new Observable(observer => {
       console.log('Retrieving poster for', dashed_title);
-      this.http.get('https://trakt.tv/shows/' + dashed_title, { responseType: 'text' })
+      this.http.get('https://trakt.tv/shows/' + dashed_title, {responseType: 'text'})
         .subscribe(response => {
-          const $ = cheerio.load(response, { _useHtmlParser2: true });
+          const $ = cheerio.load(response, {_useHtmlParser2: true});
           const results = $('#summary-wrapper')['0'].attribs['data-fanart'];
           const wallpaper = results;
 
@@ -350,9 +351,9 @@ export class ScrapingService {
     console.log('Downloading episode', show, episode);
     console.log('url', url);
     return new Observable(observer => {
-      this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+      this.http.get<any[]>(url, {responseType: 'text' as 'json'})
         .subscribe(response => {
-          const $ = cheerio.load(response, { _useHtmlParser2: true });
+          const $ = cheerio.load(response, {_useHtmlParser2: true});
           const _custom = 1;
           if ($('tr')[_custom]) {
             const dn = $('tr')[_custom].children[3].children[1].children[1].children[0].data;
@@ -429,9 +430,9 @@ export class ScrapingService {
     console.log('Retrieving episode', show, episode);
     console.log('url', url);
     return new Observable(observer => {
-      return this.http.get<any[]>(url, { responseType: 'text' as 'json' })
+      return this.http.get<any[]>(url, {responseType: 'text' as 'json'})
         .subscribe(response => {
-          const $ = cheerio.load(response, { _useHtmlParser2: true });
+          const $ = cheerio.load(response, {_useHtmlParser2: true});
           if ($('tr').length === 0) {
             console.log('No results');
             return observer.next();
@@ -470,9 +471,9 @@ export class ScrapingService {
 
   searchShows(show_string: string): Observable<any> {
     return new Observable(observer => {
-      return this.http.get<any[]>('https://trakt.tv/search/shows?query=' + show_string, { responseType: 'text' as 'json' })
+      return this.http.get<any[]>('https://trakt.tv/search/shows?query=' + show_string, {responseType: 'text' as 'json'})
         .subscribe(response => {
-          const $ = cheerio.load(response, { _useHtmlParser2: true });
+          const $ = cheerio.load(response, {_useHtmlParser2: true});
 
           let hasResults = false;
           $('.grid-item')
@@ -500,9 +501,9 @@ export class ScrapingService {
 
   retrieveTrending(): Observable<any> {
     return new Observable(observer => {
-      return this.http.get<any[]>('https://trakt.tv/shows/trending', { responseType: 'text' as 'json' })
+      return this.http.get<any[]>('https://trakt.tv/shows/trending', {responseType: 'text' as 'json'})
         .subscribe(response => {
-          const $ = cheerio.load(response, { _useHtmlParser2: true });
+          const $ = cheerio.load(response, {_useHtmlParser2: true});
 
           const shows = [];
           $('.grid-item')
@@ -519,7 +520,9 @@ export class ScrapingService {
                 show['rating'] = result.children[2].children[1].children[0].children[1].data;
                 show['rating'] = show['rating'].substr(0, show['rating'].length - 1);
               }
-              if (show['title']) { shows.push(show); }
+              if (show['title']) {
+                shows.push(show);
+              }
             });
           observer.next(shows);
         });
