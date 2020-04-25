@@ -1,5 +1,11 @@
+## <small>2.2.30 (2020-04-25)</small>
+
+
+
+
 ## <small>2.2.29 (2020-04-25)</small>
 
+* 2.2.29 ([34eace2](https://github.com/samCrock/cereal-2/commit/34eace2))
 
 
 
