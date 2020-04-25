@@ -2205,8 +2205,7 @@
     "@types/node": {
       "version": "12.12.37",
       "resolved": "https://registry.npmjs.org/@types/node/-/node-12.12.37.tgz",
-      "integrity": "sha512-4mXKoDptrXAwZErQHrLzpe0FN/0Wmf5JRniSVIdwUrtDf9wnmEV1teCNLBo/TwuXhkK/bVegoEn/wmb+x0AuPg==",
-      "dev": true
+      "integrity": "sha512-4mXKoDptrXAwZErQHrLzpe0FN/0Wmf5JRniSVIdwUrtDf9wnmEV1teCNLBo/TwuXhkK/bVegoEn/wmb+x0AuPg=="
     },
     "@types/q": {
       "version": "1.5.2",
@@ -4626,9 +4625,12 @@
       },
       "dependencies": {
         "parse5": {
-          "version": "5.1.0",
-          "resolved": "https://registry.npmjs.org/parse5/-/parse5-5.1.0.tgz",
-          "integrity": "sha512-fxNG2sQjHvlVAYmzBZS9YlDp6PTSSDwa98vkD4QgVDDCAo84z5X1t5XyJQ62ImdLXx5NdIIfihey6xpum9/gRQ=="
+          "version": "3.0.3",
+          "resolved": "https://registry.npmjs.org/parse5/-/parse5-3.0.3.tgz",
+          "integrity": "sha512-rgO9Zg5LLLkfJF9E6CCmXlSE4UVceloys8JrFqCcHloC3usd/kJCyPDwH2SOlzix2j3xaP9sUX3e8+kvkuleAA==",
+          "requires": {
+            "@types/node": "*"
+          }
         }
       }
     },
@@ -11336,9 +11338,9 @@
       }
     },
     "jquery": {
-      "version": "3.3.1",
-      "resolved": "https://registry.npmjs.org/jquery/-/jquery-3.3.1.tgz",
-      "integrity": "sha512-Ubldcmxp5np52/ENotGxlLe6aGMvmF4R8S6tZjsP6Knsaxd/xp3Zrh50cG93lR6nPXyUFwzN3ZSOQI0wRJNdGg=="
+      "version": "3.4.0",
+      "resolved": "https://registry.npmjs.org/jquery/-/jquery-3.4.0.tgz",
+      "integrity": "sha512-ggRCXln9zEqv6OqAGXFEcshF5dSBvCkzj6Gm2gzuR5fWawaX8t7cxKVkkygKODrDAzKdoYw3l/e3pm3vlT4IbQ=="
     },
     "js-string-escape": {
       "version": "1.0.1",
