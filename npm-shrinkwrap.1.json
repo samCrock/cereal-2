@@ -1,8 +1,8 @@
 {
   "dependencies": {
     "cheerio": {
-      "version": "^1.0.0-rc.2",
-      "from": "cheerio@^1.0.0-rc.2",
+      "version": "^1.0.0-rc.3",
+      "from": "cheerio@^1.0.0-rc.3",
       "dependencies": {
         "parse5": {
           "version": "5.1.0",

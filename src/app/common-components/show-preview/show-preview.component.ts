@@ -1,11 +1,11 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ScrapingService, DbService } from '../../services/index';
+import { ScrapingService, DbService } from '../../services';
 import { Router } from '@angular/router';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { DialogComponent } from '../dialog/dialog.component';
+import { DialogComponent } from '..';
 import * as Materialize from 'materialize-css';
 import {fade} from '../../animations/fade';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-show-preview',

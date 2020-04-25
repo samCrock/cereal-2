@@ -1,10 +1,10 @@
-import { app, BrowserWindow, screen } from 'electron';
+import {app, BrowserWindow, screen} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as webtorrent from 'webtorrent';
 
 const os = require('os');
-const { shell } = require('electron');
+const {shell} = require('electron');
 const fsExtra = require('fs-extra');
 const fs = require('fs');
 const srt2vtt = require('srt-to-vtt');
@@ -53,13 +53,13 @@ function checkUpdates() {
         detached: true,
         stdio: 'ignore'
       });
-      fs.writeFile(updateCheckPath, '', function (err) {
+      fs.writeFile(updateCheckPath, '', function(err) {
         process.kill(process.pid);
       });
     } else {
       try {
-        request({ url: 'https://raw.githubusercontent.com/samCrock/cereal-2/master/package.json' },
-          function (err, data) {
+        request({url: 'https://raw.githubusercontent.com/samCrock/cereal-2/master/package.json'},
+          function(err, data) {
             if (err) {
               resolve(1);
             }
@@ -89,6 +89,7 @@ function createWindow() {
     height: size.height,
     frame: false,
     webPreferences: {
+      nodeIntegration: true,
       webSecurity: false,
       allowRunningInsecureContent: true
     }
@@ -117,22 +118,22 @@ function createWindow() {
 
 try {
   app.on('ready', () => {
-    if (fs.existsSync(updateCheckPath)) {
-      fs.unlinkSync(updateCheckPath);
-      fs.unlink(installerPath, function (d) {
-        console.log('Update completed!');
-        createWindow();
-      });
-    } else {
-      console.log('Checking updates..');
-      checkUpdates().then(code => {
-        console.log('Exit code:', code);
-        createWindow();
-      }, error => {
-        console.log('Updater error:', error);
-      });
+      if (fs.existsSync(updateCheckPath)) {
+        fs.unlinkSync(updateCheckPath);
+        fs.unlink(installerPath, function(d) {
+          console.log('Update completed!');
+          createWindow();
+        });
+      } else {
+        console.log('Checking updates..');
+        checkUpdates().then(code => {
+          console.log('Exit code:', code);
+          createWindow();
+        }, error => {
+          console.log('Updater error:', error);
+        });
+      }
     }
-  }
   );
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {

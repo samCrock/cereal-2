@@ -12,10 +12,10 @@ import {
   DateWidgetComponent,
   ProgressWidgetComponent
 } from '.';
-import { MatDialogModule } from '@angular/material';
 // Pipes
 import { SortPipe, TrimPipe } from '../pipes';
 import { IconComponent } from './icon/icon.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 const COMMON_COMPONENTS = [
   EpisodeComponent,

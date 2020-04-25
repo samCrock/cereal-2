@@ -5,10 +5,12 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable()
 export class WtService {
 
-  private wt = this.electronService.remote.getGlobal('wt');
+  private wt;
   private clientSubject: BehaviorSubject<any>;
 
   constructor(private electronService: ElectronService) {
+    console.log(this.electronService);
+    this.wt = this.electronService.remote.getGlobal('wt');
     this.clientSubject = new BehaviorSubject<any>(this.wt);
   }
 

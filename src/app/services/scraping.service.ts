@@ -10,7 +10,6 @@ import {ElectronService} from 'ngx-electron';
 
 @Injectable()
 export class ScrapingService {
-
   private path = this.electronService.remote.getGlobal('path');
   private app = this.electronService.remote.getGlobal('app');
   private fsExtra = this.electronService.remote.getGlobal('fsExtra');

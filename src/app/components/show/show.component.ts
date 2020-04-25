@@ -6,7 +6,6 @@ import { fade } from '../../animations/fade';
 import { Subscription } from 'rxjs';
 import { interval } from 'rxjs/internal/observable/interval';
 import * as moment from 'moment';
-import { SELECT_PANEL_MAX_HEIGHT } from '@angular/material';
 
 @Component({
   selector: 'app-show',

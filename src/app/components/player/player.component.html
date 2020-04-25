@@ -29,10 +29,6 @@
 
     <input type="range" id="timeline" value="0">
 
-    <div class="hoverable" fxLayoutAlign="center center" (click)="toggle_fullscreen()">
-      <i class="material-icons">{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</i>
-    </div>
-
     <div class="hoverable" [ngClass]="showSubs ? 'active' : ''" (click)="toggleSubs();">
       <i class="material-icons">textsms</i>
     </div>
@@ -45,6 +41,10 @@
 
     <div class="hoverable" (click)="openFolder()">
       <i class="material-icons">airplay</i>
+    </div>
+
+    <div class="hoverable" fxLayoutAlign="center center" (click)="toggle_fullscreen()">
+      <i class="material-icons">{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</i>
     </div>
 
     <div class="hoverable" *ngIf="nextEpisode" (click)="playNextEpisode()">
