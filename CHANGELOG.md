@@ -1,5 +1,11 @@
+## <small>2.2.29 (2020-04-25)</small>
+
+
+
+
 ## <small>2.2.28 (2020-04-25)</small>
 
+* 2.2.28 ([fe4ccdc](https://github.com/samCrock/cereal-2/commit/fe4ccdc))
 * Added missing script ([4f9f704](https://github.com/samCrock/cereal-2/commit/4f9f704))
 * Platform update ([fe29849](https://github.com/samCrock/cereal-2/commit/fe29849))
 
