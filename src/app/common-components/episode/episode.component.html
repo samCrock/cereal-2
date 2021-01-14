@@ -6,7 +6,7 @@
   <div class="progress view" *ngIf="episode.play_progress">
     <div class="determinate" [ngStyle]="{ 'width': episode.play_progress + '%' }"></div>
   </div>
-  
+
   <div fxLayout="column" fxLayoutAlign="space-evenly" class="episode">
 
     <div fxLayout="row" fxLayoutAlign="space-evenly" fxFill fxLayoutGap="1vw">
@@ -31,15 +31,15 @@
         <!-- <app-date-widget [date]="episode.date"></app-date-widget> -->
       </div>
 
-      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="isPlayable()">
+      <div fxFlex="20" fxLayoutAlign="end center" >
         <span *ngIf="speed" id="speed">{{ speed }} Mb/s</span>
-        <i *ngIf="isPlayable()" class="material-icons download_btn hoverable circle" [class.active]="isCurrent()"
-          data-target="trailer_modal" (click)="play()">play_arrow</i>
+        <i class="material-icons download_btn hoverable circle" [class.active]="isCurrent()"
+          data-target="trailer_modal" (click)="download_episode(episode); play()">play_arrow</i>
       </div>
-      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!isPlayable()">
-        <i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle"
-          (click)="download_episode(episode)">file_download</i>
-      </div>
+<!--      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!isPlayable()">-->
+<!--        <i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle"-->
+<!--          (click)="download_episode(episode)">file_download</i>-->
+<!--      </div>-->
       <!-- <div fxFlex="5" fxLayoutAlign="end center">
         <i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle" [ngClass]="expanded ? 'rotate' : ''" (click)="toggleExtra(episode)">more_vert</i>
       </div> -->

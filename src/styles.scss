@@ -93,12 +93,12 @@ input[type=text] {
   [type="radio"]:checked + span:after,
   [type="radio"].with-gap:checked + span:after {
     background-color: var(--primary) !important; }
-  
+
 
 // CUSTOM SCROLLBAR
 /* width */
 ::-webkit-scrollbar {
-  width: calc(.2rem + .5vw);
+  width: calc(.1rem + .3vw);
 }
 
 /* Track */

@@ -89,7 +89,7 @@ export class ShowComponent implements OnInit, OnDestroy {
   retrieveSeason() {
     this.scrapingService.retrieveShowSeason(this.show['dashed_title'], this.currentSeason)
       .subscribe(episodes => {
-        // console.log('Fresh season data', this.currentSeason, episodes, this.show['Seasons'][this.currentSeason]);
+        console.log('Fresh season data', this.currentSeason, episodes, this.show['Seasons'][this.currentSeason]);
 
         this.episodes = this.assignSeason(episodes, this.show['Seasons'][this.currentSeason]);
 
