@@ -1,5 +1,13 @@
+## <small>2.2.31 (2021-01-14)</small>
+
+* Fixed overview ([b16b11b](https://github.com/samCrock/cereal-2/commit/b16b11b))
+* Minor ui updates ([b85f6ac](https://github.com/samCrock/cereal-2/commit/b85f6ac))
+
+
+
 ## <small>2.2.30 (2020-04-25)</small>
 
+* 2.2.30 ([b4a74e0](https://github.com/samCrock/cereal-2/commit/b4a74e0))
 
 
 
