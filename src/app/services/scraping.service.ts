@@ -121,8 +121,8 @@ export class ScrapingService {
                 ep_date = '';
               }
 
-              ep_overview = episode.parent.children[1].children[0] ? episode.parent.children[1].children[0].data : '';
-              // console.log('Overview', episode.parent.children[1].children[0] ? episode.parent.children[1].children[0].data : '');
+              ep_overview = episode.parent.children[1].children[1] && episode.parent.children[1].children[1].children[0] ? episode.parent.children[1].children[1].children[0].data : '';
+              console.log('Overview', episode.parent);
 
               episodes.push({
                 label: ep_label,
