@@ -14,6 +14,8 @@
 .date_label {
 	font-size: calc(1rem + 1vw);
 	line-height: calc(1rem + 1vw);
+  display: flex;
+  align-items: center;
 }
 
 .date_fromnow {

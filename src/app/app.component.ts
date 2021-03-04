@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.alive = true;
 
     this.wtService.getClient().subscribe(c => {
-      console.log('App got a fresh webtorrent client!');
+      console.log('Fresh webtorrent client!');
       this.wtClient = c;
     });
 

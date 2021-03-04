@@ -96,11 +96,11 @@ export class SubsService {
           const $ = cheerio.load(response, {_useHtmlParser2: true});
           const searchResults = [];
           const results = [];
-          $('.a1').filter((i, row) => {
+          $('.a1').map((i, row) => {
             if (row.children[1]) {
-              const subLang = row.children[1].children[1].children[0].data.trim();
-              const subLink = row.children[1].attribs.href;
-              const subDn = row.children[1].children[3].children[0].data.trim();
+              const subLang = row.children[1]['children'][1].children[0].data.trim();
+              const subLink = row.children[1]['attribs'].href;
+              const subDn = row.children[1]['children'][3].children[0].data.trim();
               if (subLang === 'English' && (subDn.toLowerCase().indexOf('season') > -1 ||
                 subDn.toLowerCase().indexOf(epLabel.toLowerCase()) > -1)) {
                 results.push({
@@ -115,7 +115,7 @@ export class SubsService {
           searchResults.map((sub, i) => {
             sub.subscribe(subResponse => {
               const _$ = cheerio.load(subResponse, {_useHtmlParser2: true});
-              results[i].link = _$('.download')[0].children[1].attribs.href;
+              results[i].link = _$('.download')[0].children[1]['attribs'].href;
               observer.next(results[i]);
             });
           });

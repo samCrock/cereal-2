@@ -35,33 +35,33 @@ export class ScrapingService {
         .subscribe(response => {
           const $ = cheerio.load(response, {_useHtmlParser2: true});
           const dashed_title = _show;
-          let title = $('#summary-ratings-wrapper')['0'].next.children[0].children[0].children[1].children[0].children[0].data;
+          let title = $('#summary-ratings-wrapper')['0'].next['children'][0]['children'][0]['children'][1]['children'][0]['children'][0].data;
           title = title ? title.trim() : '';
 
           const seasons = $('.season-count')[1] ? $('.season-count')[1].attribs['data-all-count'] : 0;
-          const genres = $('#overview')['0'].children[2].children[0].children[0].children[6] ?
-            $('#overview')['0'].children[2].children[0].children[0].children[6].children : [];
-          const premiered = $('#overview')['0'] && $('#overview')['0'].children[2].children[0].children[1].children[2] &&
-          $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs ?
-            $('#overview')['0'].children[2].children[0].children[0].children[1].children[2].attribs.content : '';
+          const genres = $('#overview')['0']['children'][2]['children'][0]['children'][0]['children'][6] ?
+            $('#overview')['0']['children'][2]['children'][0]['children'][0]['children'][6].children : [];
+          const premiered = $('#overview')['0'] && $('#overview')['0']['children'][2]['children'][0]['children'][1]['children'][2] &&
+          $('#overview')['0']['children'][2]['children'][0]['children'][0]['children'][1]['children'][2].attribs ?
+            $('#overview')['0']['children'][2]['children'][0]['children'][0]['children'][1]['children'][2].attribs.content : '';
           // console.log($('#overview'));
-          const overview = $('#overview')[1].children[0] && $('#overview')[1].children[0].children[0] ? $('#overview')[1].children[0].children[0].data : '';
-          const trailer = $('.affiliate-links')['0'].children[0] ? $('.affiliate-links')['0'].children[0].children[1].attribs.href : '';
+          const overview = $('#overview')[1]['children'][0] && $('#overview')[1]['children'][0]['children'][0] ? $('#overview')[1]['children'][0]['children'][0].data : '';
+          const trailer = $('.affiliate-links')['0']['children'][0] ? $('.affiliate-links')['0']['children'][0]['children'][1].attribs.href : '';
           const wallpaper = $('#summary-wrapper')['0'].attribs['data-fanart'];
           const poster = this.retrievePoster(_show);
           const genresArray = [];
-          const rating = $('#summary-ratings-wrapper .row .ratings li')[0].children[0].attribs.content;
-          const year = $('.container.summary .container .row h1 span')[0].children[0].data;
-          let network = $('.additional-stats')['0'].children[0].children[4] ? $('.additional-stats')['0'].children[0].children[4].data : '';
-          let runtime = $('#overview')['0'].children[2].children[0].children[0].children[2] ?
-            $('#overview')['0'].children[2].children[0].children[0].children[2].children[1].data : '';
+          const rating = $('#summary-ratings-wrapper .row .ratings li')[0]['children'][0]['attribs'].content;
+          const year = $('.container.summary .container .row h1 span')[0]['children'][0]['data'];
+          let network = $('.additional-stats')['0']['children'][0]['children'][4] ? $('.additional-stats')['0']['children'][0]['children'][4].data : '';
+          let runtime = $('#overview')['0']['children'][2]['children'][0]['children'][0]['children'][2] ?
+            $('#overview')['0']['children'][2]['children'][0]['children'][0]['children'][2]['children'][1].data : '';
 
           network = network.split(' on ');
           network = network[1];
           runtime = runtime ? runtime.split(' mins').join('') : '';
           genres.filter((genre, i) => {
-            if (i % 2 && i !== 0 && genre.children) {
-              genresArray.push(genre.children[0].data);
+            if (i % 2 && i !== 0 && genre.children?.length) {
+              genresArray.push(genre['children'][0].data);
             }
           });
           poster.subscribe(resPoster => {
@@ -96,15 +96,15 @@ export class ScrapingService {
           let ep_title = '';
           let ep_date = '';
           let ep_overview = '';
-          $('.titles').filter((i, episode) => {
-            if (episode.children[0].name === 'h3') {
-              ep_label = episode.children[0].children[1] ? episode.children[0].children[1].children[0].children[0].data :
-                episode.children[0].children[0].children[0].children[0].data;
-              ep_title = (episode.children[0].children[0] && episode.children[0].children[0].children[2].children[0]) ?
-                episode.children[0].children[0].children[2].children[0].data : '';
-              ep_date = episode.children[1].children[0].children[0].attribs['data-date'];
-              if (episode.children[1].children[0].children[2]) {
-                ep_date = episode.children[1].children[0].children[2].attribs['data-date'];
+          $('.titles').map((i, episode) => {
+            if (episode['children'][0]['name'] === 'h3') {
+              ep_label = episode['children'][0]['children'][1] ? episode['children'][0]['children'][1]['children'][0]['children'][0].data :
+                episode['children'][0]['children'][0]['children'][0]['children'][0].data;
+              ep_title = (episode['children'][0]['children'][0] && episode['children'][0]['children'][0]['children'][2]['children'][0]) ?
+                episode['children'][0]['children'][0]['children'][2]['children'][0].data : '';
+              ep_date = episode['children'][1]['children'][0]['children'][0].attribs['data-date'];
+              if (episode['children'][1]['children'][0]['children'][2]) {
+                ep_date = episode['children'][1]['children'][0]['children'][2].attribs['data-date'];
               }
               // Format episode label
               if (ep_label.indexOf('x') === 1) {
@@ -121,7 +121,7 @@ export class ScrapingService {
                 ep_date = '';
               }
 
-              ep_overview = episode.parent.children[1].children[1] && episode.parent.children[1].children[1].children[0] ? episode.parent.children[1].children[1].children[0].data : '';
+              ep_overview = episode.parent['children'][1]['children'][1] && episode.parent['children'][1]['children'][1]['children'][0] ? episode.parent['children'][1]['children'][1]['children'][0].data : '';
               console.log('Overview', episode.parent);
 
               episodes.push({
@@ -150,9 +150,9 @@ export class ScrapingService {
         const $ = cheerio.load(response, {_useHtmlParser2: true});
         const week = [];
         console.log('Week', lastWeek);
-        $('.fanarts, .calendar-list').filter((i, result) => {
-          const dotm = result.children[0].children[0].children[0].data;
-          const month = result.children[0].children[1].children[0].data;
+        $('.fanarts, .calendar-list').map((i, result) => {
+          const dotm = result['children'][0]['children'][0]['children'][0].data;
+          const month = result['children'][0]['children'][1]['children'][0].data;
           let year = Number(moment().format('YYYY'));
           if (moment().month() === 11 && month === 'January') {
             year = +year;
@@ -163,45 +163,45 @@ export class ScrapingService {
             shows: []
           };
           for (i = 1; i < result.children.length; i++) {
-            if (result.children[i].attribs['data-episode-id']) {
+            if (result['children'][i]['attribs']['data-episode-id']) {
               let episode;
               let network;
               let title;
-              const poster = result.children[i].children[1].children[0].children[1].attribs['data-original'];
-              if (result.children[i].children[1].children[0].children.length === 7) {
-                if (result.children[i].children[1].children[0].children[6].children.length === 8) {
-                  title = result.children[i].children[1].children[0].children[6].children[7].children[0].attribs['content'];
-                  episode = result.children[i].children[1].children[0].children[6].children[3].children[0].children[0].data;
-                  network = result.children[i].children[1].children[0].children[6].children[2].children[0].data;
+              const poster = result['children'][i]['children'][1]['children'][0]['children'][1].attribs['data-original'];
+              if (result['children'][i]['children'][1]['children'][0].children.length === 7) {
+                if (result['children'][i]['children'][1]['children'][0]['children'][6].children.length === 8) {
+                  title = result['children'][i]['children'][1]['children'][0]['children'][6]['children'][7]['children'][0].attribs['content'];
+                  episode = result['children'][i]['children'][1]['children'][0]['children'][6]['children'][3]['children'][0]['children'][0].data;
+                  network = result['children'][i]['children'][1]['children'][0]['children'][6]['children'][2]['children'][0].data;
                   // console.log(title, 'Season premiere');
                 } else {
-                  title = result.children[i].children[1].children[0].children[6].children[6].children[0].attribs['content'];
-                  episode = result.children[i].children[1].children[0].children[6].children[2].children[0].children[0].data;
-                  network = result.children[i].children[1].children[0].children[6].children[1].children[0].data;
+                  title = result['children'][i]['children'][1]['children'][0]['children'][6]['children'][6]['children'][0].attribs['content'];
+                  episode = result['children'][i]['children'][1]['children'][0]['children'][6]['children'][2]['children'][0]['children'][0].data;
+                  network = result['children'][i]['children'][1]['children'][0]['children'][6]['children'][1]['children'][0].data;
                 }
               } else {
-                const _result = result.children[i].children[1].children[0].children[5];
+                const _result = result['children'][i]['children'][1]['children'][0]['children'][5];
                 switch (_result.children.length) {
                   case 9:
                     // console.log('9', _result);
-                    title = _result.children[3].children[0].data;
-                    network = _result.children[2].children[0].data;
-                    episode = _result.children[4].children[0].children[0].data;
+                    title = _result['children'][3]['children'][0].data;
+                    network = _result['children'][2]['children'][0].data;
+                    episode = _result['children'][4]['children'][0]['children'][0].data;
                     // console.log(title, network, episode, 'Season Finale');
                     break;
                   case 8:
                     // console.log('8', _result);
-                    title = _result.children[2].children[0].data;
-                    network = _result.children[1].children[0].data;
-                    episode = _result.children[4].children[0] ? _result.children[4].children[0].children[0].data :
-                      _result.children[3].children[0].children[0].data;
+                    title = _result['children'][2]['children'][0].data;
+                    network = _result['children'][1]['children'][0].data;
+                    episode = _result['children'][4]['children'][0] ? _result['children'][4]['children'][0]['children'][0].data :
+                      _result['children'][3]['children'][0]['children'][0].data;
                     // console.log(title, network, episode, 'Season Finale');
                     break;
                   case 7:
                     // console.log('7', _result);
-                    title = _result.children[1].children[0].data;
-                    // network = _result.children[1].children[0].data;
-                    episode = _result.children[2].children[0].children[0].data;
+                    title = _result['children'][1]['children'][0].data;
+                    // network = _result['children'][1]['children'][0].data;
+                    episode = _result['children'][2]['children'][0]['children'][0].data;
                     // console.log(title, episode, 'Season Finale');
                     break;
                 }
@@ -214,13 +214,13 @@ export class ScrapingService {
               episode[0] = 's' + episode[0];
               episode[1] = 'e' + episode[1];
               episode = episode[0] + episode[1];
-              const dashed_title = result.children[i].children[0].attribs['content'].split('/')[4];
+              const dashed_title = result['children'][i]['children'][0].attribs['content'].split('/')[4];
               const showObject = {
                 title,
                 dashed_title,
                 episode,
                 network,
-                runtime: result.children[i].attribs['data-runtime'],
+                runtime: result['children'][i]['attribs']['data-runtime'],
                 poster: this.retrievePoster(dashed_title)
                 // poster: poster
               };
@@ -274,7 +274,7 @@ export class ScrapingService {
       .subscribe(response => {
         const $ = cheerio.load(response, {_useHtmlParser2: true});
         const results = $('.poster');
-        const poster = results[0].children[1].attribs['data-original'];
+        const poster = results[0]['children'][1]['attribs']['data-original'];
 
         console.log(dashed_title, poster);
         let path = this.path.join(this.app.getPath('appData'), 'Cereal', 'posters');
@@ -355,10 +355,10 @@ export class ScrapingService {
           const $ = cheerio.load(response, {_useHtmlParser2: true});
           const _custom = 1;
           if ($('tr')[_custom]) {
-            const dn = $('tr')[_custom].children[3].children[1].children[1].children[0].data;
-            const magnetURI = $('tr')[_custom].children[3].children[3].attribs.href;
-            const seeds = $('tr')[_custom].children[5].children[0].data;
-            let size = $('tr')[_custom].children[3] ? $('tr')[_custom].children[3].children[7].children[0].data : '';
+            const dn = $('tr')[_custom]['children'][3]['children'][1]['children'][1]['children'][0].data;
+            const magnetURI = $('tr')[_custom]['children'][3]['children'][3].attribs.href;
+            const seeds = $('tr')[_custom]['children'][5]['children'][0].data;
+            let size = $('tr')[_custom]['children'][3] ? $('tr')[_custom]['children'][3]['children'][7]['children'][0].data : '';
             if (size) {
               size = size ? size.substring(
                 size.lastIndexOf('Size ') + 5,
@@ -397,10 +397,10 @@ export class ScrapingService {
   //         if ($('#torrent_latest_torrents')[_custom]) {
   //           const t_row = $('#torrent_latest_torrents')[_custom];
   //           console.log(t_row);
-  //           const name = t_row.children[1].children[3].children[5].children[1].children[0].data;
-  //           const magnet_link = t_row.children[1].children[1].children[5].attribs['href'];
-  //           const size = t_row.children[3].children[0].data;
-  //           const seeds = t_row.children[7].children[0].data;
+  //           const name = t_row['children'][1]['children'][3]['children'][5]['children'][1]['children'][0].data;
+  //           const magnet_link = t_row['children'][1]['children'][1]['children'][5].attribs['href'];
+  //           const size = t_row['children'][3]['children'][0].data;
+  //           const seeds = t_row['children'][7]['children'][0].data;
   //           const magnet = decodeURIComponent(magnet_link.split('https://mylink.me.uk/?url=')[1]);
   //           return observer.next({
   //             name: name.trim(),
@@ -438,10 +438,10 @@ export class ScrapingService {
           }
           for (let i = 1; i < 4; i++) {
             if ($('tr')[i]) {
-              const name = $('tr')[i].children[3].children[1].children[1].children[0].data;
-              const magnetURI = $('tr')[i].children[3].children[3].attribs.href;
-              const seeds = $('tr')[i].children[5].children[0].data;
-              let size = $('tr')[i].children[3].children[7].children ? $('tr')[i].children[3].children[7].children[0].data : '';
+              const name = $('tr')[i]['children'][3]['children'][1]['children'][1]['children'][0].data;
+              const magnetURI = $('tr')[i]['children'][3]['children'][3].attribs.href;
+              const seeds = $('tr')[i]['children'][5]['children'][0].data;
+              let size = $('tr')[i]['children'][3]['children'][7].children ? $('tr')[i]['children'][3]['children'][7]['children'][0].data : '';
               if (size) {
                 size = size ? size.substring(
                   size.lastIndexOf('Size ') + 5,
@@ -476,11 +476,11 @@ export class ScrapingService {
 
           let hasResults = false;
           $('.grid-item')
-            .filter((i, result) => {
+            .map((i, result) => {
               // console.log('has results');
               hasResults = true;
               if (i < 6) {
-                let dashed_title = result.children[1]['attribs']['href'];
+                let dashed_title = result['children'][1]['attribs']['href'];
                 if (dashed_title) {
                   dashed_title = dashed_title.split('/shows/')[1];
                   // console.log('Found titles =>', dashed_title);
@@ -506,17 +506,17 @@ export class ScrapingService {
 
           const shows = [];
           $('.grid-item')
-            .filter((i, result) => {
+            .map((i, result) => {
               const show = {};
-              if (result.children[1] && result.children[1].attribs['href']) {
-                show['dashed_title'] = result.children[1].attribs['href'].split('/shows/')[1];
+              if (result['children'][1] && result['children'][1]['attribs']['href']) {
+                show['dashed_title'] = result['children'][1]['attribs']['href'].split('/shows/')[1];
                 show['poster'] = this.retrievePoster(show['dashed_title']);
-                if (result.children[1] && result.children[1].children[0]) {
-                  show['title'] = result.children[1].children[0].children[5].children[1].children[0].data.trim();
+                if (result['children'][1] && result['children'][1]['children'][0]) {
+                  show['title'] = result['children'][1]['children'][0]['children'][5]['children'][1]['children'][0].data.trim();
                 }
-                show['year'] = result.children[1].children[0].children[5].children[1].children[1].children[0] ?
-                  result.children[1].children[0].children[5].children[1].children[1].children[0].data : '-';
-                show['rating'] = result.children[2].children[1].children[0].children[1].data;
+                show['year'] = result['children'][1]['children'][0]['children'][5]['children'][1]['children'][1]['children'][0] ?
+                  result['children'][1]['children'][0]['children'][5]['children'][1]['children'][1]['children'][0].data : '-';
+                show['rating'] = result['children'][2]['children'][1]['children'][0]['children'][1].data;
                 show['rating'] = show['rating'].substr(0, show['rating'].length - 1);
               }
               if (show['title']) {

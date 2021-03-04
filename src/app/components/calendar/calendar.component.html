@@ -1,16 +1,14 @@
 <app-page-loader [display]="loading"></app-page-loader>
 
 <div *ngIf="calendar && calendar.length" fxLayout="column" class="container">
-	<div *ngFor="let day of calendar; let day_i = index;" fxLayout="column" class="days_container">
+	<div *ngFor="let day of calendar; let day_i = index;" fxLayout="column" fxLayoutGap="calc(.5rem + .5vw) grid" class="days_container">
 
 		<app-date-widget [date]="day.date"></app-date-widget>
 
 		<div @fadeItems fxLayout="column">
-			<div fxLayout="row wrap" fxLayoutAlign="center center" class="show-day" id="day_{{ day_i }}">
+			<div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="calc(.5rem + .5vw)" class="show-day" id="day_{{ day_i }}">
 				<div fxLayout="column" class="show" *ngFor="let show of day.shows">
-
 					<app-expanded-card [show]="show"></app-expanded-card>
-					
 				</div>
 			</div>
 		</div>

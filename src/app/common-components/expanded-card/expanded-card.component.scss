@@ -6,7 +6,7 @@ $expanded_poster_w: 26vw;
 
 .card {
 	cursor: pointer;
-	margin: 10px;
+	margin: 0;
 	background-color: transparent;
 	width: $poster_w;
 	height: calc(#{$poster_w} * 1.5);

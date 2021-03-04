@@ -5,7 +5,6 @@
 
   <app-show-preview [show]="show"></app-show-preview>
 
-
   <div fxLayout="row" fxLayoutAlign="center center" class="navigation_row">
     <div class="center-align">
       <i class="material-icons navigation_btn hoverable circle" [ngClass]="{ 'disabled': this.currentSeason == 1 }"
@@ -33,7 +32,7 @@
 
     <div fxFlex="15rem" class="episodes-container">
       <div *ngFor="let episode of episodes" fxLayout="column" class="episode-select hoverable" (click)="selectEpisode(episode)">
-        
+
         <div class="progress" [ngStyle]="{ opacity: episode.progress ? 1 : 0 }">
           <div class="determinate" [ngStyle]="{ 'width': episode.progress + '%' }"></div>
         </div>
