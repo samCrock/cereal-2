@@ -1,5 +1,12 @@
+## <small>2.2.32 (2021-03-04)</small>
+
+* Layout left centered + fix show info ([59d6c68](https://github.com/samCrock/cereal-2/commit/59d6c68))
+
+
+
 ## <small>2.2.31 (2021-01-14)</small>
 
+* 2.2.31 ([0c77156](https://github.com/samCrock/cereal-2/commit/0c77156))
 * Fixed overview ([b16b11b](https://github.com/samCrock/cereal-2/commit/b16b11b))
 * Minor ui updates ([b85f6ac](https://github.com/samCrock/cereal-2/commit/b85f6ac))
 
