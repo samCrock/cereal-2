@@ -12,7 +12,8 @@ $expanded_poster_w: 26vw;
 	height: calc(#{$poster_w} * 1.5);
 	 //max-width: 220px;
 	 //max-height: 330px;
-	background-size: cover;
+  margin-bottom: calc(.5rem + .5vw);
+  background-size: cover;
 	border-radius: 4px;
 	background-repeat: round;
 	img {
@@ -62,7 +63,6 @@ $expanded_poster_w: 26vw;
 	background-size: cover;
 	border-radius: 4px;
 	background-repeat: round;
-	border-radius: 4px;
 }
 
 .expanded_overlay {
