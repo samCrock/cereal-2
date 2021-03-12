@@ -1,5 +1,12 @@
+## <small>2.2.33 (2021-03-12)</small>
+
+* Minor cards layout fix ([c407de7](https://github.com/samCrock/cereal-2/commit/c407de7))
+
+
+
 ## <small>2.2.32 (2021-03-04)</small>
 
+* 2.2.32 ([b67aed2](https://github.com/samCrock/cereal-2/commit/b67aed2))
 * Layout left centered + fix show info ([59d6c68](https://github.com/samCrock/cereal-2/commit/59d6c68))
 
 
