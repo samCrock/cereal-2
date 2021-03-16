@@ -1,5 +1,12 @@
+## <small>2.2.34 (2021-03-16)</small>
+
+* Fixed episode torrent selection + restored download/play ([394876d](https://github.com/samCrock/cereal-2/commit/394876d))
+
+
+
 ## <small>2.2.33 (2021-03-12)</small>
 
+* 2.2.33 ([3c47c56](https://github.com/samCrock/cereal-2/commit/3c47c56))
 * Minor cards layout fix ([c407de7](https://github.com/samCrock/cereal-2/commit/c407de7))
 
 
