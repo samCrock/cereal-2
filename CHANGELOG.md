@@ -1,5 +1,11 @@
+## <small>2.2.35 (2021-03-16)</small>
+
+
+
+
 ## <small>2.2.34 (2021-03-16)</small>
 
+* 2.2.34 ([9f36185](https://github.com/samCrock/cereal-2/commit/9f36185))
 * Fixed episode torrent selection + restored download/play ([394876d](https://github.com/samCrock/cereal-2/commit/394876d))
 
 
