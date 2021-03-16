@@ -548,13 +548,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
               t.files.forEach((file, i) => {
                 if (file.path.endsWith('mkv') || file.path.endsWith('mp4')) {
                   // create HTTP server for this torrent
-                  if (this.server) {
-                    this.server.close();
-                  }
-                  this.server = t.createServer();
-                  this.server.listen(3333); // start the server listening to a port
+                  // if (this.server) {
+                  //   this.server.close();
+                  // }
+                  // this.server = t.createServer();
+                  // this.server.listen(3333); // start the server listening to a port
                   this.player.setAttribute('src', 'http://localhost:3333/' + i + '/' + file.path);
-                  console.log('Server src', 'http://localhost:3333/' + i + '/' + file.path);
                 }
               });
               // this.player.setAttribute('src', this.filePath);

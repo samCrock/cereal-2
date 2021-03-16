@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { ScrapingService, DbService, NavbarService, TorrentService } from '../../services';
-import { ActivatedRoute } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
-import { fade } from '../../animations/fade';
-import { Subscription } from 'rxjs';
-import { interval } from 'rxjs/internal/observable/interval';
+import {Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy} from '@angular/core';
+import {ScrapingService, DbService, NavbarService, TorrentService} from '../../services';
+import {ActivatedRoute} from '@angular/router';
+import {DomSanitizer} from '@angular/platform-browser';
+import {fade} from '../../animations/fade';
+import {Subscription} from 'rxjs';
+import {interval} from 'rxjs/internal/observable/interval';
 import * as moment from 'moment';
 
 @Component({
@@ -36,7 +36,8 @@ export class ShowComponent implements OnInit, OnDestroy {
     public route: ActivatedRoute,
     public sanitizer: DomSanitizer,
     private cdRef: ChangeDetectorRef
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     window.scrollTo(0, 0);
@@ -44,7 +45,9 @@ export class ShowComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.progressSubscription) { this.progressSubscription.unsubscribe(); }
+    if (this.progressSubscription) {
+      this.progressSubscription.unsubscribe();
+    }
   }
 
   init() {
@@ -118,7 +121,7 @@ export class ShowComponent implements OnInit, OnDestroy {
       const h = showHeader.getBoundingClientRect().height;
       episodesContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 11rem)';
       episodeContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 11rem)';
-    }, 10);
+    }, 100);
   }
 
   play_trailer() {
@@ -141,18 +144,22 @@ export class ShowComponent implements OnInit, OnDestroy {
     this.currentSeason++;
     this.retrieveSeason();
   }
+
   navigate_previous() {
     this.currentSeason--;
     this.retrieveSeason();
   }
+
   navigate_last() {
     this.currentSeason = this.show['seasons'];
     this.retrieveSeason();
   }
+
   navigate_first() {
     this.currentSeason = 1;
     this.retrieveSeason();
   }
+
   /////////////
 
 
@@ -184,8 +191,12 @@ export class ShowComponent implements OnInit, OnDestroy {
   getEpisodeClass(episode) {
     const selected = this.selectedEpisode && this.selectedEpisode.label === episode.label;
     const disabled = !episode['date'] || moment(episode['date'], 'YYYY-MM-DD').diff(moment(), 'hours') > 24;
-    if (selected) { return 'selected'; }
-    if (disabled) { return 'disabled'; }
+    if (selected) {
+      return 'selected';
+    }
+    if (disabled) {
+      return 'disabled';
+    }
     return '';
   }
 

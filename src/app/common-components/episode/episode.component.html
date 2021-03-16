@@ -12,8 +12,9 @@
     <div fxLayout="row" fxLayoutAlign="space-evenly" fxFill fxLayoutGap="1vw">
 
 
-      <div fxFlex="60" fxLayoutAlign="start center" class="waves-effect waves-light clickable-title" *ngIf="clickableTitle"
-        [routerLink]="['/show/' + episode.dashed_title]">
+      <div fxFlex="60" fxLayoutAlign="start center" class="waves-effect waves-light clickable-title"
+           *ngIf="clickableTitle"
+           [routerLink]="['/show/' + episode.dashed_title]">
         <span class="font-2" fxFlex="70">{{ episode.title }}</span>
         <span fxFlex="30">{{ episode.episode_label }}</span>
       </div>
@@ -31,18 +32,13 @@
         <!-- <app-date-widget [date]="episode.date"></app-date-widget> -->
       </div>
 
-      <div fxFlex="20" fxLayoutAlign="end center" >
+      <div fxFlex="20" fxLayoutAlign="end center">
         <span *ngIf="speed" id="speed">{{ speed }} Mb/s</span>
         <i class="material-icons download_btn hoverable circle" [class.active]="isCurrent()"
-          data-target="trailer_modal" (click)="download_episode(episode); play()">play_arrow</i>
+           data-target="trailer_modal" (click)="download_episode(episode); play()">play_arrow</i>
+        <i *ngIf="downloadable(episode.date) && !speed" class="material-icons download_btn hoverable circle"
+           (click)="download_episode(episode)">file_download</i>
       </div>
-<!--      <div fxFlex="20" fxLayoutAlign="end center" *ngIf="!isPlayable()">-->
-<!--        <i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle"-->
-<!--          (click)="download_episode(episode)">file_download</i>-->
-<!--      </div>-->
-      <!-- <div fxFlex="5" fxLayoutAlign="end center">
-        <i *ngIf="downloadable(episode.date)" class="material-icons download_btn hoverable circle" [ngClass]="expanded ? 'rotate' : ''" (click)="toggleExtra(episode)">more_vert</i>
-      </div> -->
     </div>
 
     <div fxLayout="row" class="extra" id="ep_{{ episode.label }}" [ngClass]="mode != 'compact' ? 'expanded' : ''">
@@ -61,8 +57,8 @@
           <div fxLayout="row" *ngFor="let t of epTorrents; let idx = index;" class="torrent_extras">
             <div fxFlex="76">
               <label>
-                <input name="group1" type="radio" [checked]="idx === 0" [value]="t.name"
-                  (change)="onTorrentChange(episode, t)" />
+                <input name="group1" type="radio" [checked]="idx === 0 || episode?.dn === t.name" [value]="t.name"
+                       (change)="onTorrentChange(episode, t)"/>
                 <span>{{ t.name | trim }}</span>
               </label>
             </div>
@@ -79,7 +75,7 @@
 
         <div id="delete_container" *ngIf="epTorrents.length">
           <i *ngIf="downloadable(episode.date)" id="delete_btn" class="material-icons download_btn hoverable circle"
-            [class.expanded]="expanded" (click)="deleteTorrent(episode);">delete</i>
+             [class.expanded]="expanded" (click)="deleteTorrent(episode);">delete</i>
         </div>
 
         <div *ngIf="!hasResults && !loading" class="episode_msg">

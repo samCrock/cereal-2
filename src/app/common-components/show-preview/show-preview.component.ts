@@ -38,6 +38,7 @@ export class ShowPreviewComponent implements OnChanges {
       this.scrapingService.retrieveRemoteWallpaper(this.show['dashed_title'])
       .subscribe(path => {
         this.wallpaper = path;
+        document.body['style'].cursor = 'default';
         document.body['style'].background = '' +
           'linear-gradient(to bottom, rgba(58, 70, 76, .8), rgba(58, 70, 76, .8)),' +
         'url(' + path + ') no-repeat center/cover fixed';
