@@ -544,10 +544,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
             if (this.progress > 10 && !this.player.getAttribute('src')) {
               t.files.forEach((file, i) => {
                 if (file.path.endsWith('mkv') || file.path.endsWith('mp4')) {
-                  this.player.setAttribute('src', 'http://localhost:3333/' + i + '/' + file.path);
-                  console.log('src set');
-                  this.player.play();
-                  this.isPlaying = true;
+                  // this.player.setAttribute('src', 'http://localhost:3333/' + i + '/' + file.path);
+                  this.player.setAttribute('src', this.filePath);
+                  this.toggle_play();
+                  this.toggle_play();
                 }
               });
             }
@@ -557,7 +557,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
             delete this.speed;
             if (!this.player.getAttribute('src')) {
               this.player.setAttribute('src', this.filePath);
-              console.log('src set');
               this.player.play();
               this.isPlaying = true;
               this.progressSubscription.unsubscribe();
