@@ -1,23 +1,19 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {
-  TorrentService,
-  SubsService,
-  DbService,
-  ScrapingService
-} from '../../services';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {DbService, ScrapingService, SubsService, TorrentService} from '../../services';
 import {ElectronService} from 'ngx-electron';
-import {Router, ActivatedRoute, NavigationEnd} from '@angular/router';
-import {Subscription, Observable} from 'rxjs';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {Observable, Subscription} from 'rxjs';
 import {interval} from 'rxjs/internal/observable/interval';
-import {ChangeDetectorRef} from '@angular/core';
 import * as magnet from 'magnet-uri';
 import * as moment from 'moment';
+import videojs from 'video.js';
 
 @Component({
   selector: 'app-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss'],
-  providers: [TorrentService, ScrapingService]
+  providers: [TorrentService, ScrapingService],
+  encapsulation: ViewEncapsulation.None
 })
 export class PlayerComponent implements OnInit, OnDestroy {
   public show;
@@ -53,6 +49,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   public nextEpisode;
   public subtitlesPaths = [];
+
+  videoJsPlayer: videojs.Player;
 
   constructor(
     public torrentService: TorrentService,
@@ -102,21 +100,16 @@ export class PlayerComponent implements OnInit, OnDestroy {
       }
 
       // console.log('Played time:', this.player.currentTime);
-      const playProgress = Math.ceil(
-        (this.player.currentTime / this.player.duration) * 100
-      );
+      const playProgress = (this.player.currentTime / this.player.duration) * 100;
 
       // Remove previous video
       this.player.removeAttribute('src');
 
-      this.dbService
-        .setEpisodeProgress(
-          this.show['dashed_title'],
-          this.episode['label'],
-          playProgress
-        )
-        .subscribe(show => {
-        });
+      this.dbService.setEpisodeProgress(
+        this.show['dashed_title'],
+        this.episode['label'],
+        playProgress
+      ).subscribe();
     }
 
     if (this.nextEpisode) {
@@ -154,6 +147,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
     const document: any = window.document;
     this.player = document.getElementById('player');
 
+
+    this.videoJsPlayer = videojs(this.player, {
+      controls: false
+    }, function onPlayerReady() {
+      console.log('onPlayerReady');
+    });
+
     const that = this;
 
     this.fetchProgress();
@@ -179,13 +179,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
     track.label = '[ Disable ]';
     this.player.appendChild(track);
 
-    document.addEventListener(
-      'mousemove',
-      () => {
-        that.lastMove = Date.now();
-      },
-      false
-    );
+    document.addEventListener('mousemove', () => {
+      that.lastMove = Date.now();
+    }, false);
 
     document.addEventListener(
       'dragenter',
@@ -211,8 +207,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
       const dt = e.dataTransfer;
       const files = dt.files;
       console.log('Subs dropped:', files[0]);
-      // const fileName = this.path.join(this.path.dirname(this.filePath), files[0].name);
-      // this.fsExtra.writeFileSync(fileName, files[0]);
       that.addSubs(files[0].path);
     }, false);
 
@@ -429,6 +423,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
     document.getElementById('player').addEventListener('dblclick', () => {
       this.toggle_fullscreen();
     });
+    // Single click: toggle play
+    document.getElementById('player').addEventListener('click', () => {
+      this.toggle_play();
+    });
   }
 
   timelineSetup() {
@@ -441,10 +439,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     timeline.addEventListener('change', () => {
       // Calculate the new time
-      const value: number = parseInt(timeline.value, 10);
-      const time = video.duration * (value / 100);
+      const value: number = parseFloat(timeline.value);
       // Update the video time
-      video.currentTime = time;
+      video.currentTime = video.duration * (value / 100);
     });
 
     if (this.episode['play_progress']) {
@@ -547,16 +544,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
             if (this.progress > 10 && !this.player.getAttribute('src')) {
               t.files.forEach((file, i) => {
                 if (file.path.endsWith('mkv') || file.path.endsWith('mp4')) {
-                  // create HTTP server for this torrent
-                  // if (this.server) {
-                  //   this.server.close();
-                  // }
-                  // this.server = t.createServer();
-                  // this.server.listen(3333); // start the server listening to a port
                   this.player.setAttribute('src', 'http://localhost:3333/' + i + '/' + file.path);
+                  console.log('src set');
+                  this.player.play();
+                  this.isPlaying = true;
                 }
               });
-              // this.player.setAttribute('src', this.filePath);
             }
             this.cdRef.detectChanges();
           } else {
@@ -564,6 +557,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
             delete this.speed;
             if (!this.player.getAttribute('src')) {
               this.player.setAttribute('src', this.filePath);
+              console.log('src set');
+              this.player.play();
+              this.isPlaying = true;
               this.progressSubscription.unsubscribe();
               this.downloadNext();
             }

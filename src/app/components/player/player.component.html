@@ -1,7 +1,6 @@
 <div class="player_container" *ngIf="show && episode">
 
-
-  <video id="player" width="320" height="240" (click)="showSubs = false;"></video>
+  <video class="video-js" id="player" preload="none" (click)="showSubs = false;"></video>
 
   <div id="info" [ngClass]="hideControls() ? 'hidden' : ''" fxLayoutAlign="start center"
     style="-webkit-app-region: drag">
