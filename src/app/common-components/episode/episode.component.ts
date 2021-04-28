@@ -60,7 +60,7 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
     this.progressSubscription.unsubscribe();
   }
 
-  setup() {
+  async setup() {
 
     delete this.progress;
     delete this.speed;
@@ -69,10 +69,7 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
     this.toggleExtra(this.episode);
 
     if (!this.show) {
-      this.dbService.getShow(this.episode['dashed_title'])
-        .subscribe(show => {
-          this.show = show;
-        });
+      this.show = await this.dbService.getShow(this.episode['dashed_title']).toPromise();
     }
     if (this.episode['episode_label']) {
       this.episode['label'] = this.episode['episode_label'];
@@ -80,10 +77,9 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
     if (this.router.url === '/torrents') {
       this.clickableTitle = true;
     }
-
-    this.dbService.getEpisode(this.show['dashed_title'], this.episode.label).subscribe((ep) => {
-      console.log('EP', this.episode);
-    });
+    if (!this.episode) {
+      this.episode = await this.dbService.getEpisode(this.show['dashed_title'], this.episode.label).toPromise();
+    }
 
     this.cdRef.detectChanges();
 
@@ -130,11 +126,6 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
     });
   }
 
-  isPlayable() {
-    // return this.episode['status'] && this.progress > 0;
-    return this.episode['status'];
-  }
-
   download_episode(episode) {
     this.loading = true;
     console.log('download_episode', episode);
@@ -142,31 +133,20 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
     let result;
     this.dbService.getEpisode(this.show['dashed_title'], episode['label'])
       .subscribe(dbEpisode => {
-        console.log('dbEpisode', dbEpisode);
+        if (!this.selectedTorrent) {
+          this.selectedTorrent = this.epTorrents[0];
+        }
         result = dbEpisode;
-
-        // Scrape torrent
-        // this.scrapingService.retrieveEpisode(this.show['title'], episode.label)
-        //   .subscribe(scrapedEpisode => {
-        const scrapedEpisode = dbEpisode;
-        console.log('scrapedEpisode', scrapedEpisode);
-        if (!scrapedEpisode) {
-          return this.loading = false;
-        }
-        if (!result.magnetURI) {
-          result.magnetURI = scrapedEpisode['magnetURI'];
-        }
-        // Set dn
-        result.dn = scrapedEpisode['dn'];
-        // Set infohash
-        result.infoHash = magnet.decode(result['magnetURI']).infoHash;
+        result.dn = dbEpisode['dn'];
+        result.infoHash = magnet.decode(this.selectedTorrent['magnetURI']).infoHash;
 
         // Add torrent to WT client
         const ep = {
-          magnetURI: result.magnetURI,
+          magnetURI: this.selectedTorrent['magnetURI'],
           title: this.show['title'],
           episode_label: result.label
         };
+
         this.torrentService.addTorrent(ep).subscribe();
         // Add episode torrent to torrents & shows DB
         this.dbService.addTorrent({
@@ -183,20 +163,30 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
           this.dbService.getEpisode(this.show['dashed_title'], this.episode['label'])
             .subscribe(updatedEpisode => {
               this.episode = updatedEpisode;
-              this.setup();
-              // if (this.expanded) {
-              //   this.toggleExtra(episode);
-              // }
+              this.setup().then();
               this.updatedEpisode.emit(updatedEpisode);
               this.loading = false;
             });
         });
 
-        // });
-
       });
   }
 
+  onTorrentChange(episode, t) {
+    this.selectedTorrent = t;
+    const ep = {
+      dashed_title: this.show['dashed_title'],
+      label: episode['label'],
+      dn: t.name,
+      magnetURI: t.magnetURI
+    };
+    this.dbService.setEpisode(ep).subscribe(() => {
+      this.dbService.getEpisode(this.show['dashed_title'], this.episode['label'])
+        .subscribe(updatedEpisode => {
+          this.episode = updatedEpisode;
+        });
+    });
+  }
 
   play() {
     this.loading = false;
@@ -232,24 +222,6 @@ export class EpisodeComponent implements OnChanges, OnDestroy {
           this.epTorrents.push(result);
         }
       });
-  }
-
-
-  onTorrentChange(episode, t) {
-    this.selectedTorrent = t;
-    const ep = {
-      dashed_title: this.show['dashed_title'],
-      label: episode['label'],
-      dn: t.name,
-      magnetURI: t.magnetURI
-    };
-    this.dbService.setEpisode(ep).subscribe(() => {
-      // this.updatedEpisode.emit(ep);
-      this.dbService.getEpisode(this.show['dashed_title'], this.episode['label'])
-        .subscribe(updatedEpisode => {
-          this.episode = updatedEpisode;
-        });
-    });
   }
 
   deleteTorrent(episode) {
