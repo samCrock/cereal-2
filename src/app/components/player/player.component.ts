@@ -549,8 +549,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
                     this.readyToPlay = true;
                     this.videoJsPlayer.src({ type: 'video/mp4', src: this.filePath });
                     this.videoJsPlayer.play();
+                    this.isPlaying = true;
                     delete this.speed;
                     this.progressSubscription.unsubscribe();
+                    this.cdRef.detectChanges();
                   }
                 }
               });
