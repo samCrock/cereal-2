@@ -24,6 +24,9 @@ export class TorrentService {
 
   addTorrent(episode): Observable<any> {
     return new Observable(observer => {
+      if (!episode.dn) {
+        observer.next();
+      }
       if (!this.wtClient.get(episode['magnetURI'])) {
         const filePath = this.path.join(this.app.getPath('downloads'), 'Cereal',
           this.getCleanTitle(episode['title']), episode['episode_label']);

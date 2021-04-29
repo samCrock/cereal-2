@@ -85,7 +85,7 @@ export class AppComponent implements OnInit, OnDestroy {
         .subscribe(_torrents => {
           _torrents.forEach(torrent => {
             // console.log(torrent.dn, torrent.status);
-            if (torrent.status !== 'ready') {
+            if (torrent.status !== 'ready' && torrent.dn) {
               this.torrentService.addTorrent(torrent)
                 .subscribe(t => {
                   if (!t) { return; }

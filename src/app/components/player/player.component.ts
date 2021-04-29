@@ -145,7 +145,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
   setup() {
     // console.log('SETUP');
     const document: any = window.document;
-    this.player = document.getElementById('player');
+    // this.player = document.getElementById('player');
+    this.player = document.getElementsByTagName('video')[0];
 
 
     this.videoJsPlayer = videojs(this.player, {
@@ -541,18 +542,19 @@ export class PlayerComponent implements OnInit, OnDestroy {
           if (t['progress'] !== 1) {
             this.speed = (Math.round((t['downloadSpeed'] / 1048576) * 100) / 100).toString();
             this.progress = t['progress'] * 100;
-            if (this.progress > 10 && !this.player.getAttribute('src')) {
+            if (this.progress > 10 && !document.getElementsByTagName('video')[0].getAttribute('src')) {
               t.files.forEach((file, i) => {
                 if (file.path.endsWith('mkv') || file.path.endsWith('mp4')) {
                   // this.player.setAttribute('src', 'http://localhost:3333/' + i + '/' + file.path);
                   if (!this.readyToPlay) {
+                    console.log('>10%', this.player);
                     this.readyToPlay = true;
-                    this.videoJsPlayer.src({ type: 'video/mp4', src: this.filePath });
-                    this.videoJsPlayer.play();
-                    this.isPlaying = true;
+                    this.player.setAttribute('src', this.filePath);
+                    this.player.play();
                     delete this.speed;
+                    this.progress = 100;
+                    this.isPlaying = true;
                     this.progressSubscription.unsubscribe();
-                    this.cdRef.detectChanges();
                   }
                 }
               });
@@ -561,6 +563,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
           } else {
             this.progress = 100;
             delete this.speed;
+            console.log('100%', this.player);
+
             if (!this.player.getAttribute('src')) {
               this.player.setAttribute('src', this.filePath);
               this.player.play();
@@ -572,6 +576,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
         }
       }
       if (this.episode && this.episode['status'] === 'ready') {
+        console.log('ready', this.player);
+
         this.progress = 100;
         delete this.speed;
         if (!this.player.getAttribute('src')) {

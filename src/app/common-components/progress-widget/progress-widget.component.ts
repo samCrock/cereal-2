@@ -34,6 +34,8 @@ export class ProgressWidgetComponent implements OnChanges {
       // console.log(this.progress);
       this.progress = parseFloat(this.progress.toString().substring(0, 3)) * 10;
       this.update();
+    } else {
+      console.log(this.progress, '_______');
     }
   }
 
