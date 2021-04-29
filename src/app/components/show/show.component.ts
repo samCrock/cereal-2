@@ -101,13 +101,12 @@ export class ShowComponent implements OnInit, OnDestroy {
         this.selectedEpisode = this.episodes[this.currentEpisode];
         this.fetchGlobalProgress();
 
-        // Set containers max height
-        this.setMaxHeights();
-
         this.dbService.addSeason(this.show['dashed_title'], this.currentSeason, this.episodes)
           .subscribe(show => {
             console.log('Season', this.currentSeason, 'saved');
             this.show = show;
+            // Set containers max height
+            this.setMaxHeights();
             this.loading = false;
           });
       });
@@ -120,7 +119,7 @@ export class ShowComponent implements OnInit, OnDestroy {
       const episodeContainter = document.getElementsByClassName('episode-container')[0] as HTMLElement;
       const h = showHeader.getBoundingClientRect().height;
       episodesContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 11rem)';
-      episodeContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 11rem)';
+      // episodeContainter.style.maxHeight = 'calc(100vh - ' + h + 'px - 11rem)';
     }, 100);
   }
 

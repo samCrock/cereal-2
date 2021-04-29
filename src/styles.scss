@@ -76,7 +76,7 @@ input {
   border-style: solid !important;
   border-width: 1px !important;
   background: transparent !important;
-  font-size: calc(1rem + 1vw) !important;
+  font-size: calc(.6rem + 1vw) !important;
   transition: all .4s;
 }
 
@@ -132,6 +132,7 @@ input[type=range]::-webkit-slider-thumb {
 .cdk-overlay-pane {
   position: relative !important;
   top: 40vh;
+  max-width: 50vw !important;
   margin: auto;
   background: rgb(58, 70, 76);
 }

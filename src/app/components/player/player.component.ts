@@ -49,7 +49,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   public nextEpisode;
   public subtitlesPaths = [];
-
+  readyToPlay: boolean;
   videoJsPlayer: videojs.Player;
 
   constructor(
@@ -133,7 +133,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         )
         .subscribe(episode => {
           this.episode = episode;
-          // console.log('Episode ->', episode);
+          console.log('Episode ->', episode);
           this.checkVideoPath().subscribe(filePath => {
             this.filePath = filePath;
             this.setup();
@@ -545,9 +545,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
               t.files.forEach((file, i) => {
                 if (file.path.endsWith('mkv') || file.path.endsWith('mp4')) {
                   // this.player.setAttribute('src', 'http://localhost:3333/' + i + '/' + file.path);
-                  this.player.setAttribute('src', this.filePath);
-                  this.toggle_play();
-                  this.toggle_play();
+                  if (!this.readyToPlay) {
+                    this.readyToPlay = true;
+                    this.videoJsPlayer.src({ type: 'video/mp4', src: this.filePath });
+                    this.videoJsPlayer.play();
+                    delete this.speed;
+                    this.progressSubscription.unsubscribe();
+                  }
                 }
               });
             }
