@@ -1,5 +1,13 @@
+## <small>2.2.37 (2021-04-29)</small>
+
+* Fixed video player play on incomplete download ([9961c2d](https://github.com/samCrock/cereal-2/commit/9961c2d))
+* Implemented Video.js in player component ([66f65dd](https://github.com/samCrock/cereal-2/commit/66f65dd))
+
+
+
 ## <small>2.2.36 (2021-04-28)</small>
 
+* 2.2.36 ([09675fb](https://github.com/samCrock/cereal-2/commit/09675fb))
 * Fixed first episode torrent ([36753ac](https://github.com/samCrock/cereal-2/commit/36753ac))
 * Implemented Video.js in player component ([1dd2197](https://github.com/samCrock/cereal-2/commit/1dd2197))
 * Implemented Video.js in player component ([7bd0ad9](https://github.com/samCrock/cereal-2/commit/7bd0ad9))
