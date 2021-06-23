@@ -61,7 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
             this.updateProgress = Math.round(event['loaded'] / event['total'] * 100);
           }
           if (event.body) {
-            const installerPath = this.path.join(this.app.getPath('appData'), 'Cereal', 'Update_installer.exe');
+            const installerPath = this.path.join(this.app.getPath('appData'), 'Cereal', 'Cereal.exe');
             console.log('File is ready:', installerPath);
 
             this.fs.appendFileSync(installerPath, Buffer.from(event.body));

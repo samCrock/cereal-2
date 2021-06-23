@@ -6,10 +6,9 @@ import { WtService } from './wt.service';
 @Injectable()
 export class TorrentService {
 
-  public path = this.electronService.remote.getGlobal('path');
-
-  private wtClient;
   public app = this.electronService.remote.getGlobal('app');
+  public path = this.electronService.remote.getGlobal('path');
+  private wtClient;
 
   constructor(private electronService: ElectronService, private wtService: WtService) {
     this.wtService.getClient()

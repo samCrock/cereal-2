@@ -4,9 +4,8 @@ import * as url from 'url';
 import * as webtorrent from 'webtorrent';
 
 const os = require('os');
-const {shell} = require('electron');
+  const {shell} = require('electron');
 const fsExtra = require('fs-extra');
-const fs = require('fs');
 const srt2vtt = require('srt-to-vtt');
 const zip = require('decompress-zip');
 const exec = require('child_process').exec;
@@ -26,8 +25,8 @@ global['fsExtra'] = fsExtra;
 global['srt2vtt'] = srt2vtt;
 global['zip'] = zip;
 global['path'] = path;
-global['exec'] = exec;
 global['app'] = app;
+global['exec'] = exec;
 global['request'] = request;
 
 console.log('Local path:', os.homedir(), __dirname);
